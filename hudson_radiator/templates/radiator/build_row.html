@@ -11,7 +11,7 @@
     <div class="scm">{% spaceless %}
       {% for commit in build.items %}
         <span class="revision">rev {{commit.revision}}</span>,
-        <span class="user"> commited by {{commit.user|firstWord}}</span>:
+        <span class="user"> by {{commit.user|firstWord}}</span>:
         <span class="msg">{{commit.msg}}</span><br>
       {% endfor %}{% endspaceless %}
     </div>
@@ -33,9 +33,7 @@
               <div class="smoke title">Smoke<br/>Tests</div></td>
             <td class="boxright smoke {{build.smoke_status}} secondary">
               {% for test in build.smokeTests.values %}
-                {% if test.status != "SUCCESS" %}
-                  <a href="{{ test.url }}"> {{ test.name }}</a>:<a href="{{ test.url }}/testReport" target="blank">{{ test.status }}</a><br/>
-                {% endif %}
+                  <a href="{{ test.url }}"> {{ test.name }}</a>:{{ test.status|transformTestStatus }}<br/>
               {% endfor %}
             </td>
             <td/>
@@ -54,7 +52,7 @@
               {% for test in build.regressionTests.values %}
                 {% if test.status != "SUCCESS" %}
                   <div class="boxright {{test.status}} secondary">
-                    <a href="{{ test.url }}">{{ test.name }}</a>:<href="{{ test.url }}/testReport" target="blank">{{ test.status }}</a><br/>
+                    <a href="{{ test.url }}">{{ test.name }}</a>:{{ test.status|transformTestStatus }}<br/>
                   </div>
                 {% endif %}
               {% endfor %}

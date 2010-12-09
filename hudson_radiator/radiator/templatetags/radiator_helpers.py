@@ -2,6 +2,8 @@ from django import template
 from django.template.defaultfilters import stringfilter
 from django.utils.safestring import mark_safe
 
+import re
+
 register = template.Library()
 
 @register.filter
@@ -23,20 +25,20 @@ def colorize_status(value):
 
 @register.filter
 @stringfilter
-def table_color(value):
+def transformTestStatus(value):
     if value == 'FAILURE':
-        return "#480000"
+        return "FAILED TO COMPLETE"
 
     if value == 'UNSTABLE':
-        return "#484800"
+        return "TESTS FAILED"
 
     if value == 'SUCCESS':
-        return "#004800"
+        return "Tests Passed"
 
-    if value == 'ABORTED':
-        return "#404040"
+    if value == 'BUILDING':
+        return "Running ..."
 
-    return "#202020"
+    return value
 
 
 @register.filter
@@ -53,4 +55,4 @@ def progress_bar(runningTime, avgTime):
 @register.filter
 @stringfilter
 def firstWord(value):
-  return value.split(' ')[0]
+  return re.split('\||\/|-',value)[0]

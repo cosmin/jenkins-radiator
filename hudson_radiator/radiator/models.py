@@ -7,6 +7,7 @@ import json
 import urllib2
 import time
 import os
+import re
 
 class Build(object):
     def __init__(self, buildjson, projectName = None):
@@ -69,7 +70,7 @@ class Build(object):
  
     @property
     def display_users(self):
-        return ', '.join([user.split(' ')[0] for user in self.users])
+        return ', '.join([re.split(r'\||\/|-',user)[0] for user in self.users])
 
     @property
     def display_msgs(self):
