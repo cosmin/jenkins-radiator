@@ -117,7 +117,10 @@ def get_cache_filename(url):
 def get_build(url):
     filename = get_cache_filename(url)
     if os.path.exists(filename):
-        return json.load(open(filename,'r'))
+        try:
+            return json.load(open(filename,'r'))
+        except ValueError:
+           os.remove(filename)
    
     try:
         build = get_data(url+'api/json')
