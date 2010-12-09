@@ -81,16 +81,18 @@ class Build(object):
         
         return time.time() - self.timeStamp
 
-def test_status(tests):
-    state = None
-    for test in tests:
-        if test.result == 'SUCCESS' or test.building == 'BUILDING':
-            state = test.result 
-            continue 
+status_order = ['FAILURE', 'UNSTABLE', 'ABORTED', 'BUILDING', 'SUCCESS']
 
-        return test.result
-    
-    return state
+def compare_by_status(test1, test2):
+    r1 = test1.result
+    r2 = test2.result
+    return status_order.index(r1) - status_order.index(r2)
+
+def test_status(tests):
+    if tests:
+        tests_copy = list(tests)
+        tests_copy.sort(cmp=compare_by_status)
+        return tests_copy[0].result
 
 def get_data(url):
     return json.loads(urllib2.urlopen(url).read())
