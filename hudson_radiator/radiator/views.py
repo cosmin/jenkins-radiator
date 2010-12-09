@@ -13,7 +13,7 @@ def get_radiator(request, build_list):
     return render('radiator/builds.html', locals())
 
 def get_builds(request, build_type):
-    builds = models.get_first_20(models.get_data(settings.HUDSON_URL + '/job/' + build_type + settings.HUDSON_BUILD_NAME_PATTERN + '/api/json'))
+    builds = models.get_first_20( build_type + settings.HUDSON_BUILD_NAME_PATTERN )
     testProjects = models.get_test_projects(models.get_data(settings.HUDSON_URL + '/api/json?tree=jobs[name]'), build_type)
     smokeTests = [proj for proj in testProjects if proj.upper().find(settings.HUDSON_SMOKE_NAME_PATTERN.upper()) > -1 ]
     otherTests = [proj for proj in testProjects if proj.upper().find(settings.HUDSON_SMOKE_NAME_PATTERN.upper()) < 0 ]
@@ -21,22 +21,25 @@ def get_builds(request, build_type):
 
     smokeBuilds = []
     for testName in smokeTests:
-        smokeBuilds.extend(models.get_first_20(models.get_data(settings.HUDSON_URL + '/job/' + testName + '/api/json')))
+        smokeBuilds.extend(models.get_first_20( testName ))
 
     regressionBuilds = []
     for testName in otherTests:
-        regressionBuilds.extend(models.get_first_20(models.get_data(settings.HUDSON_URL + '/job/' + testName + '/api/json')))
+        regressionBuilds.extend(models.get_first_20( testName ))
 
+    print 'Smoke builds', smokeBuilds
     for test in smokeBuilds:
         parent = buildDict.get(test.parent)
         if parent is not None:
-            parent.smokeTests.append(test)
+            if test.project not in parent.smokeTests or int(test.number) > int(parent.smokeTests[test.project].number):
+                parent.smokeTests[test.project] = test
 
     for test in regressionBuilds:
         parent = buildDict.get(test.parent)
 
         if parent is not None:
-            parent.regressionTests.append(test)
+            if test.project not in parent.regressionTests or int(test.number) > int(parent.regressionTests[test.project].number):
+                parent.regressionTests[test.project] = test
     
     avgTime = avg([build.duration for build in builds])
     if builds[0].status == 'BUILDING':

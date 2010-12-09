@@ -25,14 +25,14 @@
           {% if build.smoke_status == "SUCCESS" %}
             <td colspan=2 class="box smoke {{build.smoke_status}}"
               title={%spaceless%}"Tests run:
-{% for test in build.smokeTests %} {{test.name}}
+{% for test in build.smokeTests.values %} {{test.name}}
 {% endfor %}"{%endspaceless%}>
               &#9733;&#9733; All Smoke Tests Passed! &#9733;&#9733;</td></tr><tr>
           {% else %}
             <td class="boxleft smoke {{build.smoke_status}}">
               <div class="smoke title">Smoke<br/>Tests</div></td>
             <td class="boxright smoke {{build.smoke_status}} secondary">
-              {% for test in build.smokeTests %}
+              {% for test in build.smokeTests.values %}
                 {% if test.status != "SUCCESS" %}
                   <a href="{{ test.url }}"> {{ test.name }}</a>:<a href="{{ test.url }}/testReport" target="blank">{{ test.status }}</a><br/>
                 {% endif %}
@@ -43,7 +43,7 @@
           {% if build.regression_status == "SUCCESS" %}
             <td colspan=2 class="functional {{build.smoke_status}}"
               title={%spaceless%}"Tests run:
-{% for test in build.regressionTests %} {{test.name}}
+{% for test in build.regressionTests.values %} {{test.name}}
 {% endfor %}"{%endspaceless%}>
             &#9733;&#9733; All Functional Tests Passed! &#9733;&#9733;</td></tr><tr>
           {% else %}
@@ -51,7 +51,7 @@
             <td class="boxleft functional {{build.regression_status}}">
               <div class="functional title">Functional<br/>Tests</div></td>
             <td class="boxright functional {{build.regression_status}} secondary">
-              {% for test in build.regressionTests %}
+              {% for test in build.regressionTests.values %}
                 {% if test.status != "SUCCESS" %}
                   <div class="boxright {{test.status}} secondary">
                     <a href="{{ test.url }}">{{ test.name }}</a>:<href="{{ test.url }}/testReport" target="blank">{{ test.status }}</a><br/>

@@ -9,8 +9,9 @@ import time
 import os
 
 class Build(object):
-    def __init__(self, buildjson):
+    def __init__(self, buildjson, projectName = None):
         self.name = buildjson['fullDisplayName'].split(settings.HUDSON_TEST_NAME_PATTERN)[-1]
+        self.project = projectName
         self.building = buildjson['building']
 
         self.result = buildjson['result']
@@ -22,8 +23,8 @@ class Build(object):
         self.url = buildjson['url']
         self.duration = buildjson['duration'] / 1000
         self.timeStamp = buildjson['timestamp'] / 1000
-        self.smokeTests = []
-        self.regressionTests = []
+        self.smokeTests = {}
+        self.regressionTests = {}
         self.parent = None
 
         actions = {}
@@ -44,11 +45,11 @@ class Build(object):
 
     @property
     def smoke_status(self):
-        return test_status(self.smokeTests)
+        return test_status(self.smokeTests.values())
 
     @property
     def regression_status(self):
-        return test_status(self.regressionTests)
+        return test_status(self.regressionTests.values())
 
     @property
     def status(self):
@@ -94,12 +95,15 @@ def test_status(tests):
         tests_copy.sort(cmp=compare_by_status)
         return tests_copy[0].result
 
+def get_project_data(projectName):
+    return get_data(settings.HUDSON_URL + '/job/' + projectName + '/api/json')
+
 def get_data(url):
     return json.loads(urllib2.urlopen(url).read())
 
-def get_build_info(build):
+def get_build_info(projectName, build):
     if build is not None:
-        return cleanup_cache(Build(build))
+        return cleanup_cache(Build(build, projectName))
 
 def cleanup_cache(build):
     filename = get_cache_filename(build.url)
@@ -108,10 +112,10 @@ def cleanup_cache(build):
 
     return build
 
-def get_first_20(data):
+def get_first_20(projectName):
+    data = get_project_data(projectName)
     build_urls = sorted(data['builds'], key=lambda x: x['number'], reverse=True)[:20]
-#    return [get_build_info(json.loads(urllib2.urlopen(build_url['url'] + 'api/json').read())) for build_url in build_urls]
-    return [build for build in [get_build_info(get_build(build_url['url'])) for build_url in build_urls] if build is not None]
+    return [build for build in [get_build_info(projectName, get_build(build_url['url'])) for build_url in build_urls] if build is not None]
 
 def get_cache_filename(url):
     return '/tmp/hudson_radiator/' + str(url.split('job/')[1]).strip('/').replace('/','_')
