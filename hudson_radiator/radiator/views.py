@@ -27,7 +27,6 @@ def get_builds(request, build_type):
     for testName in otherTests:
         regressionBuilds.extend(models.get_first_20( testName ))
 
-    print 'Smoke builds', smokeBuilds
     for test in smokeBuilds:
         parent = buildDict.get(test.parent)
         if parent is not None:
