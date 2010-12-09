@@ -1,0 +1,76 @@
+{% load radiator_helpers %}
+<div class="buildbox">
+  <div class="boxtop {{build.status}}"
+    {% if build.status == "BUILDING" %}
+      title="Hudson Build {{build.number}} is currently running... "
+    {% else %}
+        title="Hudson Build {{build.number}} completed with status of: {{build.status}}"
+    {% endif %}>
+    <div class="buildNumber"><a href="{{build.url}}">Build #{{ build.number}}</a>
+    {% if build.status == 'BUILDING' %} {% include "radiator/progress_bar.html" %} {% endif %}</div>
+    <div class="scm">{% spaceless %}
+      {% for commit in build.items %}
+        <span class="revision">rev {{commit.revision}}</span>,
+        <span class="user"> commited by {{commit.user|firstWord}}</span>:
+        <span class="msg">{{commit.msg}}</span><br>
+      {% endfor %}{% endspaceless %}
+    </div>
+  </div>
+  <div class="boxbottom {{build.status}} secondary">
+    {% if build.status == "SUCCESS" %}
+      {% if build.smoke_status == build.regression_status == "SUCCESS" %}
+        <div class="smoke SUCCESS">&#9733;&#9733; All Tests Passed! &#9733;&#9733;</div>
+      {% else %}
+        <table class="tests"><tr>
+          {% if build.smoke_status == "SUCCESS" %}
+            <td colspan=2 class="box smoke {{build.smoke_status}}"
+              title={%spaceless%}"Tests run:
+{% for test in build.smokeTests %} {{test.name}}
+{% endfor %}"{%endspaceless%}>
+              &#9733;&#9733; All Smoke Tests Passed! &#9733;&#9733;</td></tr><tr>
+          {% else %}
+            <td class="boxleft smoke {{build.smoke_status}}">
+              <div class="smoke title">Smoke<br/>Tests</div></td>
+            <td class="boxright smoke {{build.smoke_status}} secondary">
+              {% for test in build.smokeTests %}
+                {% if test.status != "SUCCESS" %}
+                  <a href="{{ test.url }}"> {{ test.name }}</a>:<a href="{{ test.url }}/testReport" target="blank">{{ test.status }}</a><br/>
+                {% endif %}
+              {% endfor %}
+            </td>
+            <td/>
+          {% endif %}
+          {% if build.regression_status == "SUCCESS" %}
+            <td colspan=2 class="functional {{build.smoke_status}}"
+              title={%spaceless%}"Tests run:
+{% for test in build.regressionTests %} {{test.name}}
+{% endfor %}"{%endspaceless%}>
+            &#9733;&#9733; All Functional Tests Passed! &#9733;&#9733;</td></tr><tr>
+          {% else %}
+          {% if  build.regressionTests %}
+            <td class="boxleft functional {{build.regression_status}}">
+              <div class="functional title">Functional<br/>Tests</div></td>
+            <td class="boxright functional {{build.regression_status}} secondary">
+              {% for test in build.regressionTests %}
+                {% if test.status != "SUCCESS" %}
+                  <div class="boxright {{test.status}} secondary">
+                    <a href="{{ test.url }}">{{ test.name }}</a>:<href="{{ test.url }}/testReport" target="blank">{{ test.status }}</a><br/>
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </td>
+          {% endif %}
+          {% endif %}
+        </tr></table>
+      {% endif %}
+    {% else %}
+      {% if build.status == "UNSTABLE" %}
+        <div class="broken {{build.status}} secondary">JUNIT TESTS BREAKING!</div>
+      {% endif %}
+      {% if build.status in "FAILURE.ABORTED" %}
+        <div class="broken {{build.status}} secondary">BUILD {{build.status}}!</div>
+      {% endif %}
+    {% endif %}
+  </div>
+</div>
+<div class="gap"/>

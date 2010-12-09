@@ -1,0 +1,64 @@
+body{
+  background: black;
+  color: white;
+  font-family: Verdana, Helvetica, 'sans serif';
+  }
+
+table .tests{ width: 95%; margin-left:auto; margin-right:auto;}
+td{
+  vertical-align: top;
+  }
+
+a{ color: #ffffff; }
+
+.buildNumber{
+  font-size: 18;
+  font-weight: bold;
+}
+
+.scm{
+  font-size: 12;
+  padding-left: 1em;
+}
+
+.scm .revision,
+.scm .user{
+  font-size: 14;
+  font-weight: bold;
+}
+
+.scm .user{
+  font-size: 14;
+}
+
+.buildNumber a{ color: yellow; }
+
+.boxleft{ font-weight: bold; }
+
+.SUCCESS{ background-color: #00aa00; border-color: #00aa00; }
+.secondary.SUCCESS a,
+.secondary.SUCCESS{ background-color: #007700; border-color: #007700; }
+.tertiary.SUCCESS{ background-color: #005500; border-color: #005500; }
+.SUCCESS.box{ font-weight: bold; text-align: center; }
+
+.ABORTED{ background-color: #666666; border-color: #666666; }
+.secondary.ABORTED a,
+.secondary.ABORTED{ background-color: #444444; border-color: #444444;}
+
+.UNSTABLE{ background-color: #aa0000; border-color: #aa0000; }
+.secondary.UNSTABLE a,
+.secondary.UNSTABLE{ background-color: #770000; border-color: #770000; }
+
+.FAILURE{ background-color: #aa0000; border-color: #aa0000; }
+.secondary.FAILURE a,
+.secondary.FAILURE{ background-color: #770000; border-color: #770000; color: #FFAAAA; }
+
+.BUILDING{ background-color: #4444bb; border-color: #4444bb; }
+.BUILDING.secondary a,
+.BUILDING.secondary{ background-color: #000077; border-color: #000077; color: #FFFFFF;}
+.BUILDING.buildNumber{ color: yellow; }
+.tests .BUILDING .secondary a,
+.tests .BUILDING .secondary{ color: #FFFFFF;}
+
+
+.None{ background-color: #FF00FF; }
