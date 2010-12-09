@@ -13,10 +13,10 @@ def get_radiator(request, build_list):
     return render('radiator/builds.html', locals())
 
 def get_builds(request, build_type):
-    builds = models.get_first_20(models.get_data(settings.HUDSON_URL + '/job/' + build_type + '_Build/api/json'))
+    builds = models.get_first_20(models.get_data(settings.HUDSON_URL + '/job/' + build_type + settings.HUDSON_BUILD_NAME_PATTERN + '/api/json'))
     testProjects = models.get_test_projects(models.get_data(settings.HUDSON_URL + '/api/json?tree=jobs[name]'), build_type)
-    smokeTests = [proj for proj in testProjects if proj.upper().find("SMOKE") > -1 ]
-    otherTests = [proj for proj in testProjects if proj.upper().find("SMOKE") < 0 ]
+    smokeTests = [proj for proj in testProjects if proj.upper().find(settings.HUDSON_SMOKE_NAME_PATTERN.upper()) > -1 ]
+    otherTests = [proj for proj in testProjects if proj.upper().find(settings.HUDSON_SMOKE_NAME_PATTERN.upper()) < 0 ]
     buildDict = dict((build.number,build) for build in builds)
 
     smokeBuilds = []

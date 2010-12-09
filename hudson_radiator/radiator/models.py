@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 # Create your models here.
 
@@ -9,7 +10,7 @@ import os
 
 class Build(object):
     def __init__(self, buildjson):
-        self.name = buildjson['fullDisplayName'].split('_Test_')[-1]
+        self.name = buildjson['fullDisplayName'].split(settings.HUDSON_TEST_NAME_PATTERN)[-1]
         self.building = buildjson['building']
 
         self.result = buildjson['result']
