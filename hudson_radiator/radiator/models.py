@@ -109,7 +109,10 @@ def get_build_info(projectName, build):
 def cleanup_cache(build):
     filename = get_cache_filename(build.url)
     if build.building:
-        os.remove(filename)
+        try:
+            os.remove(filename)
+        except OSError:
+            pass
 
     return build
 
