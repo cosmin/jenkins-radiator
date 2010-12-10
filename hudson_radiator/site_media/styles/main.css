@@ -2,6 +2,7 @@ body{
   background: black;
   color: white;
   font-family: Verdana, Helvetica, 'sans serif';
+  font-size: 1;
   }
 
 table .tests{ width: 95%; margin-left:auto; margin-right:auto;}
@@ -11,8 +12,12 @@ td{
 
 a{ color: #ffffff; }
 
+#builds{
+  font-size: 24;
+}
+
 .buildNumber{
-  font-size: 18;
+  font-size: 24;
   font-weight: bold;
 }
 

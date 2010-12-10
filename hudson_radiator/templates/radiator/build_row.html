@@ -7,7 +7,8 @@
         title="Hudson Build {{build.number}} completed with status of: {{build.status}}"
     {% endif %}>
     <div class="buildNumber"><a href="{{build.url}}">Build #{{ build.number}}</a>
-    {% if build.status == 'BUILDING' %} {% include "radiator/progress_bar.html" %} {% endif %}</div>
+<!--    {% if build.status == 'BUILDING' %} {% include "radiator/progress_bar.html" %} {% endif %} -->
+</div>
     <div class="scm">{% spaceless %}
       {% for commit in build.items %}
         <span class="revision">rev {{commit.revision}}</span>,
