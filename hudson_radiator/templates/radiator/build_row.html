@@ -40,7 +40,7 @@
             <td/>
           {% endif %}
           {% if build.regression_status == "SUCCESS" %}
-            <td colspan=2 class="functional {{build.smoke_status}}"
+            <td colspan=2 class="box functional {{build.regression_status}}"
               title={%spaceless%}"Tests run:
 {% for test in build.regressionTests.values %} {{test.name}}
 {% endfor %}"{%endspaceless%}>

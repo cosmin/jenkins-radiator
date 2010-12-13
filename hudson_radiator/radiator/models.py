@@ -21,7 +21,7 @@ class Build(object):
        
         self.number = str(buildjson['number'])
         self.items = buildjson['changeSet']['items']
-        self.url = buildjson['url']
+        self.url = settings.HUDSON_URL+'/job/'+projectName+'/'+self.number+'/'
         self.duration = buildjson['duration'] / 1000
         self.timeStamp = buildjson['timestamp'] / 1000
         self.smokeTests = {}
@@ -118,13 +118,14 @@ def cleanup_cache(build):
 
 def get_first_20(projectName):
     data = get_project_data(projectName)
-    build_urls = sorted(data['builds'], key=lambda x: x['number'], reverse=True)[:20]
-    return [build for build in [get_build_info(projectName, get_build(build_url['url'])) for build_url in build_urls] if build is not None]
+    build_urls = sorted(data['builds'], key=lambda x: x['number'], reverse=True)[:10]
+    return [build for build in [get_build_info(projectName, get_build(projectName,build_url['number'])) for build_url in build_urls] if build is not None]
 
 def get_cache_filename(url):
     return '/tmp/hudson_radiator/' + str(url.split('job/')[1]).strip('/').replace('/','_')
     
-def get_build(url):
+def get_build(projectName, number):
+    url = settings.HUDSON_URL+'/job/'+projectName+'/'+str(number)+'/'
     filename = get_cache_filename(url)
     if os.path.exists(filename):
         try:
