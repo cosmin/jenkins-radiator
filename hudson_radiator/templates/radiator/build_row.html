@@ -28,7 +28,7 @@
               title={%spaceless%}"Tests run:
 {% for test in build.smokeTests.values %} {{test.name}}
 {% endfor %}"{%endspaceless%}>
-              &#9733;&#9733; All Smoke Tests Passed! &#9733;&#9733;</td></tr><tr>
+              &#9733;&#9733; {{build.smokeTests|length}} Smoke Test Suite(s) Passed! &#9733;&#9733;</td></tr><tr>
           {% else %}
             <td class="boxleft smoke {{build.smoke_status}}">
               <div class="smoke title">Smoke<br/>Tests</div></td>
@@ -44,7 +44,7 @@
               title={%spaceless%}"Tests run:
 {% for test in build.regressionTests.values %} {{test.name}}
 {% endfor %}"{%endspaceless%}>
-            &#9733;&#9733; All Functional Tests Passed! &#9733;&#9733;</td></tr><tr>
+            &#9733;&#9733; {{build.regressionTests|length}} Functional Test Suite(s) Passed! &#9733;&#9733;</td></tr><tr>
           {% else %}
           {% if  build.regressionTests %}
             <td class="boxleft functional {{build.regression_status}}">
