@@ -30,11 +30,12 @@
          {% for build_type in row %}
          <td width="{{ columnSize }}%" >
             <h3>{{ build_type|title }} Build Matrix Status</h3>
-            <table id="build_{{build_type|slugify}}">
-            </table>
+            <div id="build_{{build_type|slugify}}">
+            </div>
          </td>
          {% endfor %}
       </tr>
       {% endfor %}
+      </table>
   </body>
 </html>

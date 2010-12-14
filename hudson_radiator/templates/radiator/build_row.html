@@ -10,7 +10,7 @@
 <!--    {% if build.status == 'BUILDING' %} {% include "radiator/progress_bar.html" %} {% endif %} -->
 </div>
     <div class="buildTime" title="{{build.dateTimeStamp}}">{{ build.dateTimeStamp|timesince }} ago</div>
-    <div class="clear-both"/>
+    <div class="clear-both"></div>
     <div class="scm">{% spaceless %}
       {% for commit in build.items %}
         <span class="revision">rev {{commit.revision}}</span>,
