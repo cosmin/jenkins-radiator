@@ -101,6 +101,7 @@ SITE_MEDIA = os.path.join(PROJECT_ROOT, "site_media")
 HUDSON_URL = ''
 HUDSON_BUILD_NAME_PATTERN = '_Build'
 HUDSON_TEST_NAME_PATTERN = '_Test_'
+HUDSON_TEST_IGNORE_REGEX = ''
 HUDSON_SMOKE_NAME_REGEX = re.compile('Smoke|Baseline', re.I)
 
 try:
