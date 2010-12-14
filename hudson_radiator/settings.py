@@ -100,7 +100,7 @@ SITE_MEDIA = os.path.join(PROJECT_ROOT, "site_media")
 HUDSON_URL = ''
 HUDSON_BUILD_NAME_PATTERN = '_Build'
 HUDSON_TEST_NAME_PATTERN = '_Test_'
-HUDSON_SMOKE_NAME_PATTERN = 'Smoke'
+HUDSON_SMOKE_NAME_PATTERN = 'Smoke|Baseline'
 
 try:
   from settings_local import *
