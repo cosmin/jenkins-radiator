@@ -74,5 +74,8 @@ a{ color: #ffffff; }
 .tests .BUILDING .secondary a,
 .tests .BUILDING .secondary{ color: #FFFFFF;}
 
+.broken{
+text-decoration:blink;
+}
 
 .None{ background-color: #FF00FF; }
