@@ -7,7 +7,7 @@
         title="Hudson Build {{build.number}} completed with status of: {{build.status}}"
     {% endif %}>
     <div class="buildNumber"><a href="{{build.url}}">Build #{{ build.number}}</a>
-<!--    {% if build.status == 'BUILDING' %} {% include "radiator/progress_bar.html" %} {% endif %} -->
+      {% if build.status == 'BUILDING' %} {% include "radiator/progress_bar.html" %} {% endif %}
 </div>
     <div class="buildTime" title="{{build.dateTimeStamp}}">{{ build.dateTimeStamp|timesince }} ago</div>
     <div class="clear-both"></div>
