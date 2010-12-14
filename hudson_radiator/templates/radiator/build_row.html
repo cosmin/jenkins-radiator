@@ -9,7 +9,7 @@
     <div class="buildNumber"><a href="{{build.url}}">Build #{{ build.number}}</a>
 <!--    {% if build.status == 'BUILDING' %} {% include "radiator/progress_bar.html" %} {% endif %} -->
 </div>
-    <div class="buildTime">{{ build.dateTimeStamp|timesince }} ago</div>
+    <div class="buildTime" title="{{build.dateTimeStamp}}">{{ build.dateTimeStamp|timesince }} ago</div>
     <div class="clear-both"/>
     <div class="scm">{% spaceless %}
       {% for commit in build.items %}
