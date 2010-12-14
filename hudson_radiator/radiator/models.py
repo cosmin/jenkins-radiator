@@ -8,6 +8,7 @@ import urllib2
 import time
 import os
 import re
+import datetime
 
 class Build(object):
     def __init__(self, buildjson, projectName = None):
@@ -24,6 +25,7 @@ class Build(object):
         self.url = settings.HUDSON_URL+'/job/'+projectName+'/'+self.number+'/'
         self.duration = buildjson['duration'] / 1000
         self.timeStamp = buildjson['timestamp'] / 1000
+        self.dateTimeStamp = datetime.datetime.fromtimestamp(self.timeStamp)
         self.smokeTests = {}
         self.regressionTests = {}
         self.parent = None

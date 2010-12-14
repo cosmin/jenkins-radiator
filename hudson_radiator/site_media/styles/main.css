@@ -19,6 +19,15 @@ a{ color: #ffffff; }
 .buildNumber{
   font-size: 24;
   font-weight: bold;
+  float: left;
+}
+
+.buildTime{
+  float: right;
+}
+
+.clear-both{
+  clear:both;
 }
 
 .scm{
