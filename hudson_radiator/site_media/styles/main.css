@@ -95,6 +95,9 @@ a{ color: #ffffff; }
 .secondary.UNKNOWN{ background-color: #444444; border-color: #444444;}
 .UNKNOWN.box{ font-weight: bold; text-align: center; }
 
+.smoke.title,
+.functional.title{ font-weight: bold; font-size:120; text-align: center; verticle-align: middle;}
+
 .broken{
 text-decoration:blink;
 }

@@ -33,7 +33,7 @@
               {% if build.smoke_status == "SUCCESS" %}&#9733;&#9733;{% endif %} {{build.smokeTests|length}} Smoke Test Suite{{build.smokeTests|plural}} {{build.smoke_status|transformTestStatus}} {% if build.smoke_status == "SUCCESS" %}&#9733;&#9733;{% endif %}</td></tr><tr>
           {% else %}
             <td class="boxleft smoke {{build.smoke_status}}">
-              <div class="smoke title">Smoke<br/>Tests</div></td>
+              <div class="smoke title" title="Smoke Tests">S</div></td>
             <td class="boxright smoke {{build.smoke_status}} secondary">
               {% for test in build.smokeTests.values|sortedByStatus %}
                 <div class="boxright {{test.status}} tertiary">
@@ -55,7 +55,7 @@
           {% else %}
           {% if  build.regressionTests %}
             <td class="boxleft functional {{build.regression_status}}">
-              <div class="functional title">Functional<br/>Tests</div></td>
+              <div class="functional title" title="Functional Tests">F</div></td>
             <td class="boxright functional {{build.regression_status}} secondary">
               {% for test in build.regressionTests.values|sortedByStatus %}
                   <div class="boxright {{test.status}} tertiary">
