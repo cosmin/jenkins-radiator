@@ -55,7 +55,7 @@
           {% else %}
           {% if  build.regressionTests %}
             <td class="boxleft functional {{build.regression_status}}">
-              <div class="functional title" title="Functional Tests">F</div></td>
+              <div class="functional title" title="Regression Tests">R</div></td>
             <td class="boxright functional {{build.regression_status}} secondary">
               {% for test in build.regressionTests.values|sortedByStatus %}
                   <div class="boxright {{test.status}} tertiary">

@@ -96,7 +96,7 @@ a{ color: #ffffff; }
 .UNKNOWN.box{ font-weight: bold; text-align: center; }
 
 .smoke.title,
-.functional.title{ font-weight: bold; font-size:120; text-align: center; verticle-align: middle;}
+.functional.title{ font-weight: bold; font-size:100; text-align: center; verticle-align: middle;}
 
 .broken{
 text-decoration:blink;
