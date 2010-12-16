@@ -2,20 +2,23 @@ from django.shortcuts import render_to_response as render
 from django.conf import settings
 import models
 import re
+
 # Create your views here.
 def avg(lst):
     return sum(lst) / (1.0 * len(lst))
 
 
 def get_radiator(request, build_list):
+    buildCount = request.GET.get('builds',settings.HUDSON_BUILD_COUNT)
     build_types = [build_row.split(',') for build_row in build_list.split('|')]
     columnSize = 100 / len(build_types[0])
     return render('radiator/builds.html', locals())
 
 def get_builds(request, build_type):
+    count = int(request.GET.get('builds',settings.HUDSON_BUILD_COUNT))
     project = models.Project(build_type)
     
-    builds = models.get_first_20( build_type + settings.HUDSON_BUILD_NAME_PATTERN )
+    builds = models.get_recent_builds( build_type + settings.HUDSON_BUILD_NAME_PATTERN, count )
     testProjects = models.get_test_projects(models.get_data(settings.HUDSON_URL + '/api/json?tree=jobs[name]'), build_type)
     testProjects = [proj for proj in testProjects if not settings.HUDSON_TEST_IGNORE_REGEX.findall(proj)]
     project.smokeTests = [proj for proj in testProjects if settings.HUDSON_SMOKE_NAME_REGEX.findall(proj) ]
@@ -24,11 +27,11 @@ def get_builds(request, build_type):
 
     smokeBuilds = []
     for testName in project.smokeTests:
-        smokeBuilds.extend(models.get_first_20( testName ))
+        smokeBuilds.extend(models.get_recent_builds( testName, count ))
 
     regressionBuilds = []
     for testName in project.otherTests:
-        regressionBuilds.extend(models.get_first_20( testName ))
+        regressionBuilds.extend(models.get_recent_builds( testName, count  ))
 
     for test in smokeBuilds:
         parent = buildDict.get(test.parent)

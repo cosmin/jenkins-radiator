@@ -9,6 +9,18 @@ import time
 import os
 import re
 import datetime
+import time
+
+def print_timing(func):
+    def wrapper(*args, **kw):
+        t1 = time.time()
+        res = func(*args, **kw)
+        t2 = time.time()
+        print '%0.3f ms: %s ( %s, %s )' % ((t2-t1)*1000.0, func.func_name, args, kw)
+        return res
+    return wrapper
+    
+
 class Project(object):
     def __init__(self, projectName = None):
         self.name = projectName
@@ -126,14 +138,14 @@ def cleanup_cache(build):
 
     return build
 
-def get_first_20(projectName):
+def get_recent_builds(projectName, count):
     data = get_project_data(projectName)
-    build_urls = sorted(data['builds'], key=lambda x: x['number'], reverse=True)[:10]
+    build_urls = sorted(data['builds'], key=lambda x: x['number'], reverse=True)[:count]
     return [build for build in [get_build_info(projectName, get_build(projectName,build_url['number'])) for build_url in build_urls] if build is not None]
 
 def get_cache_filename(url):
     return '/tmp/hudson_radiator/' + str(url.split('job/')[1]).strip('/').replace('/','_')
-    
+
 def get_build(projectName, number):
     url = settings.HUDSON_URL+'/job/'+projectName+'/'+str(number)+'/'
     filename = get_cache_filename(url)

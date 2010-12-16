@@ -103,6 +103,7 @@ HUDSON_BUILD_NAME_PATTERN = '_Build'
 HUDSON_TEST_NAME_PATTERN = '_Test_'
 HUDSON_TEST_IGNORE_REGEX = ''
 HUDSON_SMOKE_NAME_REGEX = re.compile('Smoke|Baseline', re.I)
+HUDSON_BUILD_COUNT = 10
 
 try:
   from settings_local import *
