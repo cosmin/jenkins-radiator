@@ -104,7 +104,19 @@ class Build(object):
             return ''
         
         return time.time() - self.timeStamp
+        
+    @property
+    def isSmokeStatusSame(self):
+        firstTest = self.smokeTests.values()[0]
+        result = all( (item.status == firstTest.status) for item in self.smokeTests.values())
+        return result
 
+    @property
+    def isRegressionStatusSame(self):
+        firstTest = self.regressionTests.values()[0]
+        result = all( (item.status == firstTest.status) for item in self.regressionTests.values())
+        return result
+        
 status_order = ['FAILURE', 'UNSTABLE', 'ABORTED', 'BUILDING', 'SUCCESS', 'UNKNOWN']
 
 def compare_by_status(test1, test2):

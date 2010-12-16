@@ -18,6 +18,8 @@ border-bottom-left-radius: .5em;
 -moz-border-radius-topleft: .5em;
 -moz-border-radius-bottomleft: .5em;
 border-style:solid;
+border-right-size:0px;
+padding:3px;
 }
 
 .boxright {
@@ -26,6 +28,8 @@ border-bottom-right-radius: .5em;
 -moz-border-radius-topright: .5em;
 -moz-border-radius-bottomright: .5em;
 border-style:solid;
+border-right-right:0px;
+padding:3px;
 }
 
 .boxbottom {

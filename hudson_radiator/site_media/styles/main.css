@@ -8,6 +8,7 @@ body{
 table .tests{ width: 95%; margin-left:auto; margin-right:auto;}
 td{
   vertical-align: top;
+  padding:0px;
   }
 
 a{ color: #ffffff; }
@@ -52,30 +53,44 @@ a{ color: #ffffff; }
 .SUCCESS{ background-color: #00aa00; border-color: #00aa00; }
 .secondary.SUCCESS a,
 .secondary.SUCCESS{ background-color: #007700; border-color: #007700; }
-.tertiary.SUCCESS{ background-color: #005500; border-color: #005500; }
+
+.boxright.SUCCESS,
+.boxright.SUCCESS a,
+.boxright.SUCCESS.tertiary a,
+.tertiary.SUCCESS{ background-color: #005500; border-color: #005500; color: white;}
 .SUCCESS.box{ font-weight: bold; text-align: center; }
 
 .ABORTED{ background-color: #666666; border-color: #666666; }
 .secondary.ABORTED a,
-.secondary.ABORTED{ background-color: #444444; border-color: #444444;}
+.boxright.ABORTED,
+.boxright.ABORTED a,
+.boxright.ABORTED.tertiary a,
+.secondary.ABORTED{ background-color: #444444; border-color: #444444; color: white;}
 .ABORTED.box{ font-weight: bold; text-align: center; }
 
 .UNSTABLE{ background-color: #aa0000; border-color: #aa0000; }
 .secondary.UNSTABLE a,
+.tertiary.UNSTABLE,
+.tertiary.UNSTABLE a,
 .secondary.UNSTABLE{ background-color: #770000; border-color: #770000; }
 
 .FAILURE{ background-color: #aa0000; border-color: #aa0000; }
 .secondary.FAILURE a,
-.secondary.FAILURE{ background-color: #770000; border-color: #770000; color: #FFAAAA; }
+.tertiary.FAILURE,
+.secondary.FAILURE{ background-color: #770000; border-color: #770000; color: #FFFFFF; }
 
 .BUILDING{ background-color: #4444bb; border-color: #4444bb; }
 .BUILDING.secondary a,
+.tertiary.BUILDING,
+.tertiary.BUILDING a,
 .BUILDING.secondary{ background-color: #000077; border-color: #000077; color: #FFFFFF;}
 .BUILDING.buildNumber{ color: yellow; }
 .tests .BUILDING .secondary a,
 .tests .BUILDING .secondary{ color: #FFFFFF;}
 
 .UNKNOWN{ background-color: #666666; border-color: #666666; }
+.tertiary.UNKNOWN,
+.tertiary.UNKNOWN a,
 .secondary.UNKNOWN a,
 .secondary.UNKNOWN{ background-color: #444444; border-color: #444444;}
 .UNKNOWN.box{ font-weight: bold; text-align: center; }

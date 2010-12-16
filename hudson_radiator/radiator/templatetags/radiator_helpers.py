@@ -3,6 +3,7 @@ from django.template.defaultfilters import stringfilter
 from django.utils.safestring import mark_safe
 
 import re
+from hudson_radiator.radiator.models import compare_by_status
 
 register = template.Library()
 
@@ -67,5 +68,6 @@ def plural(a):
     return 's'
 
 @register.filter
-def areSame(list):
-    return all( item == list[0] for item in list)
+def sortedByStatus(lst):
+    lst.sort( cmp=compare_by_status)
+    return lst
