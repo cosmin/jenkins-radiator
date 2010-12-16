@@ -159,6 +159,5 @@ def get_build(projectName, number):
 def get_test_projects(data, build_type):
     jobs = data['jobs']
     testList = [job['name'] for job in jobs if job['name'].upper().startswith(build_type.upper() + '_TEST_')]
-    print testList
     return testList
  

@@ -40,27 +40,17 @@ def get_builds(request, build_type):
         parent = buildDict.get(test.parent)
         if parent is not None:
             if test.project not in parent.regressionTests or int(test.number) > int(parent.regressionTests[test.project].number):
-                print test.name + ' - ' + test.result
                 parent.regressionTests[test.project] = test
     
     for build in builds:
-        print build.name+' - Before work, other tests:'+str(build.regressionTests)
         for smoke in project.smokeTests:
-            print '   smoke: '+smoke
             if smoke not in build.smokeTests:
-                print '      not found.'
                 build.smokeTests[smoke]= models.Build(projectName=smoke)
     
         for other in project.otherTests:
-            print '   other: '+other
             if other not in build.regressionTests:
-                print '      not found.'
                 build.regressionTests[other]= models.Build(projectName=other)
     
-            print build.name+' - During work, other tests:'+str(build.regressionTests)
-    
-        print build.name+' - After work, other tests:'+str(build.regressionTests)
-                
     avgTime = avg([build.duration for build in builds])
     if builds[0].status == 'BUILDING':
         progBarDone = (builds[0].runningTime / avgTime) * 100
