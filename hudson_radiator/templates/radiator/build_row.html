@@ -25,12 +25,12 @@
         <div class="smoke SUCCESS">&#9733;&#9733; All Tests Passed! &#9733;&#9733;</div>
       {% else %}
         <table class="tests"><tr>
-          {% if build.smoke_status == "SUCCESS" %}
+          {% if build.smoke_status in "SUCCESS,UNKNOWN,ABORTED" and build.smokeTests|areSame %}
             <td colspan=2 class="box smoke {{build.smoke_status}}"
               title={%spaceless%}"Tests run:
 {% for test in build.smokeTests.values %} {{test.name}}
 {% endfor %}"{%endspaceless%}>
-              &#9733;&#9733; {{build.smokeTests|length}} Smoke Test Suite{{build.smokeTests|plural}} Passed! &#9733;&#9733;</td></tr><tr>
+              {% if build.smoke_status == "SUCCESS" %}&#9733;&#9733;{% endif %} {{build.smokeTests|length}} Smoke Test Suite{{build.smokeTests|plural}} {{build.smoke_status|transformTestStatus}} {% if build.smoke_status == "SUCCESS" %}&#9733;&#9733;{% endif %}</td></tr><tr>
           {% else %}
             <td class="boxleft smoke {{build.smoke_status}}">
               <div class="smoke title">Smoke<br/>Tests</div></td>
@@ -41,7 +41,7 @@
             </td>
             <td/>
           {% endif %}
-          {% if build.regression_status == "SUCCESS" %}
+          {% if build.regression_status in "SUCCESS,UNKNOWN,ABORTED" and build.regressionTests|areSame%}
             {% if build.smoke_status != "SUCCESS" %}
               </tr><tr>
             {% endif %}
@@ -49,18 +49,16 @@
               title={%spaceless%}"Tests run:
 {% for test in build.regressionTests.values %} {{test.name}}
 {% endfor %}"{%endspaceless%}>
-            &#9733;&#9733; {{build.regressionTests|length}} Functional Test Suite{{build.regressionTests|plural}} Passed! &#9733;&#9733;</td></tr><tr>
+            {% if build.regression_status == "SUCCESS" %}&#9733;&#9733;{% endif %} {{build.regressionTests|length}} Functional Test Suite{{build.regressionTests|plural}} {{build.regression_status|transformTestStatus}} {% if build.regression_status == "SUCCESS" %}&#9733;&#9733;{% endif %}</td></tr><tr>
           {% else %}
           {% if  build.regressionTests %}
             <td class="boxleft functional {{build.regression_status}}">
               <div class="functional title">Functional<br/>Tests</div></td>
             <td class="boxright functional {{build.regression_status}} secondary">
               {% for test in build.regressionTests.values %}
-                {% if test.status != "SUCCESS" %}
                   <div class="boxright {{test.status}} secondary">
                     <a href="{{ test.url }}">{{ test.name }}</a>:{{ test.status|transformTestStatus }}<br/>
                   </div>
-                {% endif %}
               {% endfor %}
             </td>
           {% endif %}

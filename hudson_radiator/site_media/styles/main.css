@@ -58,6 +58,7 @@ a{ color: #ffffff; }
 .ABORTED{ background-color: #666666; border-color: #666666; }
 .secondary.ABORTED a,
 .secondary.ABORTED{ background-color: #444444; border-color: #444444;}
+.ABORTED.box{ font-weight: bold; text-align: center; }
 
 .UNSTABLE{ background-color: #aa0000; border-color: #aa0000; }
 .secondary.UNSTABLE a,
@@ -73,6 +74,11 @@ a{ color: #ffffff; }
 .BUILDING.buildNumber{ color: yellow; }
 .tests .BUILDING .secondary a,
 .tests .BUILDING .secondary{ color: #FFFFFF;}
+
+.UNKNOWN{ background-color: #666666; border-color: #666666; }
+.secondary.UNKNOWN a,
+.secondary.UNKNOWN{ background-color: #444444; border-color: #444444;}
+.UNKNOWN.box{ font-weight: bold; text-align: center; }
 
 .broken{
 text-decoration:blink;

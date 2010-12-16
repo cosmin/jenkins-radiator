@@ -9,43 +9,51 @@ import time
 import os
 import re
 import datetime
-
+class Project(object):
+    def __init__(self, projectName = None):
+        self.name = projectName
+                
 class Build(object):
-    def __init__(self, buildjson, projectName = None):
-        self.name = buildjson['fullDisplayName'].split(settings.HUDSON_TEST_NAME_PATTERN)[-1]
+    def __init__(self, buildjson = None, projectName = None):
         self.project = projectName
-        self.building = buildjson['building']
 
-        self.result = buildjson['result']
-        if self.result == None and self.building:
-            self.result = 'BUILDING'
-       
-        self.number = str(buildjson['number'])
-        self.items = buildjson['changeSet']['items']
-        self.url = settings.HUDSON_URL+'/job/'+projectName+'/'+self.number+'/'
-        self.duration = buildjson['duration'] / 1000
-        self.timeStamp = buildjson['timestamp'] / 1000
-        self.dateTimeStamp = datetime.datetime.fromtimestamp(self.timeStamp)
-        self.smokeTests = {}
-        self.regressionTests = {}
-        self.parent = None
+        if not buildjson:
+            self.result = 'UNKNOWN'
+            self.name = projectName
+            self.building = False
+        else:
+            self.name = buildjson['fullDisplayName'].split(settings.HUDSON_TEST_NAME_PATTERN)[-1]
+            self.building = buildjson['building']
+            self.result = buildjson['result']
+            if self.result == None and self.building:
+                self.result = 'BUILDING'
+            self.number = str(buildjson['number'])
+            self.items = buildjson['changeSet']['items']
+            self.url = settings.HUDSON_URL+'/job/'+projectName+'/'+self.number+'/'
+            self.duration = buildjson['duration'] / 1000
+            self.timeStamp = buildjson['timestamp'] / 1000
+            self.dateTimeStamp = datetime.datetime.fromtimestamp(self.timeStamp)
+            self.smokeTests = {}
+            self.regressionTests = {}
+            self.parent = None
 
-        actions = {}
-        for action in buildjson['actions']:
-            actions.update(action)
+            actions = {}
+            for action in buildjson['actions']:
+                actions.update(action)
 
-        if 'parameters' in actions:
-            params = {}
+            if 'parameters' in actions:
+                params = {}
 
-            for p in actions['parameters']:
-               params[p['name']] = p
+                for p in actions['parameters']:
+                   params[p['name']] = p
 
-            buildurl = params['BUILDURL']
-            if 'number' in buildurl:
-               self.parent = str(buildurl['number'])
-            else:
-               self.parent = str(buildurl['value'].split('/')[-2])
+                buildurl = params['BUILDURL']
+                if 'number' in buildurl:
+                   self.parent = str(buildurl['number'])
+                else:
+                   self.parent = str(buildurl['value'].split('/')[-2])
 
+            
     @property
     def smoke_status(self):
         return test_status(self.smokeTests.values())
@@ -85,7 +93,7 @@ class Build(object):
         
         return time.time() - self.timeStamp
 
-status_order = ['FAILURE', 'UNSTABLE', 'ABORTED', 'BUILDING', 'SUCCESS']
+status_order = ['FAILURE', 'UNSTABLE', 'ABORTED', 'BUILDING', 'SUCCESS', 'UNKNOWN']
 
 def compare_by_status(test1, test2):
     r1 = test1.result
@@ -150,5 +158,7 @@ def get_build(projectName, number):
 
 def get_test_projects(data, build_type):
     jobs = data['jobs']
-    return [job['name'] for job in jobs if job['name'].upper().startswith(build_type.upper() + '_TEST_')]
-
+    testList = [job['name'] for job in jobs if job['name'].upper().startswith(build_type.upper() + '_TEST_')]
+    print testList
+    return testList
+ 

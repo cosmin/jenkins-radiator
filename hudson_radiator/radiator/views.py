@@ -3,7 +3,6 @@ from django.conf import settings
 import models
 import re
 # Create your views here.
-
 def avg(lst):
     return sum(lst) / (1.0 * len(lst))
 
@@ -14,19 +13,21 @@ def get_radiator(request, build_list):
     return render('radiator/builds.html', locals())
 
 def get_builds(request, build_type):
+    project = models.Project(build_type)
+    
     builds = models.get_first_20( build_type + settings.HUDSON_BUILD_NAME_PATTERN )
     testProjects = models.get_test_projects(models.get_data(settings.HUDSON_URL + '/api/json?tree=jobs[name]'), build_type)
     testProjects = [proj for proj in testProjects if not settings.HUDSON_TEST_IGNORE_REGEX.findall(proj)]
-    smokeTests = [proj for proj in testProjects if settings.HUDSON_SMOKE_NAME_REGEX.findall(proj) ]
-    otherTests = [proj for proj in testProjects if not settings.HUDSON_SMOKE_NAME_REGEX.findall(proj) ]
+    project.smokeTests = [proj for proj in testProjects if settings.HUDSON_SMOKE_NAME_REGEX.findall(proj) ]
+    project.otherTests = [proj for proj in testProjects if not settings.HUDSON_SMOKE_NAME_REGEX.findall(proj) ]
     buildDict = dict((build.number,build) for build in builds)
 
     smokeBuilds = []
-    for testName in smokeTests:
+    for testName in project.smokeTests:
         smokeBuilds.extend(models.get_first_20( testName ))
 
     regressionBuilds = []
-    for testName in otherTests:
+    for testName in project.otherTests:
         regressionBuilds.extend(models.get_first_20( testName ))
 
     for test in smokeBuilds:
@@ -37,11 +38,29 @@ def get_builds(request, build_type):
 
     for test in regressionBuilds:
         parent = buildDict.get(test.parent)
-
         if parent is not None:
             if test.project not in parent.regressionTests or int(test.number) > int(parent.regressionTests[test.project].number):
+                print test.name + ' - ' + test.result
                 parent.regressionTests[test.project] = test
     
+    for build in builds:
+        print build.name+' - Before work, other tests:'+str(build.regressionTests)
+        for smoke in project.smokeTests:
+            print '   smoke: '+smoke
+            if smoke not in build.smokeTests:
+                print '      not found.'
+                build.smokeTests[smoke]= models.Build(projectName=smoke)
+    
+        for other in project.otherTests:
+            print '   other: '+other
+            if other not in build.regressionTests:
+                print '      not found.'
+                build.regressionTests[other]= models.Build(projectName=other)
+    
+            print build.name+' - During work, other tests:'+str(build.regressionTests)
+    
+        print build.name+' - After work, other tests:'+str(build.regressionTests)
+                
     avgTime = avg([build.duration for build in builds])
     if builds[0].status == 'BUILDING':
         progBarDone = (builds[0].runningTime / avgTime) * 100
