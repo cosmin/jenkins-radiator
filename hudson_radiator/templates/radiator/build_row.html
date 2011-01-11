@@ -37,7 +37,7 @@
             <td class="boxright smoke {{build.smoke_status}} secondary">
               {% for test in build.smokeTests.values|sortedByStatus %}
                 <div class="boxright {{test.status}} tertiary">
-                  <a href="{{ test.url }}"> {{ test.name }}</a>:{{ test.status|transformTestStatus }}<br/>
+                  <a href="{{ test.url }}"> {{ test.name }}</a>: {% if test.failCount > 0 %}{{test.failCount}} of {{test.totalCount}} {% endif %}{{ test.status|transformTestStatus }}<br/>
                 </div>
               {% endfor %}
             </td>
@@ -59,7 +59,7 @@
             <td class="boxright functional {{build.regression_status}} secondary">
               {% for test in build.regressionTests.values|sortedByStatus %}
                   <div class="boxright {{test.status}} tertiary">
-                    <a href="{{ test.url }}">{{ test.name }}</a>:{{ test.status|transformTestStatus }}<br/>
+                    <a href="{{ test.url }}">{{ test.name }}</a>: {% if test.failCount > 0 %}{{test.failCount}} of {{test.totalCount}} {% endif %}{{ test.status|transformTestStatus }}<br/>
                   </div>
               {% endfor %}
             </td>
