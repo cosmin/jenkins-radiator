@@ -6,8 +6,8 @@
     {% else %}
         title="Hudson Build {{build.number}} completed with status of: {{build.status}}"
     {% endif %}>
-    <div class="buildNumber"><a href="{{build.url}}">Build #{{ build.number}}</a>
-      {% if build.status == 'BUILDING' %} {% include "radiator/progress_bar.html" %} {% endif %}
+    <div class="buildNumber"><a href="{{build.url}}">#{{ build.number}}</a>&nbsp;
+      {% if build.status == 'BUILDING' %} {% include "radiator/progress_bar.html" %}&nbsp;{% endif %}
 </div>
     <div class="buildTime" title="{{build.dateTimeStamp}}">{{ build.dateTimeStamp|timesince }} ago</div>
     <div class="clear-both"></div>
@@ -20,52 +20,49 @@
     </div>
   </div>
   <div class="boxbottom {{build.status}} secondary">
+    <div class="infoCircle shadow" title="Click for info...">i</div>      
     {% if build.status == "SUCCESS" %}
-      {% if build.smoke_status == build.regression_status == "SUCCESS" %}
-        <div class="smoke SUCCESS">&#9733;&#9733; All Tests Passed! &#9733;&#9733;</div>
-      {% else %}
-        <table class="tests"><tr>
-          {% if build.smoke_status in "SUCCESS,UNKNOWN,ABORTED" and build.isSmokeStatusSame %}
-            <td colspan=2 class="box smoke {{build.smoke_status}}"
-              title={%spaceless%}"Tests:
-{% for test in build.smokeTests.values %} {{test.name}}
-{% endfor %}"{%endspaceless%}>
-              {% if build.smoke_status == "SUCCESS" %}&#9733;&#9733;{% endif %} {{build.smokeTests|length}} Smoke Test Suite{{build.smokeTests|plural}} {{build.smoke_status|transformTestStatus}} {% if build.smoke_status == "SUCCESS" %}&#9733;&#9733;{% endif %}</td></tr><tr>
-          {% else %}
-            <td class="boxleft smoke {{build.smoke_status}}">
-              <div class="smoke title" title="Smoke Tests">S</div></td>
-            <td class="boxright smoke {{build.smoke_status}} secondary">
-              {% for test in build.smokeTests.values|sortedByStatus %}
+      {% for test in build.smokeTests.values|sortedByStatus|filterStatus:"FAILURE.UNSTABLE" %}
+        <div class="shadow box {{test.status}} tertiary" title="{{test.name}}: {{test.status|transformTestStatus}}">{% spaceless %}
+          {% include "radiator/test_spinner.html" %}
+          &nbsp;S&nbsp;{% endspaceless %}
+        </div>
+      {% endfor %}
+      {% for test in build.regressionTests.values|sortedByStatus|filterStatus:"FAILURE.UNSTABLE" %}
+        <div class="shadow box {{test.status}} tertiary" title="{{test.name}}: {{test.status|transformTestStatus}}">{% spaceless %}
+          {% include "radiator/test_spinner.html" %}
+          &nbsp;R&nbsp;{% endspaceless %}
+        </div>
+      {% endfor %}
+      {% if build.failedSmokeTests %}     
+        <div class="gap"/>
+        <table class="tests">
+          <tr>
+            <td class="shadow boxleft smoke FAILURE"><div class="title">S<span class="subTitle"><br/>Smoke Test Failures</span></div></td>
+            <td class="shadow boxright FAILURE">
+              {% for test in build.failedSmokeTests %}
                 <div class="boxright {{test.status}} tertiary">
-                  <a href="{{ test.url }}"> {{ test.name }}</a>: {% if test.failCount > 0 %}{{test.failCount}} of {{test.totalCount}} {% endif %}{{ test.status|transformTestStatus }}<br/>
+                  <a href="{{ test.url }}">{{ test.name }}</a>: {% if test.failCount > 0 %}{{test.failCount}} of {{test.totalCount}} {% endif %}{{ test.status|transformTestStatus }}<br/>
                 </div>
               {% endfor %}
             </td>
-            <td/>
-          {% endif %}
-          {% if build.regression_status in "SUCCESS,UNKNOWN,ABORTED" and build.isRegressionStatusSame %}
-            {% if build.smoke_status != "SUCCESS" %}
-              </tr><tr>
-            {% endif %}
-            <td colspan=2 class="box functional {{build.regression_status}}"
-              title={%spaceless%}"Tests:
-{% for test in build.regressionTests.values %} {{test.name}}
-{% endfor %}"{%endspaceless%}>
-            {% if build.regression_status == "SUCCESS" %}&#9733;&#9733;{% endif %} {{build.regressionTests|length}} Functional Test Suite{{build.regressionTests|plural}} {{build.regression_status|transformTestStatus}} {% if build.regression_status == "SUCCESS" %}&#9733;&#9733;{% endif %}</td></tr><tr>
-          {% else %}
-          {% if  build.regressionTests %}
-            <td class="boxleft functional {{build.regression_status}}">
-              <div class="functional title" title="Regression Tests">R</div></td>
-            <td class="boxright functional {{build.regression_status}} secondary">
-              {% for test in build.regressionTests.values|sortedByStatus %}
-                  <div class="boxright {{test.status}} tertiary">
-                    <a href="{{ test.url }}">{{ test.name }}</a>: {% if test.failCount > 0 %}{{test.failCount}} of {{test.totalCount}} {% endif %}{{ test.status|transformTestStatus }}<br/>
-                  </div>
-              {% endfor %}
-            </td>
-          {% endif %}
-          {% endif %}
-        </tr></table>
+          </tr>
+        </table>
+      {% endif %}
+      {% if build.failedRegressionTests %}     
+      <div class="gap"/>
+      <table class="tests">
+        <tr>
+          <td class="boxleft functional FAILURE"><div class="title">R<span class="subTitle"><br/>Regression Test Failures</span></div></td>
+          <td class="boxright FAILURE">
+            {% for test in build.failedRegressionTests %}
+              <div class="boxright {{test.status}} tertiary">
+                <a href="{{ test.url }}">{{ test.name }}</a>: {% if test.failCount > 0 %}{{test.failCount}} of {{test.totalCount}} {% endif %}{{ test.status|transformTestStatus }}<br/>
+              </div>
+            {% endfor %}
+          </td>
+        </tr>
+      </table>
       {% endif %}
     {% else %}
       {% if build.status == "UNSTABLE" %}
@@ -75,6 +72,8 @@
         <div class="broken {{build.status}} secondary">BUILD {{build.status}}!</div>
       {% endif %}
     {% endif %}
-  </div>
+    <div class="gap"/>    
+    <div class="clear-both"></div>      
+  </div>  
 </div>
 <div class="gap"/>

@@ -5,7 +5,7 @@ body{
   font-size: 1;
   }
 
-table .tests{ width: 95%; margin-left:auto; margin-right:auto;}
+table .tests{ width: 100%; margin-left:auto; margin-right:auto;}
 td{
   vertical-align: top;
   padding:0px;
@@ -46,27 +46,30 @@ a{ color: #ffffff; }
   font-size: 14;
 }
 
-.buildNumber a{ color: yellow; }
+.box{
+    font-weight: bold;
+    text-align: center; 
+    position: relative;
+    display: inline-block;
+    font-size: 18;
+}
 
-.boxleft{ font-weight: bold; }
+.buildNumber a{ color: white; }
 
-.SUCCESS{ background-color: #00aa00; border-color: #00aa00; }
+.boxleft{ font-weight: bold; font-size: 24;}
+
+.SUCCESS{ background-color: #0a0; border-color: #0a0; }
 .secondary.SUCCESS a,
-.secondary.SUCCESS{ background-color: #007700; border-color: #007700; }
+.secondary.SUCCESS{ background-color: #050; border-color: #050; }
 
-.boxright.SUCCESS,
-.boxright.SUCCESS a,
-.boxright.SUCCESS.tertiary a,
-.tertiary.SUCCESS{ background-color: #005500; border-color: #005500; color: white;}
+.tertiary.SUCCESS{ background-color: #0a0; border-color: #0a0; color: white;}
 .SUCCESS.box{ font-weight: bold; text-align: center; }
 
-.ABORTED{ background-color: #666666; border-color: #666666; }
+.ABORTED{ background-color: #100; border-color: #100; text-decoration:line-through;}
+
 .secondary.ABORTED a,
-.boxright.ABORTED,
-.boxright.ABORTED a,
-.boxright.ABORTED.tertiary a,
-.secondary.ABORTED{ background-color: #444444; border-color: #444444; color: white;}
-.ABORTED.box{ font-weight: bold; text-align: center; }
+.secondary.ABORTED{ background-color: #444444; border-color: #444444; }
+
 
 .UNSTABLE{ background-color: #aa0000; border-color: #aa0000; }
 .secondary.UNSTABLE a,
@@ -77,29 +80,128 @@ a{ color: #ffffff; }
 .FAILURE{ background-color: #aa0000; border-color: #aa0000; }
 .secondary.FAILURE a,
 .tertiary.FAILURE,
+.tertiary.FAILURE a,
 .secondary.FAILURE{ background-color: #770000; border-color: #770000; color: #FFFFFF; }
 
-.BUILDING{ background-color: #4444bb; border-color: #4444bb; }
+.BUILDING{ background-color: #44b; border-color: #44b; }
 .BUILDING.secondary a,
-.tertiary.BUILDING,
-.tertiary.BUILDING a,
-.BUILDING.secondary{ background-color: #000077; border-color: #000077; color: #FFFFFF;}
+.BUILDING.secondary{ background-color: #007; border-color: #007; }
+
+.BUILDING.tertiary,
+.BUILDING.tertiary a{ background-color: #44f; border-color: #44f; color: #FFFFFF;}
+
 .BUILDING.buildNumber{ color: yellow; }
 .tests .BUILDING .secondary a,
 .tests .BUILDING .secondary{ color: #FFFFFF;}
 
-.UNKNOWN{ background-color: #666666; border-color: #666666; }
+.UNKNOWN{ background-color: #111111; border-color: #111111; }
 .tertiary.UNKNOWN,
 .tertiary.UNKNOWN a,
 .secondary.UNKNOWN a,
 .secondary.UNKNOWN{ background-color: #444444; border-color: #444444;}
-.UNKNOWN.box{ font-weight: bold; text-align: center; }
+.UNKNOWN.box{ font-weight: bold; text-align: center; color: #AAAAAA; }
 
-.smoke.title,
-.functional.title{ font-weight: bold; font-size:100; text-align: center; verticle-align: middle;}
+.title{ font-weight: bold; font-size:80; text-align: center; verticle-align: middle; line-height: 0.95;}
+.subTitle{ font-weight: normal; font-size:12; font-style:italic;}
 
 .broken{
 text-decoration:blink;
 }
 
 .None{ background-color: #FF00FF; }
+
+
+.box {
+
+}
+
+div.spinner {
+    position: absolute;
+}
+
+div.spinner div {
+  background: #AAF;
+  position: absolute;
+  height: 26%;
+  width: 12%;
+  opacity: 10;
+  -webkit-animation: fade 1s linear infinite;
+  -webkit-border-radius: 50px;
+  -webkit-box-shadow: 0 0 3px rgba(0,0,0,0.2);
+  -moz-animation: fade 1s linear infinite;
+  -moz-border-radius: 50px;
+  -moz-box-shadow: 0 0 3px rgba(0,0,0,0.2);
+}
+
+div.spinner div.bar1 {-webkit-transform:rotate(0deg) translate(0, -142%); -webkit-animation-delay: 0s; -moz-transform:rotate(0deg) translate(0, -142%); -moz-animation-delay: 0s;}    
+div.spinner div.bar2 {-webkit-transform:rotate(30deg) translate(0, -142%); -webkit-animation-delay: -0.9167s; -moz-transform:rotate(30deg) translate(0, -142%); -moz-animation-delay: -0.9167s;}
+div.spinner div.bar3 {-webkit-transform:rotate(60deg) translate(0, -142%); -webkit-animation-delay: -0.833s; -moz-transform:rotate(60deg) translate(0, -142%); -moz-animation-delay: -0.833s;}
+div.spinner div.bar4 {-webkit-transform:rotate(90deg) translate(0, -142%); -webkit-animation-delay: -0.75s; -moz-transform:rotate(90deg) translate(0, -142%); -moz-animation-delay: -0.75s;}
+div.spinner div.bar5 {-webkit-transform:rotate(120deg) translate(0, -142%); -webkit-animation-delay: -0.667s; -moz-transform:rotate(120deg) translate(0, -142%); -moz-animation-delay: -0.667s;}
+div.spinner div.bar6 {-webkit-transform:rotate(150deg) translate(0, -142%); -webkit-animation-delay: -0.5833s; -moz-transform:rotate(150deg) translate(0, -142%); -moz-animation-delay: -0.5833s;}
+div.spinner div.bar7 {-webkit-transform:rotate(180deg) translate(0, -142%); -webkit-animation-delay: -0.5s; -moz-transform:rotate(180deg) translate(0, -142%); -moz-animation-delay: -0.5s;}
+div.spinner div.bar8 {-webkit-transform:rotate(210deg) translate(0, -142%); -webkit-animation-delay: -0.41667s; -moz-transform:rotate(210deg) translate(0, -142%); -moz-animation-delay: -0.41667s;}
+div.spinner div.bar9 {-webkit-transform:rotate(240deg) translate(0, -142%); -webkit-animation-delay: -0.333s; -moz-transform:rotate(240deg) translate(0, -142%); -moz-animation-delay: -0.333s;}
+div.spinner div.bar10 {-webkit-transform:rotate(270deg) translate(0, -142%); -webkit-animation-delay: -0.25s; -moz-transform:rotate(270deg) translate(0, -142%); -moz-animation-delay: -0.25s;}
+div.spinner div.bar11 {-webkit-transform:rotate(300deg) translate(0, -142%); -webkit-animation-delay: -0.1667s; -moz-transform:rotate(300deg) translate(0, -142%); -moz-animation-delay: -0.1667s;}
+div.spinner div.bar12 {-webkit-transform:rotate(330deg) translate(0, -142%); -webkit-animation-delay: -0.0833s; -moz-transform:rotate(330deg) translate(0, -142%); -moz-animation-delay: -0.0833s;}
+/*
+div.spinner div.bar1 {-webkit-transform:rotate(0deg) translate(0, -142%); -webkit-animation-delay: 0s;}    
+div.spinner div.bar2 {-webkit-transform:rotate(30deg) translate(0, -142%); -webkit-animation-delay: -0.9167s;}
+div.spinner div.bar3 {-webkit-transform:rotate(60deg) translate(0, -142%); -webkit-animation-delay: -0.833s;}
+div.spinner div.bar4 {-webkit-transform:rotate(90deg) translate(0, -142%); -webkit-animation-delay: -0.75s;}
+div.spinner div.bar5 {-webkit-transform:rotate(120deg) translate(0, -142%); -webkit-animation-delay: -0.667s;}
+div.spinner div.bar6 {-webkit-transform:rotate(150deg) translate(0, -142%); -webkit-animation-delay: -0.5833s;}
+div.spinner div.bar7 {-webkit-transform:rotate(180deg) translate(0, -142%); -webkit-animation-delay: -0.5s;}
+div.spinner div.bar8 {-webkit-transform:rotate(210deg) translate(0, -142%); -webkit-animation-delay: -0.41667s;}
+div.spinner div.bar9 {-webkit-transform:rotate(240deg) translate(0, -142%); -webkit-animation-delay: -0.333s;}
+div.spinner div.bar10 {-webkit-transform:rotate(270deg) translate(0, -142%); -webkit-animation-delay: -0.25s;}
+div.spinner div.bar11 {-webkit-transform:rotate(300deg) translate(0, -142%); -webkit-animation-delay: -0.1667s;}
+div.spinner div.bar12 {-webkit-transform:rotate(330deg) translate(0, -142%); -webkit-animation-delay: -0.0833s;}
+*/
+
+ @-webkit-keyframes fade {
+  from {opacity: 1;}
+  to {opacity: 0.25;}
+}
+
+ @keyframes fade {
+  from {opacity: 1;}
+  to {opacity: 0.25;}
+}
+
+/* background: -moz-linear-gradient(center top, #0000FF 29%,#000099 82%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.29, #0000FF),color-stop(0.82, #000099));
+*/
+
+.infoCircle {
+    background: rgb(0, 68, 255);
+    border-color: rgb(0, 68, 255);
+    border-bottom-left-radius: 40px 40px;
+    border-bottom-right-radius: 40px 40px;
+    border-top-left-radius: 40px 40px;
+    border-top-right-radius: 40px 40px;
+    
+    -moz-border-radius-bottomleft: 40px 40px;
+    -moz-border-radius-bottomright: 40px 40px;
+    -moz-border-radius-topleft: 40px 40px;
+    -moz-border-radius-topright: 40px 40px;
+    
+    color: white;
+    display: block;
+    float: right;
+    font-family: 'Times New Roman', serif;
+    font-size: 18px;
+    font-style: italic;
+    font-weight: bold;
+    height: 22px;
+    text-align: center;
+    vertical-align: middle;
+    width: 22px;
+}
+
+.shadow {
+    -webkit-box-shadow: black 1px 2px 3px;
+    -moz-box-shadow: black 1px 2px 3px;
+    box-shadow: black 1px 2px 3px;
+}

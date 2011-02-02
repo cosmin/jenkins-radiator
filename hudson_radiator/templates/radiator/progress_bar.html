@@ -1,6 +1,7 @@
 <table class="progress-bar" title="Approximately {{progBarDone|floatformat}}% done">
     <tbody>
         <tr>
+            <td>{% include "radiator/build_spinner.html" %}</td>
             <td style="width:{{progBarDone}}%;" class="progress-bar-done"></td>
             <td style="width:{{progBarLeft}}%;" class="progress-bar-left"></td>
         </tr>

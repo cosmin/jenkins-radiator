@@ -1,7 +1,9 @@
 .box {
-border-radius: .5em;
--moz-border-radius: .5em;
-border-style:solid;
+    border-radius: .20em;
+    -moz-border-radius: .20em;
+    border-style:solid;
+    margin-top: 5px;
+    margin-botton: 5px;
 }
 
 .boxtop {

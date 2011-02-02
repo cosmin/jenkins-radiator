@@ -69,5 +69,9 @@ def plural(a):
 
 @register.filter
 def sortedByStatus(lst):
-    lst.sort( cmp=compare_by_status)
+    lst.sort( cmp=compare_by_status,reverse=True)
     return lst
+    
+@register.filter
+def filterStatus(tests, status):
+    return [test for test in tests if test.result not in status]

@@ -120,7 +120,15 @@ class Build(object):
         result = all( (item.status == firstTest.status) for item in self.regressionTests.values())
         return result
         
-status_order = ['FAILURE', 'UNSTABLE', 'ABORTED', 'BUILDING', 'SUCCESS', 'UNKNOWN']
+    @property
+    def failedSmokeTests(self):
+        return [test for test in self.smokeTests.values() if test.result in ['FAILURE','UNSTABLE']]
+
+    @property
+    def failedRegressionTests(self):
+        return [test for test in self.regressionTests.values() if test.result in ['FAILURE','UNSTABLE']]
+    
+status_order = ['FAILURE', 'UNSTABLE', 'UNKNOWN', 'ABORTED', 'BUILDING', 'SUCCESS']
 
 def compare_by_status(test1, test2):
     r1 = test1.result
