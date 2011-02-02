@@ -60,3 +60,6 @@ def get_builds(request, build_type):
         progBarLeft = 100 - progBarDone
     
     return render('radiator/builds_table.html', locals())
+
+def get_build_info(request, build_id):
+    return render('radiator/build_detail.html', locals())

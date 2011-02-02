@@ -11,7 +11,7 @@ td{
   padding:0px;
   }
 
-a{ color: #ffffff; }
+a{ color: #ffffff; text-decoration: none;; }
 
 #builds{
   font-size: 24;
@@ -34,6 +34,7 @@ a{ color: #ffffff; }
 .scm{
   font-size: 12;
   padding-left: 1em;
+  color: #000;
 }
 
 .scm .revision,
@@ -62,11 +63,14 @@ a{ color: #ffffff; }
 .secondary.SUCCESS a,
 .secondary.SUCCESS{ background-color: #050; border-color: #050; }
 
+.tertiary.SUCCESS a,
 .tertiary.SUCCESS{ background-color: #0a0; border-color: #0a0; color: white;}
 .SUCCESS.box{ font-weight: bold; text-align: center; }
 
 .ABORTED{ background-color: #100; border-color: #100; text-decoration:line-through;}
 
+.tertiary.ABORTED,
+.tertiary.ABORTED a,
 .secondary.ABORTED a,
 .secondary.ABORTED{ background-color: #444444; border-color: #444444; }
 
@@ -98,7 +102,7 @@ a{ color: #ffffff; }
 .tertiary.UNKNOWN,
 .tertiary.UNKNOWN a,
 .secondary.UNKNOWN a,
-.secondary.UNKNOWN{ background-color: #444444; border-color: #444444;}
+.secondary.UNKNOWN{ background-color: #111; border-color: #111;}
 .UNKNOWN.box{ font-weight: bold; text-align: center; color: #AAAAAA; }
 
 .title{ font-weight: bold; font-size:80; text-align: center; verticle-align: middle; line-height: 0.95;}

@@ -21,6 +21,7 @@ urlpatterns += patterns('',
 
     # Uncomment the next line to enable the admin:
     # (r'^admin/', include(admin.site.urls)),
+    (r'^info/(.*)/$', 'hudson_radiator.radiator.views.get_build_info'),
     (r'^data/(.*)/$', 'hudson_radiator.radiator.views.get_builds'),
     (r'^(.*)/$', 'hudson_radiator.radiator.views.get_radiator')
 )
