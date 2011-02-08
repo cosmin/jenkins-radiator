@@ -32,7 +32,6 @@ def get_build_info(request, build_type, build_number):
     return render('radiator/build_detail.html', locals())
             
 def lookupTests(build_type, count, builds):
-    print 'builds = ' + str(builds)
     project = models.Project(build_type)
 
     testProjects = models.get_test_projects(models.get_data(settings.HUDSON_URL + '/api/json?tree=jobs[name]'), build_type)
@@ -52,14 +51,12 @@ def lookupTests(build_type, count, builds):
 
     for test in smokeBuilds:
         parent = buildDict.get(test.parent)
-        print "parent = " + str(parent)
         if parent is not None:
             if test.project not in parent.smokeTests or int(test.number) > int(parent.smokeTests[test.project].number):
                 parent.smokeTests[test.project] = test
 
     for test in regressionBuilds:
         parent = buildDict.get(test.parent)
-        print "parent = " + str(parent)
         if parent is not None:
             if test.project not in parent.regressionTests or int(test.number) > int(parent.regressionTests[test.project].number):
                 parent.regressionTests[test.project] = test
