@@ -1,0 +1,8 @@
+{% load radiator_helpers %}
+<h2>This will be a detail page about the build and it's tests</h2>
+<h5>(yes, it's ugly - it's not done!)</h5>
+<p class="summary">As of {{ build.dateTimeStamp|timesince }} ago, Hudson build <a href="{{build.url}}">{{build.name}}</a>, {{build.trigger}},
+  {% if build.status == "BUILDING" %} is currently running... 
+  {% else %} completed with status of: {{build.status}}{% endif %}</p>
+smoke tests:<ul>{% for test in build.smokeTests.values|sortedByStatus %}<li>{{test.name}} {{test.status}}</li>{% endfor %}</ul>
+regression tests:<ul>{% for test in build.regressionTests.values|sortedByStatus %}<li>{{test.name}} {{test.status}}</li>{% endfor %}</ul>

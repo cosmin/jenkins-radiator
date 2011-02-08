@@ -22,7 +22,7 @@
   </div>
   <div class="boxbottom {{build.status}} secondary">
     <a class="infoCircle shadow" id="info_{{build.name|slugify}}" title="Click for info..."
-      href="/radiator/info/{{build.name|slugify}}"
+      href="/radiator/info/{{build_type}}/{{build.number}}"
       onclick="window.open(this.href, 'popupwindow', 'width=500,height=300'); return false;">i</a>
     {% if build.status == "SUCCESS" %}
       {% for test in build.smokeTests.values|sortedByStatus|filterStatus:"FAILURE.UNSTABLE" %}

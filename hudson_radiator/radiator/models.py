@@ -68,6 +68,8 @@ class Build(object):
                 else:
                    self.parent = str(buildurl['value'].split('/')[-2])
 
+            self.trigger = actions.get('causes')[0].get('shortDescription')
+
             
     @property
     def smoke_status(self):
@@ -166,6 +168,9 @@ def get_recent_builds(projectName, count):
     build_urls = sorted(data['builds'], key=lambda x: x['number'], reverse=True)[:count]
     return [build for build in [get_build_info(projectName, get_build(projectName,build_url['number'])) for build_url in build_urls] if build is not None]
 
+def get_specific_build(projectName, build_number):
+    return get_build_info(projectName, get_build(projectName, build_number))
+    
 def get_cache_filename(url):
     return '/tmp/hudson_radiator/' + str(url.split('job/')[1]).strip('/').replace('/','_')
 
@@ -177,7 +182,6 @@ def get_build(projectName, number):
             return json.load(open(filename,'r'))
         except ValueError:
            os.remove(filename)
-   
     try:
         build = get_data(url+'api/json')
     
@@ -187,6 +191,7 @@ def get_build(projectName, number):
     if not os.path.exists('/tmp/hudson_radiator'):
         os.mkdir('/tmp/hudson_radiator');
 
+    print json
     json.dump(build, open(filename,'w'))
     return build
 
@@ -195,4 +200,3 @@ def get_test_projects(data, build_type):
     jobs = data['jobs']
     testList = [job['name'] for job in jobs if job['name'].upper().startswith(build_type.upper() + '_TEST_')]
     return testList
- 

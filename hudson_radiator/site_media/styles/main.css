@@ -37,6 +37,10 @@ a{ color: #ffffff; text-decoration: none;; }
   color: #000;
 }
 
+.BUILDING .scm{
+    color: #DFF;
+}
+
 .scm .revision,
 .scm .user{
   font-size: 14;
@@ -59,8 +63,33 @@ a{ color: #ffffff; text-decoration: none;; }
 
 .boxleft{ font-weight: bold; font-size: 24;}
 
+
+.infoCircle{
+    background: rgb(0, 68, 255) !important;
+    border-color: rgb(0, 68, 255) !important;
+    border-bottom-left-radius: 40px 40px;
+    border-bottom-right-radius: 40px 40px;
+    border-top-left-radius: 40px 40px;
+    border-top-right-radius: 40px 40px;
+    
+    -moz-border-radius-bottomleft: 40px 40px;
+    -moz-border-radius-bottomright: 40px 40px;
+    -moz-border-radius-topleft: 40px 40px;
+    -moz-border-radius-topright: 40px 40px;
+    
+    color: white;
+    display: block;
+    float: right;
+    font-family: 'Times New Roman', serif;
+    font-size: 18px;
+    font-style: italic;
+    font-weight: bold;
+    height: 22px;
+    text-align: center;
+    vertical-align: middle;
+    width: 22px;
+}
 .SUCCESS{ background-color: #0a0; border-color: #0a0; }
-.secondary.SUCCESS a,
 .secondary.SUCCESS{ background-color: #050; border-color: #050; }
 
 .tertiary.SUCCESS a,
@@ -76,19 +105,19 @@ a{ color: #ffffff; text-decoration: none;; }
 
 
 .UNSTABLE{ background-color: #aa0000; border-color: #aa0000; }
-.secondary.UNSTABLE a,
+.boxright.UNSTABLE,
 .tertiary.UNSTABLE,
 .tertiary.UNSTABLE a,
 .secondary.UNSTABLE{ background-color: #770000; border-color: #770000; }
 
 .FAILURE{ background-color: #aa0000; border-color: #aa0000; }
+.boxright.FAILURE,
 .secondary.FAILURE a,
 .tertiary.FAILURE,
 .tertiary.FAILURE a,
 .secondary.FAILURE{ background-color: #770000; border-color: #770000; color: #FFFFFF; }
 
 .BUILDING{ background-color: #44b; border-color: #44b; }
-.BUILDING.secondary a,
 .BUILDING.secondary{ background-color: #007; border-color: #007; }
 
 .BUILDING.tertiary,
@@ -177,32 +206,6 @@ div.spinner div.bar12 {-webkit-transform:rotate(330deg) translate(0, -142%); -we
 /* background: -moz-linear-gradient(center top, #0000FF 29%,#000099 82%);
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0.29, #0000FF),color-stop(0.82, #000099));
 */
-
-.infoCircle {
-    background: rgb(0, 68, 255);
-    border-color: rgb(0, 68, 255);
-    border-bottom-left-radius: 40px 40px;
-    border-bottom-right-radius: 40px 40px;
-    border-top-left-radius: 40px 40px;
-    border-top-right-radius: 40px 40px;
-    
-    -moz-border-radius-bottomleft: 40px 40px;
-    -moz-border-radius-bottomright: 40px 40px;
-    -moz-border-radius-topleft: 40px 40px;
-    -moz-border-radius-topright: 40px 40px;
-    
-    color: white;
-    display: block;
-    float: right;
-    font-family: 'Times New Roman', serif;
-    font-size: 18px;
-    font-style: italic;
-    font-weight: bold;
-    height: 22px;
-    text-align: center;
-    vertical-align: middle;
-    width: 22px;
-}
 
 .shadow {
     -webkit-box-shadow: black 1px 2px 3px;
