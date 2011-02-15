@@ -97,7 +97,8 @@ a{ color: #ffffff; text-decoration: none;; }
 .SUCCESS.box{ font-weight: bold; text-align: center; }
 
 .box.ABORTED{ text-decoration:line-through; }
-.ABORTED{ background-color: #100; border-color: #100; }
+.ABORTED .scm,
+.ABORTED{ background-color: #100; border-color: #100; color: white; }
 
 .tertiary.ABORTED,
 .tertiary.ABORTED a,
