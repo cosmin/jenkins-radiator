@@ -25,13 +25,13 @@
       href="/radiator/info/{{build_type}}/{{build.number}}"
       onclick="window.open(this.href, 'popupwindow', 'width=500,height=300'); return false;">i</a> -->
     {% if build.status == "SUCCESS" %}
-      {% for test in build.smokeTests.values|sortedByStatus|filterStatus:"FAILURE.UNSTABLE" %}
+      {% for test in build.smokeTests.values|sortedByStatus %}
         <div class="shadow box {{test.status}} tertiary" title="{{test.name}}: {{test.status|transformTestStatus}}">{% spaceless %}
           {% include "radiator/test_spinner.html" %}
           &nbsp;<a href="{{test.url}}">S</a>&nbsp;{% endspaceless %}
         </div>
       {% endfor %}
-      {% for test in build.regressionTests.values|sortedByStatus|filterStatus:"FAILURE.UNSTABLE" %}
+      {% for test in build.regressionTests.values|sortedByStatus %}
         <div class="shadow box {{test.status}} tertiary" title="{{test.name}}: {{test.status|transformTestStatus}}">{% spaceless %}
           {% include "radiator/test_spinner.html" %}
           &nbsp;<a href="{{test.url}}">R</a>&nbsp;{% endspaceless %}
