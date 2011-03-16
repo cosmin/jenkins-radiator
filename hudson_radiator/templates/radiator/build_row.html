@@ -1,7 +1,7 @@
 {% load radiator_helpers %}
 <div id="dialog" title="Dialog Title" style="display:none"> Some text</div>
 <div class="buildbox {{build.name|slugify}}">
-  <div class="boxtop {{build.status}}"
+  <div class="boxtop {{build.overall_status}}"
     {% if build.status == "BUILDING" %}
       title="Hudson Build {{build.number}} is currently running... "
     {% else %}
@@ -20,7 +20,7 @@
       {% endfor %}{% endspaceless %}
     </div>
   </div>
-  <div class="boxbottom {{build.status}} secondary">
+  <div class="boxbottom {{build.overall_status}} secondary">
     <!-- <a class="infoCircle shadow" id="info_{{build.name|slugify}}" title="Click for info..."
       href="/radiator/info/{{build_type}}/{{build.number}}"
       onclick="window.open(this.href, 'popupwindow', 'width=500,height=300'); return false;">i</a> -->

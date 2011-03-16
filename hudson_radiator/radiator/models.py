@@ -84,6 +84,10 @@ class Build(object):
         return self.building and 'BUILDING' or self.result
 
     @property
+    def overall_status(self):
+        return sorted([self.status, self.smoke_status, self.regression_status], cmp=compare_by_status)[0]
+
+    @property
     def revisions(self):
         return [item['revision'] for item in self.items]
 
@@ -130,17 +134,20 @@ class Build(object):
     def failedRegressionTests(self):
         return [test for test in self.regressionTests.values() if test.result in ['FAILURE','UNSTABLE']]
     
-status_order = ['FAILURE', 'UNSTABLE', 'UNKNOWN', 'ABORTED', 'BUILDING', 'SUCCESS']
+status_order = ['FAILURE', 'UNSTABLE', 'BUILDING', 'SUCCESS', 'UNKNOWN', 'ABORTED']
 
-def compare_by_status(test1, test2):
+def compare_by_status(r1, r2):
+    return status_order.index(r1) - status_order.index(r2)
+
+def compare_by_result(test1, test2):
     r1 = test1.result
     r2 = test2.result
-    return status_order.index(r1) - status_order.index(r2)
+    return compare_by_status(r1, r2)
 
 def test_status(tests):
     if tests:
         tests_copy = list(tests)
-        tests_copy.sort(cmp=compare_by_status)
+        tests_copy.sort(cmp=compare_by_result)
         return tests_copy[0].result
 
 def get_project_data(projectName):

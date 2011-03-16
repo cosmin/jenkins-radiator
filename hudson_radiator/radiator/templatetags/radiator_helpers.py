@@ -3,7 +3,7 @@ from django.template.defaultfilters import stringfilter
 from django.utils.safestring import mark_safe
 
 import re
-from hudson_radiator.radiator.models import compare_by_status
+from hudson_radiator.radiator.models import compare_by_result
 
 register = template.Library()
 
@@ -69,7 +69,7 @@ def plural(a):
 
 @register.filter
 def sortedByStatus(lst):
-    lst.sort( cmp=compare_by_status,reverse=True)
+    lst.sort( cmp=compare_by_result,reverse=True)
     return lst
     
 @register.filter
