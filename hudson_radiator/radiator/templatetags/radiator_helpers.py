@@ -68,6 +68,10 @@ def plural(a):
     return 's'
 
 @register.filter
+def sortedByName(lst):
+    return sorted(lst, key=lambda Build: Build.name)
+    
+@register.filter
 def sortedByStatus(lst):
     lst.sort( cmp=compare_by_result,reverse=True)
     return lst
