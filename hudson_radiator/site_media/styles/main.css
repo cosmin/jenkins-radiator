@@ -143,6 +143,10 @@ a{ color: #ffffff; text-decoration: none;; }
 text-decoration:blink;
 }
 
+.broken.ABORTED{
+text-decoration:none;
+}
+
 .None{ background-color: #FF00FF; }
 
 

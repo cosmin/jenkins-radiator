@@ -134,7 +134,7 @@ class Build(object):
     def failedRegressionTests(self):
         return [test for test in self.regressionTests.values() if test.result in ['FAILURE','UNSTABLE']]
     
-status_order = ['FAILURE', 'UNSTABLE', 'BUILDING', 'SUCCESS', 'UNKNOWN', 'ABORTED']
+status_order = ['FAILURE', 'UNSTABLE', 'BUILDING', 'SUCCESS', 'ABORTED', 'UNKNOWN' ]
 
 def compare_by_status(r1, r2):
     return status_order.index(r1) - status_order.index(r2)
