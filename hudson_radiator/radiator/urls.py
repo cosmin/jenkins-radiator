@@ -13,7 +13,7 @@ if settings.DEBUG:
 
 urlpatterns += patterns('',
     # Example:
-    # (r'^hudson_radiator/', include('hudson_radiator.foo.urls')),
+    # (r'^jenkins_radiator/', include('jenkins_radiator.foo.urls')),
 
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
     # to INSTALLED_APPS to enable admin documentation:
@@ -21,8 +21,8 @@ urlpatterns += patterns('',
 
     # Uncomment the next line to enable the admin:
     # (r'^admin/', include(admin.site.urls)),
-    (r'^info/(.*)/(.*)/$', 'hudson_radiator.radiator.views.get_build_info'),
-    (r'^data/(.*)/$', 'hudson_radiator.radiator.views.get_builds'),
-    (r'^(.*)/$', 'hudson_radiator.radiator.views.get_radiator')
+    (r'^info/(.*)/(.*)/$', 'jenkins_radiator.radiator.views.get_build_info'),
+    (r'^data/(.*)/$', 'jenkins_radiator.radiator.views.get_builds'),
+    (r'^(.*)/$', 'jenkins_radiator.radiator.views.get_radiator')
 )
 

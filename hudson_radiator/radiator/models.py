@@ -179,7 +179,7 @@ def get_specific_build(projectName, build_number):
     return get_build_info(projectName, get_build(projectName, build_number))
     
 def get_cache_filename(url):
-    return '/tmp/hudson_radiator/' + str(url.split('job/')[1]).strip('/').replace('/','_')
+    return '/tmp/jenkins_radiator/' + str(url.split('job/')[1]).strip('/').replace('/','_')
 
 def get_build(projectName, number):
     url = settings.HUDSON_URL+'/job/'+projectName+'/'+str(number)+'/'
@@ -195,8 +195,8 @@ def get_build(projectName, number):
     except urllib2.HTTPError:
         return None
 
-    if not os.path.exists('/tmp/hudson_radiator'):
-        os.mkdir('/tmp/hudson_radiator');
+    if not os.path.exists('/tmp/jenkins_radiator'):
+        os.mkdir('/tmp/jenkins_radiator');
 
     print json
     json.dump(build, open(filename,'w'))

@@ -3,7 +3,7 @@ from django.template.defaultfilters import stringfilter
 from django.utils.safestring import mark_safe
 
 import re
-from hudson_radiator.radiator.models import compare_by_result
+from jenkins_radiator.radiator.models import compare_by_result
 
 register = template.Library()
 

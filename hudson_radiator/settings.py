@@ -1,4 +1,4 @@
-# Django settings for hudson_radiator project.
+# Django settings for jenkins_radiator project.
 import os
 import re
 
@@ -79,7 +79,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
 )
 
-ROOT_URLCONF = 'hudson_radiator.urls'
+ROOT_URLCONF = 'jenkins_radiator.urls'
 
 TEMPLATE_DIRS = (
     os.path.join(ROOT, 'templates'),
@@ -91,7 +91,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
-    'hudson_radiator.radiator',
+    'jenkins_radiator.radiator',
     # Uncomment the next line to enable the admin:
     # 'django.contrib.admin',
 )
