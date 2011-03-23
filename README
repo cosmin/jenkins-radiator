@@ -1,0 +1,75 @@
+This project provides a build pipeline radiator for Jenkins. It
+supports separate pipelines from a single Jenkins installation. For
+example you can use this to show a pipeline for the mainline of the
+application as well as the current release branch.
+
+== Description ==
+
+The radiator is organized around three concepts: builds, smoke tests
+and regression tests A build is the first step in the pipeline. Once
+it completes it triggers smoke tests. Once smoke tests complete they
+trigger regression tests. Smoke tests are identified by "S" while
+regression tests are identified by "R".
+
+This is intended to be viewable by an entire team from a distance.
+Colors provide a quick way to determine the current state of the
+pipeline.
+
+
+== Colors ==
+
+In progress builds are colored BLUE.
+Successful builds are colored GREEN.
+Failed or Unstable builds are colored RED.
+
+A build is considered in progress until either a smoke or regression
+tests fails or until all smoke and regression tests pass.
+
+
+== Settings ==
+
+To get started create a settings_local.py under jenkins_radiator/ and
+define the following Python variables:
+
+# The full URL to your hudson installation. Example: 
+HUDSON_URL = 'http://hudson.example.com/hudson/'
+
+# Regex pattern for builds. Example:
+HUDSON_BUILD_NAME_PATTERN = '_Build'
+
+# Regex pattern for tests. Example:
+HUDSON_TEST_NAME_PATTERN = '_Test_'
+
+# Regex pattern for moke builds. Subset of the above. Example:
+HUDSON_SMOKE_NAME_REGEX = re.compile('Smoke|Baseline', re.I)
+
+# Regex pattern for projects to hide from the radiator. Example:
+HUDSON_TEST_IGNORE_REGEX = ''
+
+# Default number of build to show in the radiator
+HUDSON_BUILD_COUNT = 10
+
+
+== Dependencies ==
+
+You need to install Django 1.2 or greater. See Option 1 at
+http://www.djangoproject.com/download/
+
+The project has no additional dependencies if running under Python
+2.6.
+
+
+== Local development ==
+
+To start the development Django server run python manage.py runserver
+from within jenkins_radiator. Now point your browser at
+http://localhost:8000/radiator/project_name/ where project_name is the
+name of your project.
+
+
+== Deployment ==
+
+The Django development server is single-threaded and not appropriate
+for anything other than simple development. For deployment information
+take a look at
+http://docs.djangoproject.com/en/dev/howto/deployment/fastcgi/
