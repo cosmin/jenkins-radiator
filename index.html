@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'>
+
+  <title>offbytwo/jenkins-radiator @ GitHub</title>
+
+  <style type="text/css">
+    body {
+      margin-top: 1.0em;
+      background-color: #244186;
+      font-family: Helvetica, Arial, FreeSans, san-serif;
+      color: #ffffff;
+    }
+    #container {
+      margin: 0 auto;
+      width: 700px;
+    }
+    h1 { font-size: 3.8em; color: #dbbe79; margin-bottom: 3px; }
+    h1 .small { font-size: 0.4em; }
+    h1 a { text-decoration: none }
+    h2 { font-size: 1.5em; color: #dbbe79; }
+    h3 { text-align: center; color: #dbbe79; }
+    a { color: #dbbe79; }
+    .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
+    .download { float: right; }
+    pre { background: #000; color: #fff; padding: 15px;}
+    hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
+    .footer { text-align:center; padding-top:30px; font-style: italic; }
+  </style>
+</head>
+
+<body>
+  <a href="http://github.com/offbytwo/jenkins-radiator"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
+
+  <div id="container">
+
+    <div class="download">
+      <a href="http://github.com/offbytwo/jenkins-radiator/zipball/master">
+        <img border="0" width="90" src="http://github.com/images/modules/download/zip.png"></a>
+      <a href="http://github.com/offbytwo/jenkins-radiator/tarball/master">
+        <img border="0" width="90" src="http://github.com/images/modules/download/tar.png"></a>
+    </div>
+
+    <h1><a href="http://github.com/offbytwo/jenkins-radiator">jenkins-radiator</a>
+      <span class="small">by <a href="http://github.com/offbytwo">offbytwo</a></span></h1>
+
+    <div class="description">
+      A build pipeline radiator for Jenkins using Python/Django and the Jenkins API.
+    </div>
+
+    <p>This project provides a build pipeline radiator for Jenkins. It
+supports separate pipelines from a single Jenkins installation. For
+example you can use this to show a pipeline for the mainline of the
+application as well as the current release branch.
+
+The radiator is organized around three concepts: builds, smoke tests
+and regression tests A build is the first step in the pipeline. Once
+it completes it triggers smoke tests. Once smoke tests complete they
+trigger regression tests. Smoke tests are identified by "S" while
+regression tests are identified by "R".
+
+This is intended to be viewable by an entire team from a distance.
+Colors provide a quick way to determine the current state of the
+pipeline.
+
+In progress builds are colored BLUE.
+Successful builds are colored GREEN.
+Failed or Unstable builds are colored RED.
+
+A build is considered in progress until either a smoke or regression
+tests fails or until all smoke and regression tests pass.</p><h2>Dependencies</h2>
+<p>Django 1.2</p>
+<h2>Install</h2>
+<p>To get started create a settings_local.py under jenkins_radiator/ and
+define the following Python variables:
+
+# The full URL to your hudson installation. Example:
+HUDSON_URL = 'http://hudson.example.com/hudson/'
+
+# Regex pattern for builds. Example:
+HUDSON_BUILD_NAME_PATTERN = '_Build'
+
+# Regex pattern for tests. Example:
+HUDSON_TEST_NAME_PATTERN = '_Test_'
+
+# Regex pattern for moke builds. Subset of the above. Example:
+HUDSON_SMOKE_NAME_REGEX = re.compile('Smoke|Baseline', re.I)
+
+# Regex pattern for projects to hide from the radiator. Example:
+HUDSON_TEST_IGNORE_REGEX = ''
+
+# Default number of build to show in the radiator
+HUDSON_BUILD_COUNT = 10
+
+
+For deployment information take a look at http://docs.djangoproject.com/en/dev/howto/deployment/fastcgi/</p>
+<h2>License</h2>
+<p>Creative Commons Attribution 3.0 Unported (same as Jenkins)</p>
+<h2>Authors</h2>
+<p>Cosmin Stejerean (cosmin@offbytwo.com)<br/>Eric Smalling (eric_n_dfw@yahoo.com)<br/><br/>      </p>
+<h2>Contact</h2>
+<p>opensource@offbytwo.com<br/>      </p>
+
+
+    <h2>Download</h2>
+    <p>
+      You can download this project in either
+      <a href="http://github.com/offbytwo/jenkins-radiator/zipball/master">zip</a> or
+      <a href="http://github.com/offbytwo/jenkins-radiator/tarball/master">tar</a> formats.
+    </p>
+    <p>You can also clone the project with <a href="http://git-scm.com">Git</a>
+      by running:
+      <pre>$ git clone git://github.com/offbytwo/jenkins-radiator</pre>
+    </p>
+
+    <div class="footer">
+      get the source code on GitHub : <a href="http://github.com/offbytwo/jenkins-radiator">offbytwo/jenkins-radiator</a>
+    </div>
+
+  </div>
+
+  <script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-22237127-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+</body>
+</html>
