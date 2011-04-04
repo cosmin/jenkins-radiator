@@ -72,3 +72,26 @@ def lookupTests(build_type, count, builds):
     
     return buildDict
 
+def get_test_report(request, test_name):
+    count = int(request.GET.get('builds',settings.HUDSON_BUILD_COUNT))
+    tests = models.get_recent_builds( test_name, count )
+    caseDict = {}
+    for test in tests:
+        if test.testCases:
+            for case in test.testCases:
+                caseTuple = caseDict.get(case.name,(0,[]))
+                errorCount = caseTuple[0]
+                caseList = caseTuple[1]
+                caseList.extend([case])
+                if case.status=='FAILED':
+                    errorCount = errorCount + 1
+                caseDict.update({case.name:(errorCount,caseList)})
+
+    summary = []
+    for k, v in caseDict.iteritems():
+        triple = (k,v[0],v[1])
+        summary.append(triple)
+    
+    summary = sorted(summary, key=lambda c: c[1], reverse=True)
+    return render('radiator/test_report.html', locals())
+

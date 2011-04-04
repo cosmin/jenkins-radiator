@@ -48,6 +48,7 @@ class Build(object):
             self.smokeTests = {}
             self.regressionTests = {}
             self.parent = None
+            self.projectName = projectName
 
             actions = {}
             for action in buildjson['actions']:
@@ -133,7 +134,18 @@ class Build(object):
     @property
     def failedRegressionTests(self):
         return [test for test in self.regressionTests.values() if test.result in ['FAILURE','UNSTABLE']]
-    
+
+    @property
+    def testCases(self):
+        tests = []
+        try:
+            #tests = getTestData(get_data(self.url+"/testReport/api/json"),self.number)
+            tests = getTestData(get_build(self.projectName, self.number, 'testReport' ),self.number);
+        except urllib2.HTTPError:
+            pass
+
+        return tests
+   
 status_order = ['FAILURE', 'UNSTABLE', 'BUILDING', 'SUCCESS', 'ABORTED', 'UNKNOWN' ]
 
 def compare_by_status(r1, r2):
@@ -181,8 +193,8 @@ def get_specific_build(projectName, build_number):
 def get_cache_filename(url):
     return '/tmp/jenkins_radiator/' + str(url.split('job/')[1]).strip('/').replace('/','_')
 
-def get_build(projectName, number):
-    url = settings.HUDSON_URL+'/job/'+projectName+'/'+str(number)+'/'
+def get_build(projectName, number, suffix=""):
+    url = settings.HUDSON_URL+'/job/'+projectName+'/'+str(number)+'/'+suffix
     filename = get_cache_filename(url)
     if os.path.exists(filename):
         try:
@@ -190,7 +202,7 @@ def get_build(projectName, number):
         except ValueError:
            os.remove(filename)
     try:
-        build = get_data(url+'api/json')
+        build = get_data(url+'/api/json')
     
     except urllib2.HTTPError:
         return None
@@ -198,7 +210,6 @@ def get_build(projectName, number):
     if not os.path.exists('/tmp/jenkins_radiator'):
         os.mkdir('/tmp/jenkins_radiator');
 
-    print json
     json.dump(build, open(filename,'w'))
     return build
 
@@ -207,3 +218,20 @@ def get_test_projects(data, build_type):
     jobs = data['jobs']
     testList = [job['name'] for job in jobs if job['name'].upper().startswith(build_type.upper() + '_TEST_')]
     return testList
+
+def flatten(x):
+    cases = []
+    cases.extend(x)
+    return cases
+
+class TestData(object):
+    def __init__(self, case, runNumber):
+        self.status = case['status']
+        self.duration = case['duration']
+        self.name = case['className']+"."+case['name']
+        self.runNumber = runNumber
+
+
+def getTestData(jsonData,runNumber):
+    if jsonData:
+        return [TestData(c[0],runNumber) for c in flatten(s['cases'] for s in jsonData['suites'])]

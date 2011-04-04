@@ -1,0 +1,44 @@
+{% load radiator_helpers %}
+<head>
+<title>Test case report for {{test_name}}</title>
+<style type="text/css">
+body{
+  background: black;
+  color: white;
+  font-family: Verdana, Helvetica, 'sans serif';
+  font-size: 14;
+}
+table {border-width: 2px; border-color: gray; border-spacing: 2px;}
+th {background: #444; color: Yellow; text-align:center;}
+tr {font-size: 10; font-style: bold; text-align:center;}
+td {background: #AAA; color: Black; text-align:center;}
+td.FAILED {background: #F33; color: #400; }
+td.PASSED, td.FIXED {background: #3F3; color: #040; }
+
+</style>
+</head>
+
+<h2>Test case report for {{test_name}}</h2>
+<ol>
+{% for case in summary %}
+    <li>{{case.0}}: {{case.1}} / {{case.2|length}}</li>
+{% endfor %}
+</ol>
+
+<table>
+  <th>Run #</th>
+  {% for i in summary %}
+    <th style="width: 25px">{{forloop.counter}}</th>
+  {% endfor %}
+
+  {% for run in tests %}
+    {% if run.status != "BUILDING" %}
+    <tr>
+      <td>{{ run.number }}</td>
+      {% for key in summary %}
+        <td title='{{key.0}}-{{caseDict|cases:key.0|testCaseState:run.number}}' class='{{caseDict|cases:key.0|testCaseState:run.number}}'>{{caseDict|cases:key.0|testCaseState:run.number|shorten}}</td>
+      {% endfor %}
+    </tr>
+    {% endif %}  
+  {% endfor %}
+</table>

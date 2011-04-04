@@ -79,3 +79,24 @@ def sortedByStatus(lst):
 @register.filter
 def filterStatus(tests, status):
     return [test for test in tests if test.result not in status]
+
+@register.filter
+def cases(caseDict, name):
+    cases = caseDict[name]
+    return cases[1]
+
+@register.filter
+def testCaseState(cases,runNumber):
+    for case in cases:
+        if case.runNumber == runNumber:
+            if case.status == 'FIXED':
+                return 'PASSED'
+            if case.status == 'REGRESSION':
+                return 'FAILED'
+            return case.status
+    return ''
+
+@register.filter
+@stringfilter
+def shorten(value, length=1):
+    return value[0:length]
