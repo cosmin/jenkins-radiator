@@ -233,5 +233,11 @@ class TestData(object):
 
 
 def getTestData(jsonData,runNumber):
+    tests = []
     if jsonData:
-        return [TestData(c[0],runNumber) for c in flatten(s['cases'] for s in jsonData['suites'])]
+        suites = flatten(s['cases'] for s in jsonData['suites'])
+        for suite in suites:
+            for case in suite:
+                tests.extend([TestData(case,runNumber)])
+
+    return tests
