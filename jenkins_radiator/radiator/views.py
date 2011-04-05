@@ -83,7 +83,7 @@ def get_test_report(request, test_name):
                 errorCount = caseTuple[0]
                 caseList = caseTuple[1]
                 caseList.extend([case])
-                if case.status=='FAILED':
+                if case.status in ['FAILED','REGRESSION']:
                     errorCount = errorCount + 1
                 caseDict.update({case.name:(errorCount,caseList)})
 
