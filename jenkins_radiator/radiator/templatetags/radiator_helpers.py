@@ -100,3 +100,8 @@ def testCaseState(cases,runNumber):
 @stringfilter
 def shorten(value, length=1):
     return value[0:length]
+
+@register.filter
+@stringfilter
+def dot2slash(value):
+    return value.replace('.','/')

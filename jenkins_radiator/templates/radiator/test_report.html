@@ -38,10 +38,12 @@ td.st1hlxsw29 {background: #FF9;}
   {% for run in tests %}
     {% if run.status != "BUILDING" %}
     <tr>
-      <td class='{{run.builtOn}}'>{{ run.number }}</td>
+      <td class='{{run.builtOn}}'><a href="{{run.url}}">{{ run.number }}</a></td>
       <td class='{{run.builtOn}}'>{{ run.builtOn }}</td>
       {% for key in summary %}
-        <td title='{{key.0}}-{{caseDict|cases:key.0|testCaseState:run.number}}' class='{{caseDict|cases:key.0|testCaseState:run.number}}'>{{caseDict|cases:key.0|testCaseState:run.number|shorten}}</td>
+        <td title='{{key.0}}-{{caseDict|cases:key.0|testCaseState:run.number}}' class='{{caseDict|cases:key.0|testCaseState:run.number}}'>
+          <a href="{{run.url}}/testReport/(root)/{{key.0|dot2slash}}">{{caseDict|cases:key.0|testCaseState:run.number|shorten}}</a>
+        </td>
       {% endfor %}
     </tr>
     {% endif %}  
