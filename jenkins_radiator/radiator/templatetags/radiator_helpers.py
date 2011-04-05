@@ -87,13 +87,13 @@ def cases(caseDict, name):
 
 @register.filter
 def testCaseState(cases,runNumber):
-    for case in cases:
-        if case.runNumber == runNumber:
-            if case.status == 'FIXED':
-                return 'PASSED'
-            if case.status == 'REGRESSION':
-                return 'FAILED'
-            return case.status
+    if runNumber in cases:
+        case = cases[runNumber]
+        if case.status == 'FIXED':
+            return 'PASSED'
+        if case.status == 'REGRESSION':
+            return 'FAILED'
+        return case.status
     return ''
 
 @register.filter

@@ -32,6 +32,7 @@ class Build(object):
         if not buildjson:
             self.result = 'UNKNOWN'
             self.name = projectName
+            self.projectName = projectName
             self.building = False
         else:
             self.name = buildjson['fullDisplayName'].split(settings.HUDSON_TEST_NAME_PATTERN)[-1]
@@ -139,6 +140,9 @@ class Build(object):
     @property
     def testCases(self):
         tests = []
+        if self.status == 'UNKNOWN':
+          return tests
+
         try:
             #tests = getTestData(get_data(self.url+"/testReport/api/json"),self.number)
             tests = getTestData(get_build(self.projectName, self.number, 'testReport' ),self.number);

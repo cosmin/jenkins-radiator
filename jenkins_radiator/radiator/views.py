@@ -72,26 +72,58 @@ def lookupTests(build_type, count, builds):
     
     return buildDict
 
+def get_project_report(request, build_type):
+    count = int(request.GET.get('builds',settings.HUDSON_BUILD_COUNT))
+    builds = models.get_recent_builds( build_type + settings.HUDSON_BUILD_NAME_PATTERN, count )
+    buildDict = lookupTests(build_type, count, builds)
+    caseDict = {} 
+    tests = []
+    for build in sorted(buildDict.values(), key= lambda build: build.number, reverse=True):
+      tests.append(build)
+      compile_project_test_cases(build, caseDict)
+    
+    summary = summarize_test_cases(caseDict)
+    return render('radiator/test_report.html', locals())
+
+def compile_project_test_cases( build, allCases ):
+    for test in build.smokeTests.values() + build.regressionTests.values():
+        if test.testCases:
+            for case in test.testCases:
+                errorCount, casesByBuildNbr = allCases.get(case.name,(0,{}))
+                casesByBuildNbr[build.number] = case
+                if case.status in ['FAILED','REGRESSION']:
+                    errorCount = errorCount + 1
+                allCases.update({case.name:(errorCount,casesByBuildNbr)})
+    return allCases
+
+
 def get_test_report(request, test_name):
     count = int(request.GET.get('builds',settings.HUDSON_BUILD_COUNT))
     tests = models.get_recent_builds( test_name, count )
-    caseDict = {}
+    caseDict = compile_test_cases(tests, test_name)
+    summary = summarize_test_cases(caseDict)
+
+    return render('radiator/test_report.html', locals())
+
+
+
+def compile_test_cases(tests, test_name):
+    allCases = {}
     for test in tests:
         if test.testCases:
             for case in test.testCases:
-                caseTuple = caseDict.get(case.name,(0,[]))
-                errorCount = caseTuple[0]
-                caseList = caseTuple[1]
-                caseList.extend([case])
+                errorCount, casesByRun = allCases.get(case.name,(0,{}))
+                casesByRun[case.runNumber] = case
                 if case.status in ['FAILED','REGRESSION']:
                     errorCount = errorCount + 1
-                caseDict.update({case.name:(errorCount,caseList)})
+                allCases.update({case.name:(errorCount,casesByRun)})
+    return allCases
 
+def summarize_test_cases(caseDict):
     summary = []
     for k, v in caseDict.iteritems():
         triple = (k,v[0],v[1])
         summary.append(triple)
     
-    summary = sorted(summary, key=lambda c: c[1], reverse=True)
-    return render('radiator/test_report.html', locals())
+    return sorted(summary, key=lambda c: c[1], reverse=True)
 

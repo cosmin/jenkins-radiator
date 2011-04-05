@@ -23,6 +23,7 @@ urlpatterns += patterns('',
     # (r'^admin/', include(admin.site.urls)),
     (r'^info/(.*)/(.*)/$', 'jenkins_radiator.radiator.views.get_build_info'),
     (r'^test/(.*)/$', 'jenkins_radiator.radiator.views.get_test_report'),
+    (r'^project/(.*)/$', 'jenkins_radiator.radiator.views.get_project_report'),
     (r'^data/(.*)/$', 'jenkins_radiator.radiator.views.get_builds'),
     (r'^(.*)/$', 'jenkins_radiator.radiator.views.get_radiator')
 )

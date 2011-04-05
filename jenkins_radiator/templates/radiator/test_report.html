@@ -24,7 +24,9 @@ td.st1hlxsw29 {background: #FF9;}
 <h2>Test case report for {{test_name}}</h2>
 <ol>
 {% for case in summary %}
+  {% if case.1 %}
     <li>{{case.0}}: {{case.1}} / {{case.2|length}}</li>
+  {% endif %}
 {% endfor %}
 </ol>
 
