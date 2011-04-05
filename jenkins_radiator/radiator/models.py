@@ -49,6 +49,7 @@ class Build(object):
             self.regressionTests = {}
             self.parent = None
             self.projectName = projectName
+            self.builtOn= buildjson['builtOn']
 
             actions = {}
             for action in buildjson['actions']:

@@ -14,7 +14,10 @@ tr {font-size: 10; font-style: bold; text-align:center;}
 td {background: #AAA; color: Black; text-align:center;}
 td.FAILED {background: #F33; color: #400; }
 td.PASSED, td.FIXED {background: #3F3; color: #040; }
-
+td.st1hlxsw26 {background: #99F;}
+td.st1hlxsw27 {background: #9F9;}
+td.st1hlxsw28 {background: #F99;}
+td.st1hlxsw29 {background: #FF9;}
 </style>
 </head>
 
@@ -27,6 +30,7 @@ td.PASSED, td.FIXED {background: #3F3; color: #040; }
 
 <table>
   <th>Run #</th>
+  <th>Server</th>
   {% for i in summary %}
     <th style="width: 25px">{{forloop.counter}}</th>
   {% endfor %}
@@ -34,7 +38,8 @@ td.PASSED, td.FIXED {background: #3F3; color: #040; }
   {% for run in tests %}
     {% if run.status != "BUILDING" %}
     <tr>
-      <td>{{ run.number }}</td>
+      <td class='{{run.builtOn}}'>{{ run.number }}</td>
+      <td class='{{run.builtOn}}'>{{ run.builtOn }}</td>
       {% for key in summary %}
         <td title='{{key.0}}-{{caseDict|cases:key.0|testCaseState:run.number}}' class='{{caseDict|cases:key.0|testCaseState:run.number}}'>{{caseDict|cases:key.0|testCaseState:run.number|shorten}}</td>
       {% endfor %}
