@@ -236,7 +236,10 @@ def getTestData(jsonData,runNumber):
     tests = []
     if jsonData:
         if jsonData.has_key('childReports'):
-            jsonData = jsonData['childReports'][0]['result']
+            try:
+                jsonData = jsonData['childReports'][0]['result']
+            except IndexError:
+                return tests
 
         suites = flatten(s['cases'] for s in jsonData['suites'])
         for suite in suites:
