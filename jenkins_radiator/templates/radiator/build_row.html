@@ -14,7 +14,8 @@
     <div class="clear-both"></div>
     <div class="scm">{% spaceless %}
       {% for commit in build.items %}
-        <span class="revision">rev {{commit.revision}}</span>,
+        <a href="{{build.url}}/changes">
+        <span class="revision">rev {{commit.revision}}</span></a>,
         <span class="user"> by {{commit.user|firstWord}}</span>:
         <span class="msg">{{commit.msg}}</span><br>
       {% endfor %}{% endspaceless %}
