@@ -151,7 +151,7 @@ class Build(object):
 
         return tests
    
-status_order = ['FAILURE', 'UNSTABLE', 'BUILDING', 'SUCCESS', 'ABORTED', 'UNKNOWN' ]
+status_order = ['FAILURE', 'UNSTABLE', 'BUILDING', 'ABORTED', 'UNKNOWN', 'SUCCESS' ]
 
 def compare_by_status(r1, r2):
     return status_order.index(r1) - status_order.index(r2)
