@@ -39,6 +39,8 @@ def lookupTests(build_type, count, builds):
     project.smokeTests = [proj for proj in testProjects if settings.HUDSON_SMOKE_NAME_REGEX.findall(proj) ]
     project.otherTests = [proj for proj in testProjects if not settings.HUDSON_SMOKE_NAME_REGEX.findall(proj) ]
 
+    project.perfTests = models.get_performance_projects(models.get_data(settings.HUDSON_URL + '/api/json?tree=jobs[name]'), build_type)
+
     buildDict = dict((build.number,build) for build in builds)
 
     smokeBuilds = []
@@ -48,6 +50,10 @@ def lookupTests(build_type, count, builds):
     regressionBuilds = []
     for testName in project.otherTests:
         regressionBuilds.extend(models.get_recent_builds( testName, count  ))
+
+    perfBuilds = []
+    for testName in project.perfTests:
+        perfBuilds.extend(models.get_recent_builds( testName, count  ))
 
     for test in smokeBuilds:
         parent = buildDict.get(test.parent)
@@ -60,16 +66,26 @@ def lookupTests(build_type, count, builds):
         if parent is not None:
             if test.project not in parent.regressionTests or int(test.number) > int(parent.regressionTests[test.project].number):
                 parent.regressionTests[test.project] = test
+
+    for test in perfBuilds:
+        parent = buildDict.get(test.parent)
+        if parent is not None:
+            if test.project not in parent.perfTests or int(test.number) > int(parent.perfTests[test.project].number):
+                parent.perfTests[test.project] = test
     
     for build in builds:
         for smoke in project.smokeTests:
             if smoke not in build.smokeTests:
                 build.smokeTests[smoke]= models.Build(projectName=smoke)
-    
+
+        for perf in project.perfTests:
+            if perf not in build.perfTests:
+                build.perfTests[perf]= models.Build(projectName=perf)
+
         for other in project.otherTests:
             if other not in build.regressionTests:
                 build.regressionTests[other]= models.Build(projectName=other)
-    
+
     return buildDict
 
 def get_project_report(request, build_type):

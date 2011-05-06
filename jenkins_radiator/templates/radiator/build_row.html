@@ -38,7 +38,7 @@
           &nbsp;<a href="{{test.url}}">R</a>&nbsp;{% endspaceless %}
         </div>
       {% endfor %}
-      {% if build.failedSmokeTests %}     
+      {% if build.failedSmokeTests %}
         <div class="gap"/>
         <table class="tests">
           <tr>
@@ -53,7 +53,7 @@
           </tr>
         </table>
       {% endif %}
-      {% if build.failedRegressionTests %}     
+      {% if build.failedRegressionTests %}
       <div class="gap"/>
       <table class="tests">
         <tr>
@@ -68,6 +68,22 @@
         </tr>
       </table>
       {% endif %}
+    {% for test in build.perfTests.values|sortedByName %}
+            {% if test.status == "SUCCESS" %}
+                {% for page in test.perfPages %}
+                    <div class="shadow box {{test.status}} tertiary"
+                         title="{{page.pageName}}">{% spaceless %}
+                        {% include "radiator/test_spinner.html" %}
+                        &nbsp;<a href="{{test.url}}">{{ page.pageName }} {{ page.pageScore }}</a>&nbsp;{% endspaceless %}
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="shadow box {{test.status}} tertiary" title="{{test.name}}: {{test.status|transformTestStatus}}">{% spaceless %}
+                  {% include "radiator/test_spinner.html" %}
+                  &nbsp;<a href="{{test.url}}">P</a>&nbsp;{% endspaceless %}
+                </div>
+            {% endif %}
+        {% endfor %}
     {% else %}
       {% if build.status == "UNSTABLE" %}
         <div class="broken {{build.status}} secondary">JUNIT TESTS BREAKING!</div>
@@ -76,9 +92,9 @@
         <div class="broken {{build.status}} secondary">BUILD {{build.status}}!</div>
       {% endif %}
     {% endif %}
-    <div class="gap"/>    
-    <div class="clear-both"></div>      
-  </div>  
+    <div class="gap"/>
+    <div class="clear-both"></div>
+  </div>
 </div>
 <div class="gap"/>
 <script>

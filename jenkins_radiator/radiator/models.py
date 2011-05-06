@@ -48,6 +48,7 @@ class Build(object):
             self.dateTimeStamp = datetime.datetime.fromtimestamp(self.timeStamp)
             self.smokeTests = {}
             self.regressionTests = {}
+            self.perfTests = {}
             self.parent = None
             self.projectName = projectName
             self.builtOn= buildjson['builtOn']
@@ -122,6 +123,19 @@ class Build(object):
         firstTest = self.smokeTests.values()[0]
         result = all( (item.status == firstTest.status) for item in self.smokeTests.values())
         return result
+
+    @property
+    def perfPages(self):
+        try:
+            artifactsJson = json.loads(urllib2.urlopen(self.url + "api/json").read())["artifacts"]
+            pagePerformanceRecords = []
+            for pageJson in artifactsJson:
+                fileName = re.search("^\d+-(.*)\.json", pageJson["fileName"]).group(1)
+                urlToPageData = self.url + "artifact/" + pageJson["relativePath"]
+                pagePerformanceRecords.append(PagePerformance(fileName, json.loads(urllib2.urlopen(urlToPageData).read())))
+            return pagePerformanceRecords
+        except urllib2.HTTPError:
+            return None
 
     @property
     def isRegressionStatusSame(self):
@@ -224,6 +238,11 @@ def get_test_projects(data, build_type):
     testList = [job['name'] for job in jobs if job['name'].upper().startswith(build_type.upper() + '_TEST_')]
     return testList
 
+def get_performance_projects(data, build_type):
+    jobs = data['jobs']
+    perfList = [job['name'] for job in jobs if job['name'].upper().startswith(build_type.upper() + '_PERFORMANCE_')]
+    return perfList
+
 def flatten(x):
     cases = []
     cases.extend(x)
@@ -252,3 +271,9 @@ def getTestData(jsonData,runNumber):
                 tests.extend([TestData(case,runNumber)])
 
     return tests
+
+
+class PagePerformance(object):
+    def __init__(self, pageName, pageJsonData):
+        self.pageName = pageName
+        self.pageScore = pageJsonData["o"]
