@@ -71,11 +71,13 @@
     {% for test in build.perfTests.values|sortedByName %}
             {% if test.status == "SUCCESS" %}
                 {% for page in test.perfPages %}
+                    <a title="{{page.name}}" href="{{page.url}}">
                     <div class="shadow box {{test.status}} tertiary"
                          title="{{page.pageName}}">{% spaceless %}
                         {% include "radiator/test_spinner.html" %}
-                        &nbsp;<a href="{{test.url}}">{{ page.pageName }} {{ page.pageScore }}</a>&nbsp;{% endspaceless %}
+                        &nbsp;P{{ page.index }} - {{ page.score }} / {{page.totalRequests}} reqs / {{page.totalKilobytes}}KB&nbsp;{% endspaceless %}
                     </div>
+                    </a>
                 {% endfor %}
             {% else %}
                 <div class="shadow box {{test.status}} tertiary" title="{{test.name}}: {{test.status|transformTestStatus}}">{% spaceless %}

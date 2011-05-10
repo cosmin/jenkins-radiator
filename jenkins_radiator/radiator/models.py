@@ -127,12 +127,16 @@ class Build(object):
     @property
     def perfPages(self):
         try:
-            artifactsJson = json.loads(urllib2.urlopen(self.url + "api/json").read())["artifacts"]
+            buildUrl = self.url
+            artifactsJson = json.loads(urllib2.urlopen(buildUrl + "api/json").read())["artifacts"]
             pagePerformanceRecords = []
-            for pageJson in artifactsJson:
-                fileName = re.search("^\d+-(.*)\.json", pageJson["fileName"]).group(1)
-                urlToPageData = self.url + "artifact/" + pageJson["relativePath"]
-                pagePerformanceRecords.append(PagePerformance(fileName, json.loads(urllib2.urlopen(urlToPageData).read())))
+            counter = 0
+            for artifactJson in artifactsJson:
+                pageDataUrl = self.url + "artifact/" + artifactJson["relativePath"]
+                pageName = re.search("^\d+-(.*)\.json", artifactJson["fileName"]).group(1)
+                newPage = PagePerformance(counter, pageName, buildUrl, json.loads(urllib2.urlopen(pageDataUrl).read()))
+                pagePerformanceRecords.append(newPage)
+                counter += 1
             return pagePerformanceRecords
         except urllib2.HTTPError:
             return None
@@ -274,6 +278,11 @@ def getTestData(jsonData,runNumber):
 
 
 class PagePerformance(object):
-    def __init__(self, pageName, pageJsonData):
-        self.pageName = pageName
-        self.pageScore = pageJsonData["o"]
+    def __init__(self, index, name, url, pageJsonData):
+        self.index = index
+        self.name = name
+        self.url = url
+        self.score = pageJsonData["o"]
+        self.totalRequests = pageJsonData["r"]
+        self.totalKilobytes = pageJsonData["w"] / 1000
+
