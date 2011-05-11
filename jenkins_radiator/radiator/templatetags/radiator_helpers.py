@@ -5,6 +5,9 @@ from django.utils.safestring import mark_safe
 import re
 from jenkins_radiator.radiator.models import compare_by_result
 
+up_arrow = u"\u25B2"
+down_arrow = u"\u25BC"
+
 register = template.Library()
 
 @register.filter
@@ -70,7 +73,11 @@ def plural(a):
 @register.filter
 def sortedByName(lst):
     return sorted(lst, key=lambda Build: Build.name)
-    
+
+@register.filter
+def sortedByIndex(lst):
+    return sorted(lst, key=lambda PagePerformanceDelta: PagePerformanceDelta.index)
+
 @register.filter
 def sortedByStatus(lst):
     lst.sort( cmp=compare_by_result,reverse=True)
@@ -105,3 +112,27 @@ def shorten(value, length=1):
 @stringfilter
 def dot2slash(value):
     return value.replace('.','/')
+
+@register.filter
+def formatForLabel(pagePerf):
+    scoreIndicator = ""
+    if pagePerf.scoreDelta > 0:
+        scoreIndicator = up_arrow
+    if pagePerf.scoreDelta < 0:
+        scoreIndicator = down_arrow
+
+    totalRequestsIndicator = ""
+    if pagePerf.totalRequestsDelta > 0:
+        totalRequestsIndicator = up_arrow
+    if pagePerf.totalRequestsDelta < 0:
+        totalRequestsIndicator = down_arrow
+
+    totalKilobytesIndicator = ""
+    if pagePerf.totalKilobytesDelta > 0:
+        totalKilobytesIndicator = up_arrow
+    if pagePerf.totalKilobytesDelta < 0:
+        totalKilobytesIndicator = down_arrow
+
+    return u"{0}\nYSlow Score: {1} {2}\nTotal Requests: {3} {4} \nPage Weight: {5}KB {6}"\
+        .format(pagePerf.name, pagePerf.score, scoreIndicator, pagePerf.totalRequests, totalRequestsIndicator,  pagePerf.totalKilobytes, totalKilobytesIndicator)
+    

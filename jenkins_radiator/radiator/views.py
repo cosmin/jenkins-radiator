@@ -3,19 +3,24 @@ from django.conf import settings
 import models
 import re
 
+markup_constants = { "up_arrow": u"\u25B2",
+                    "down_arrow": u"\u25BC" }
+
 # Create your views here.
 def avg(lst):
     return sum(lst) / (1.0 * len(lst))
 
 
 def get_radiator(request, build_list):
+    const = markup_constants
     buildCount = request.GET.get('builds',settings.HUDSON_BUILD_COUNT)
     build_types = [build_row.split(',') for build_row in build_list.split('|')]
     columnSize = 100 / len(build_types[0])
     return render('radiator/builds.html', locals())
 
 def get_builds(request, build_type):
-    count = int(request.GET.get('builds',settings.HUDSON_BUILD_COUNT))    
+    const = markup_constants
+    count = int(request.GET.get('builds',settings.HUDSON_BUILD_COUNT))
     builds = models.get_recent_builds( build_type + settings.HUDSON_BUILD_NAME_PATTERN, count )
     buildDict = lookupTests(build_type, count, builds)
 
@@ -27,6 +32,7 @@ def get_builds(request, build_type):
     return render('radiator/builds_table.html', locals())
 
 def get_build_info(request, build_type, build_number):
+    const = markup_constants
     build = models.get_specific_build(build_type+'_Build', build_number)
     buildDict = lookupTests(build_type, 20, [build])
     return render('radiator/build_detail.html', locals())
@@ -36,23 +42,23 @@ def lookupTests(build_type, count, builds):
 
     testProjects = models.get_test_projects(models.get_data(settings.HUDSON_URL + '/api/json?tree=jobs[name]'), build_type)
     testProjects = [proj for proj in testProjects if not settings.HUDSON_TEST_IGNORE_REGEX.findall(proj)]
-    project.smokeTests = [proj for proj in testProjects if settings.HUDSON_SMOKE_NAME_REGEX.findall(proj) ]
-    project.otherTests = [proj for proj in testProjects if not settings.HUDSON_SMOKE_NAME_REGEX.findall(proj) ]
+    project.smokeProjects = [proj for proj in testProjects if settings.HUDSON_SMOKE_NAME_REGEX.findall(proj) ]
+    project.otherProjects = [proj for proj in testProjects if not settings.HUDSON_SMOKE_NAME_REGEX.findall(proj) ]
 
-    project.perfTests = models.get_performance_projects(models.get_data(settings.HUDSON_URL + '/api/json?tree=jobs[name]'), build_type)
+    project.perfProjects = models.get_performance_projects(models.get_data(settings.HUDSON_URL + '/api/json?tree=jobs[name]'), build_type)
 
     buildDict = dict((build.number,build) for build in builds)
 
     smokeBuilds = []
-    for testName in project.smokeTests:
+    for testName in project.smokeProjects:
         smokeBuilds.extend(models.get_recent_builds( testName, count ))
 
     regressionBuilds = []
-    for testName in project.otherTests:
+    for testName in project.otherProjects:
         regressionBuilds.extend(models.get_recent_builds( testName, count  ))
 
     perfBuilds = []
-    for testName in project.perfTests:
+    for testName in project.perfProjects:
         perfBuilds.extend(models.get_recent_builds( testName, count  ))
 
     for test in smokeBuilds:
@@ -74,17 +80,38 @@ def lookupTests(build_type, count, builds):
                 parent.perfTests[test.project] = test
     
     for build in builds:
-        for smoke in project.smokeTests:
+        for smoke in project.smokeProjects:
             if smoke not in build.smokeTests:
                 build.smokeTests[smoke]= models.Build(projectName=smoke)
 
-        for perf in project.perfTests:
+        for perf in project.perfProjects:
             if perf not in build.perfTests:
                 build.perfTests[perf]= models.Build(projectName=perf)
 
-        for other in project.otherTests:
+        for other in project.otherProjects:
             if other not in build.regressionTests:
                 build.regressionTests[other]= models.Build(projectName=other)
+
+    # Find prior build with perf data
+
+    for perfProject in project.perfProjects:
+        lastSuccessfulBuild = None
+        for build in reversed(builds):
+            if build.perfTests[perfProject].result == "SUCCESS":
+                build.perfTests[perfProject].prior = lastSuccessfulBuild
+                lastSuccessfulBuild = build.perfTests[perfProject]
+
+    for perfBuild in perfBuilds:
+        perfBuild.pagePerfs = models.create_pagePerfs(perfBuild.url)
+
+    for perfBuild in perfBuilds:
+        perfBuild.pagePerfDeltas = []
+        for pageName, pagePerf in perfBuild.pagePerfs.iteritems():
+            if (perfBuild.prior):
+                priorPagePerf  = perfBuild.prior.pagePerfs[pageName]
+                perfBuild.pagePerfDeltas.append(models.PagePerformanceDelta(pagePerf, priorPagePerf))
+            else:
+                perfBuild.pagePerfDeltas.append(models.PagePerformanceDelta(pagePerf))
 
     return buildDict
 

@@ -52,6 +52,7 @@ class Build(object):
             self.parent = None
             self.projectName = projectName
             self.builtOn= buildjson['builtOn']
+            self.prior=None
 
             actions = {}
             for action in buildjson['actions']:
@@ -74,7 +75,7 @@ class Build(object):
 
             self.trigger = actions.get('causes')[0].get('shortDescription')
 
-            
+
     @property
     def smoke_status(self):
         return test_status(self.smokeTests.values())
@@ -125,23 +126,6 @@ class Build(object):
         return result
 
     @property
-    def perfPages(self):
-        try:
-            buildUrl = self.url
-            artifactsJson = json.loads(urllib2.urlopen(buildUrl + "api/json").read())["artifacts"]
-            pagePerformanceRecords = []
-            counter = 0
-            for artifactJson in artifactsJson:
-                pageDataUrl = self.url + "artifact/" + artifactJson["relativePath"]
-                pageName = re.search("^\d+-(.*)\.json", artifactJson["fileName"]).group(1)
-                newPage = PagePerformance(counter, pageName, buildUrl, json.loads(urllib2.urlopen(pageDataUrl).read()))
-                pagePerformanceRecords.append(newPage)
-                counter += 1
-            return pagePerformanceRecords
-        except urllib2.HTTPError:
-            return None
-
-    @property
     def isRegressionStatusSame(self):
         firstTest = self.regressionTests.values()[0]
         result = all( (item.status == firstTest.status) for item in self.regressionTests.values())
@@ -163,7 +147,7 @@ class Build(object):
 
         try:
             #tests = getTestData(get_data(self.url+"/testReport/api/json"),self.number)
-            tests = getTestData(get_build(self.projectName, self.number, 'testReport' ),self.number);
+            tests = getTestData(get_build(self.projectName, self.number, 'testReport' ),self.number)
         except urllib2.HTTPError:
             pass
 
@@ -231,7 +215,7 @@ def get_build(projectName, number, suffix=""):
         return None
 
     if not os.path.exists('/tmp/jenkins_radiator'):
-        os.mkdir('/tmp/jenkins_radiator');
+        os.mkdir('/tmp/jenkins_radiator')
 
     json.dump(build, open(filename,'w'))
     return build
@@ -251,6 +235,23 @@ def flatten(x):
     cases = []
     cases.extend(x)
     return cases
+
+def create_pagePerfs(buildUrl):
+    try:
+        artifactsJson = json.loads(urllib2.urlopen(buildUrl + "api/json").read())["artifacts"]
+        performancePages = {}
+        counter = 0
+        for artifactJson in artifactsJson:
+            pageDataUrl = buildUrl + "artifact/" + artifactJson["relativePath"]
+            fileName = artifactJson["fileName"]
+            pageName = re.search("^\d+-(.*)\.json", fileName).group(1)
+            newPage = PagePerformance(counter, pageName, buildUrl, json.loads(urllib2.urlopen(pageDataUrl).read()))
+            performancePages[fileName] = newPage
+            counter += 1
+        return performancePages
+    except urllib2.HTTPError:
+        return None
+
 
 class TestData(object):
     def __init__(self, case, runNumber):
@@ -285,4 +286,22 @@ class PagePerformance(object):
         self.score = pageJsonData["o"]
         self.totalRequests = pageJsonData["r"]
         self.totalKilobytes = pageJsonData["w"] / 1000
+
+class PagePerformanceDelta(object):
+    def __init__(self, current, prior=None):
+        self.index = current.index
+        self.name = current.name
+        self.url = current.url
+        self.score = current.score
+        self.totalRequests = current.totalRequests 
+        self.totalKilobytes = current.totalKilobytes
+        self.prior = prior
+        self.scoreDelta = 0
+        self.totalRequestsDelta = 0
+        self.totalKilobytesDelta = 0
+        if prior:
+            self.scoreDelta = current.score - prior.score
+            self.totalRequestsDelta = current.totalRequests - prior.totalRequests
+            self.totalKilobytesDelta = current.totalKilobytes - prior.totalKilobytes
+
 

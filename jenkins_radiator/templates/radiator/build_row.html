@@ -68,21 +68,41 @@
         </tr>
       </table>
       {% endif %}
-    {% for test in build.perfTests.values|sortedByName %}
-            {% if test.status == "SUCCESS" %}
-                {% for page in test.perfPages %}
-                    <a title="{{page.name}}" href="{{page.url}}">
-                    <div class="shadow box {{test.status}} tertiary"
-                         title="{{page.pageName}}">{% spaceless %}
-                        {% include "radiator/test_spinner.html" %}
-                        &nbsp;P{{ page.index }} - {{ page.score }} / {{page.totalRequests}} reqs / {{page.totalKilobytes}}KB&nbsp;{% endspaceless %}
-                    </div>
+    {% for perfTestBuild in build.perfTests.values|sortedByName %}
+            {% if perfTestBuild.status == "SUCCESS" %}
+                {% for pagePerf in perfTestBuild.pagePerfDeltas|sortedByIndex%}
+                    <a
+                        title="{{ pagePerf|formatForLabel }}"
+                        href="{{pagePerf.url}}">
+                        <div class="shadow box {{build.overall_status}} tertiary" title="{{pagePerf.pageName}}">
+                            &nbsp;
+                            {{ spaceless }}
+                                <span>{{ pagePerf.score }}</span>
+                                {% if pagePerf.prior %}
+                                    {% if pagePerf.scoreDelta > 0 %}
+                                        <!-- up arrow --> <b>{{ const.up_arrow }}</b>
+                                    {% endif %}
+                                    {% if pagePerf.scoreDelta < 0 %}
+                                        <!-- down arrow --> <b>{{ const.down_arrow }}</b>
+                                    {% endif %}
+                                    {% if pagePerf.scoreDelta == 0 %}
+                                        {% if pagePerf.totalRequestsDelta > 0 %}
+                                            <!-- down arrow --> <b>{{ const.down_arrow }}</b>
+                                        {% endif %}
+                                        {% if pagePerf.totalRequestsDelta < 0 %}
+                                            <!-- up arrow --> <b>{{ const.up_arrow }}</b>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}
+                            {{ endspaceless }}
+                            &nbsp;
+                        </div>
                     </a>
                 {% endfor %}
             {% else %}
                 <div class="shadow box {{test.status}} tertiary" title="{{test.name}}: {{test.status|transformTestStatus}}">{% spaceless %}
                   {% include "radiator/test_spinner.html" %}
-                  &nbsp;<a href="{{test.url}}">P</a>&nbsp;{% endspaceless %}
+                  &nbsp;<a href="{{perfTestBuild.url}}">P</a>&nbsp;{% endspaceless %}
                 </div>
             {% endif %}
         {% endfor %}
