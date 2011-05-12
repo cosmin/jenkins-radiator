@@ -107,9 +107,10 @@ def lookupTests(build_type, count, builds):
     for perfBuild in perfBuilds:
         perfBuild.pagePerfDeltas = []
         for pageName, pagePerf in perfBuild.pagePerfs.iteritems():
-            if (perfBuild.prior):
-                priorPagePerf  = perfBuild.prior.pagePerfs[pageName]
-                perfBuild.pagePerfDeltas.append(models.PagePerformanceDelta(pagePerf, priorPagePerf))
+            if perfBuild.prior:
+                if perfBuild.prior.pagePerfs.has_key(pageName) :
+                    priorPagePerf  = perfBuild.prior.pagePerfs[pageName]
+                    perfBuild.pagePerfDeltas.append(models.PagePerformanceDelta(pagePerf, priorPagePerf))
             else:
                 perfBuild.pagePerfDeltas.append(models.PagePerformanceDelta(pagePerf))
 
