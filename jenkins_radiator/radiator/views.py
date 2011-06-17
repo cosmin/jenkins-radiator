@@ -43,7 +43,9 @@ def lookupTests(build_type, count, builds):
     testProjects = models.get_test_projects(models.get_data(settings.HUDSON_URL + '/api/json?tree=jobs[name]'), build_type)
     testProjects = [proj for proj in testProjects if not settings.HUDSON_TEST_IGNORE_REGEX.findall(proj)]
     project.smokeProjects = [proj for proj in testProjects if settings.HUDSON_SMOKE_NAME_REGEX.findall(proj) ]
+    project.baselineProjects = [proj for proj in testProjects if settings.HUDSON_BASELINE_NAME_REGEX.findall(proj) ]
     project.otherProjects = [proj for proj in testProjects if not settings.HUDSON_SMOKE_NAME_REGEX.findall(proj) ]
+    project.otherProjects = [proj for proj in project.otherProjects if not settings.HUDSON_BASELINE_NAME_REGEX.findall(proj) ]
 
     project.perfProjects = models.get_performance_projects(models.get_data(settings.HUDSON_URL + '/api/json?tree=jobs[name]'), build_type)
 
@@ -52,6 +54,10 @@ def lookupTests(build_type, count, builds):
     smokeBuilds = []
     for testName in project.smokeProjects:
         smokeBuilds.extend(models.get_recent_builds( testName, count ))
+
+    baselineBuilds = []
+    for testName in project.baselineProjects:
+        baselineBuilds.extend(models.get_recent_builds( testName, count ))
 
     regressionBuilds = []
     for testName in project.otherProjects:
@@ -66,6 +72,12 @@ def lookupTests(build_type, count, builds):
         if parent is not None:
             if test.project not in parent.smokeTests or int(test.number) > int(parent.smokeTests[test.project].number):
                 parent.smokeTests[test.project] = test
+
+    for test in baselineBuilds:
+        parent = buildDict.get(test.parent)
+        if parent is not None:
+            if test.project not in parent.baselineTests or int(test.number) > int(parent.baselineTests[test.project].number):
+                parent.baselineTests[test.project] = test
 
     for test in regressionBuilds:
         parent = buildDict.get(test.parent)
@@ -83,6 +95,10 @@ def lookupTests(build_type, count, builds):
         for smoke in project.smokeProjects:
             if smoke not in build.smokeTests:
                 build.smokeTests[smoke]= models.Build(projectName=smoke)
+
+        for baseline in project.baselineProjects:
+            if baseline not in build.baselineTests:
+                build.baselineTests[smoke]= models.Build(projectName=baseline)
 
         for perf in project.perfProjects:
             if perf not in build.perfTests:
@@ -130,7 +146,7 @@ def get_project_report(request, build_type):
     return render('radiator/test_report.html', locals())
 
 def compile_project_test_cases( build, allCases ):
-    for test in build.smokeTests.values() + build.regressionTests.values():
+    for test in build.smokeTests.values() + build.baselineTests.values() + build.regressionTests.values():
         if test.testCases:
             for case in test.testCases:
                 errorCount, casesByBuildNbr = allCases.get(case.name,(0,{}))

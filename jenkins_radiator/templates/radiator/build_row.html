@@ -32,6 +32,12 @@
           &nbsp;<a href="{{test.url}}">S</a>&nbsp;{% endspaceless %}
         </div>
       {% endfor %}
+      {% for test in build.baselineTests.values|sortedByName %}
+        <div class="shadow box {{test.status}} tertiary" title="{{test.name}}: {{test.status|transformTestStatus}}">{% spaceless %}
+          {% include "radiator/test_spinner.html" %}
+          &nbsp;<a href="{{test.url}}">B</a>&nbsp;{% endspaceless %}
+        </div>
+      {% endfor %}
       {% for test in build.regressionTests.values|sortedByName %}
         <div class="shadow box {{test.status}} tertiary" title="{{test.name}}: {{test.status|transformTestStatus}}">{% spaceless %}
           {% include "radiator/test_spinner.html" %}
@@ -53,6 +59,22 @@
           </tr>
         </table>
       {% endif %}
+      {% if build.failedBaselineTests %}
+        <div class="gap"/>
+        <table class="tests">
+          <tr>
+            <td class="shadow boxleft baseline FAILURE"><div class="title">B<span class="subTitle"><br/>Baseline Test Failures</span></div></td>
+            <td class="shadow boxright FAILURE">
+              {% for test in build.failedBaselineTests %}
+                <div class="boxright {{test.status}} tertiary">
+                  <a href="{{ test.url }}">{{ test.name }}</a>: {% if test.failCount > 0 %}{{test.failCount}} of {{test.totalCount}} {% endif %}{{ test.status|transformTestStatus }}<br/>
+                </div>
+              {% endfor %}
+            </td>
+          </tr>
+        </table>
+      {% endif %}
+
       {% if build.failedRegressionTests %}
       <div class="gap"/>
       <table class="tests">

@@ -47,6 +47,7 @@ class Build(object):
             self.timeStamp = buildjson['timestamp'] / 1000
             self.dateTimeStamp = datetime.datetime.fromtimestamp(self.timeStamp)
             self.smokeTests = {}
+            self.baselineTests = {}
             self.regressionTests = {}
             self.perfTests = {}
             self.parent = None
@@ -81,6 +82,10 @@ class Build(object):
         return test_status(self.smokeTests.values())
 
     @property
+    def baseline_status(self):
+        return test_status(self.baselineTests.values())
+
+    @property
     def regression_status(self):
         return test_status(self.regressionTests.values())
 
@@ -90,7 +95,7 @@ class Build(object):
 
     @property
     def overall_status(self):
-        return sorted([self.status, self.smoke_status, self.regression_status], cmp=compare_by_status)[0]
+        return sorted([self.status, self.smoke_status, self.baseline_status, self.regression_status], cmp=compare_by_status)[0]
 
     @property
     def revisions(self):
@@ -126,6 +131,12 @@ class Build(object):
         return result
 
     @property
+    def isBaselineStatusSame(self):
+        firstTest = self.baselineTests.values()[0]
+        result = all( (item.status == firstTest.status) for item in self.baselineTests.values())
+        return result
+
+    @property
     def isRegressionStatusSame(self):
         firstTest = self.regressionTests.values()[0]
         result = all( (item.status == firstTest.status) for item in self.regressionTests.values())
@@ -134,6 +145,10 @@ class Build(object):
     @property
     def failedSmokeTests(self):
         return [test for test in self.smokeTests.values() if test.result in ['FAILURE','UNSTABLE']]
+
+    @property
+    def failedBaselineTests(self):
+        return [test for test in self.baselineTests.values() if test.result in ['FAILURE','UNSTABLE']]
 
     @property
     def failedRegressionTests(self):
