@@ -133,6 +133,6 @@ def formatForLabel(pagePerf):
     if pagePerf.totalKilobytesDelta < 0:
         totalKilobytesIndicator = down_arrow
 
-    return u"{0}\nYSlow Score: {1} {2}\nTotal Requests: {3} {4} \nPage Weight: {5}KB {6}"\
-        .format(pagePerf.name, pagePerf.score, scoreIndicator, pagePerf.totalRequests, totalRequestsIndicator,  pagePerf.totalKilobytes, totalKilobytesIndicator)
+    return u"{0} \nTotal Requests: {1} {2} \nPage Weight: {3}KB {4}"\
+        .format(pagePerf.name, pagePerf.totalRequests, totalRequestsIndicator,  pagePerf.totalKilobytes, totalKilobytesIndicator)
     

@@ -99,21 +99,13 @@
                         <div class="shadow box {{build.overall_status}} tertiary" title="{{pagePerf.pageName}}">
                             &nbsp;
                             {{ spaceless }}
-                                <span>{{ pagePerf.score }}</span>
+                                <span>{{ pagePerf.totalRequests }}</span>
                                 {% if pagePerf.prior %}
-                                    {% if pagePerf.scoreDelta > 0 %}
+                                    {% if pagePerf.totalRequestsDelta > 0 %}
                                         <!-- up arrow --> <b>{{ const.up_arrow }}</b>
                                     {% endif %}
-                                    {% if pagePerf.scoreDelta < 0 %}
+                                    {% if pagePerf.totalRequestsDelta < 0 %}
                                         <!-- down arrow --> <b>{{ const.down_arrow }}</b>
-                                    {% endif %}
-                                    {% if pagePerf.scoreDelta == 0 %}
-                                        {% if pagePerf.totalRequestsDelta > 0 %}
-                                            <!-- down arrow --> <b>{{ const.down_arrow }}</b>
-                                        {% endif %}
-                                        {% if pagePerf.totalRequestsDelta < 0 %}
-                                            <!-- up arrow --> <b>{{ const.up_arrow }}</b>
-                                        {% endif %}
                                     {% endif %}
                                 {% endif %}
                             {{ endspaceless }}
