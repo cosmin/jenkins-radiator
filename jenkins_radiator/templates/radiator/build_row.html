@@ -29,19 +29,19 @@
       {% for test in build.smokeTests.values|sortedByName %}
         <div class="shadow box {{test.status}} tertiary" title="{{test.name}}: {{test.status|transformTestStatus}}">{% spaceless %}
           {% include "radiator/test_spinner.html" %}
-          &nbsp;<a href="{{test.url}}">S</a>&nbsp;{% endspaceless %}
+          &nbsp;<a href="{{test.jenkinsUrl}}">S</a>&nbsp;{% endspaceless %}
         </div>
       {% endfor %}
       {% for test in build.baselineTests.values|sortedByName %}
         <div class="shadow box {{test.status}} tertiary" title="{{test.name}}: {{test.status|transformTestStatus}}">{% spaceless %}
           {% include "radiator/test_spinner.html" %}
-          &nbsp;<a href="{{test.url}}">B</a>&nbsp;{% endspaceless %}
+          &nbsp;<a href="{{test.jenkinsUrl}}">B</a>&nbsp;{% endspaceless %}
         </div>
       {% endfor %}
       {% for test in build.regressionTests.values|sortedByName %}
         <div class="shadow box {{test.status}} tertiary" title="{{test.name}}: {{test.status|transformTestStatus}}">{% spaceless %}
           {% include "radiator/test_spinner.html" %}
-          &nbsp;<a href="{{test.url}}">R</a>&nbsp;{% endspaceless %}
+          &nbsp;<a href="{{test.jenkinsUrl}}">R</a>&nbsp;{% endspaceless %}
         </div>
       {% endfor %}
       {% if build.failedSmokeTests %}
@@ -52,7 +52,7 @@
             <td class="shadow boxright FAILURE">
               {% for test in build.failedSmokeTests %}
                 <div class="boxright {{test.status}} tertiary">
-                  <a href="{{ test.url }}">{{ test.name }}</a>: {% if test.failCount > 0 %}{{test.failCount}} of {{test.totalCount}} {% endif %}{{ test.status|transformTestStatus }}<br/>
+                  <a href="{{ test.jenkinsUrl }}">{{ test.name }}</a>: {% if test.failCount > 0 %}{{test.failCount}} of {{test.totalCount}} {% endif %}{{ test.status|transformTestStatus }}<br/>
                 </div>
               {% endfor %}
             </td>
@@ -67,7 +67,7 @@
             <td class="shadow boxright FAILURE">
               {% for test in build.failedBaselineTests %}
                 <div class="boxright {{test.status}} tertiary">
-                  <a href="{{ test.url }}">{{ test.name }}</a>: {% if test.failCount > 0 %}{{test.failCount}} of {{test.totalCount}} {% endif %}{{ test.status|transformTestStatus }}<br/>
+                  <a href="{{ test.jenkinsUrl }}">{{ test.name }}</a>: {% if test.failCount > 0 %}{{test.failCount}} of {{test.totalCount}} {% endif %}{{ test.status|transformTestStatus }}<br/>
                 </div>
               {% endfor %}
             </td>
@@ -83,7 +83,7 @@
           <td class="boxright FAILURE">
             {% for test in build.failedRegressionTests %}
               <div class="boxright {{test.status}} tertiary">
-                <a href="{{ test.url }}">{{ test.name }}</a>: {% if test.failCount > 0 %}{{test.failCount}} of {{test.totalCount}} {% endif %}{{ test.status|transformTestStatus }}<br/>
+                <a href="{{ test.jenkinsUrl }}">{{ test.name }}</a>: {% if test.failCount > 0 %}{{test.failCount}} of {{test.totalCount}} {% endif %}{{ test.status|transformTestStatus }}<br/>
               </div>
             {% endfor %}
           </td>

@@ -45,6 +45,7 @@ class Build(object):
             self.url = settings.HUDSON_URL+'/job/'+projectName+'/'+self.number+'/'
             self.duration = buildjson['duration'] / 1000
             self.timeStamp = buildjson['timestamp'] / 1000
+            self.description = buildjson['description']
             self.dateTimeStamp = datetime.datetime.fromtimestamp(self.timeStamp)
             self.smokeTests = {}
             self.baselineTests = {}
@@ -167,7 +168,14 @@ class Build(object):
             pass
 
         return tests
-   
+
+    @property
+    def jenkinsUrl(self):
+        if self.description and self.description.find('results_page:') > -1:
+            return self.description.split('"')[1]
+        else:
+            return self.url
+
 status_order = ['FAILURE', 'UNSTABLE', 'BUILDING', 'ABORTED', 'SUCCESS', 'UNKNOWN', None ]
 
 def compare_by_status(r1, r2):
