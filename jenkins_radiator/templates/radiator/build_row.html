@@ -17,7 +17,7 @@
         <a href="{{build.url}}/changes">
         <span class="revision">rev {{commit.revision}}</span></a>,
         <span class="user"> by {{commit.user|firstWord}}</span>:
-        <span class="msg">{{commit.msg|truncatewords:50}}</span><br>
+        <span class="msg">{{commit.msg|truncatewords:50|wordbreak:"20"}}</span><br>
       {% endfor %}{% endspaceless %}
     </div>
   </div>

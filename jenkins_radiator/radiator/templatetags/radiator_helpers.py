@@ -1,6 +1,8 @@
 from django import template
 from django.template.defaultfilters import stringfilter
 from django.utils.safestring import mark_safe
+from django.utils.html import conditional_escape
+from datetime import datetime
 
 import re
 from jenkins_radiator.radiator.models import compare_by_result
@@ -136,3 +138,12 @@ def formatForLabel(pagePerf):
     return u"{0} \nTotal Requests: {1} {2} \nPage Weight: {3}KB {4}"\
         .format(pagePerf.name, pagePerf.totalRequests, totalRequestsIndicator,  pagePerf.totalKilobytes, totalKilobytesIndicator)
     
+
+@register.filter
+def wordbreak (string, arg):
+    search = '([^ ]{' + arg + '})'
+    t = datetime.now()
+    wbr = t.strftime("%A%d%B%Y%f") + 'wbr_here' + t.strftime("%A%d%B%Y%f")
+    saferesult = conditional_escape(re.sub( search, '\\1' + wbr, string ))
+    result = saferesult.replace(wbr,'&shy;')
+    return mark_safe(result)
