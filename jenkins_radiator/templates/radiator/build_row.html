@@ -7,10 +7,9 @@
     {% else %}
         title="Hudson Build {{build.number}} completed with status of: {{build.status}}"
     {% endif %}>
-    <div class="buildNumber"><a href="{{build.url}}">#{{ build.number}}</a>&nbsp;
-      {% if build.status == 'BUILDING' %} {% include "radiator/progress_bar.html" %}&nbsp;{% endif %}
+    <div class="buildNumber">{% include "radiator/build_spinner.html" %}<a href="{{build.url}}">#{{ build.number}}</a>&nbsp;
 </div>
-    <div class="buildTime" title="{{build.dateTimeStamp}}">{{ build.dateTimeStamp|timesince }} ago</div>
+    <div class="buildTime" title="{{build.dateTimeStamp}}">{{ build.dateTimeStamp}} | Elapsed: {{build.totalElapsedTime|format_seconds_to_mmss}} | Estimated Remaining:{{ build.estimatedRemaining|format_seconds_to_mmss }}</div>
     <div class="clear-both"></div>
     <div class="scm">{% spaceless %}
       {% for commit in build.items %}
@@ -25,6 +24,12 @@
     <!-- <a class="infoCircle shadow" id="info_{{build.name|slugify}}" title="Click for info..."
       href="/radiator/info/{{build_type}}/{{build.number}}"
       onclick="window.open(this.href, 'popupwindow', 'width=500,height=300'); return false;">i</a> -->
+    {% if build.status == 'BUILDING' %}
+        <div class="building_msg">
+            Compiling & Running Unit Tests
+        </div>
+    {% endif %}
+
     {% if build.status == "SUCCESS" %}
       {% for test in build.smokeTests.values|sortedByName %}
         <div class="shadow box {{test.status}} tertiary" title="{{test.name}}: {{test.status|transformTestStatus}}">{% spaceless %}
@@ -135,22 +140,22 @@
 <div class="gap"/>
 <script>
 $(document).ready(function() {
-	$('#info_{{build.name|slugify}}').each(function() {
-		var $link = $(this);
-		var $dialog = $('<div></div>')
-			.load($link.attr('href'))
-			.dialog({
-				autoOpen: false,
-				title: $link.attr('title'),
-				width: 500,
-				height: 300
-			});
+    $('#info_{{build.name|slugify}}').each(function() {
+        var $link = $(this);
+        var $dialog = $('<div></div>')
+            .load($link.attr('href'))
+            .dialog({
+                autoOpen: false,
+                title: $link.attr('title'),
+                width: 500,
+                height: 300
+            });
 
-		$link.click(function() {
-			$dialog.dialog('open');
+        $link.click(function() {
+            $dialog.dialog('open');
 
-			return false;
-		});
-	});
+            return false;
+        });
+    });
 });
 </script>

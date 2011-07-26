@@ -34,6 +34,9 @@ class Build(object):
             self.name = projectName
             self.projectName = projectName
             self.building = False
+            self.duration = 0
+            self.timeStamp = 0
+
         else:
             self.name = buildjson['fullDisplayName'].split(settings.HUDSON_TEST_NAME_PATTERN)[-1]
             self.building = buildjson['building']
@@ -45,6 +48,7 @@ class Build(object):
             self.url = settings.HUDSON_URL+'/job/'+projectName+'/'+self.number+'/'
             self.duration = buildjson['duration'] / 1000
             self.timeStamp = buildjson['timestamp'] / 1000
+            self.estimateCompletion = 0
             self.description = buildjson['description']
             self.dateTimeStamp = datetime.datetime.fromtimestamp(self.timeStamp)
             self.smokeTests = {}
@@ -117,14 +121,39 @@ class Build(object):
     @property
     def display_msgs(self):
         return '\n-------\n'.join([msg for msg in self.msgs])
-
-    @property
-    def runningTime(self):
-        if self.duration > 0:
-            return ''
         
+    @property
+    def elapsedTime(self):
+        if self.timeStamp == 0:
+            return 0
+            
+        if self.duration > 0:
+            return self.duration
+            
         return time.time() - self.timeStamp
         
+
+    @property
+    def totalElapsedTime(self):
+        return sum([self.elapsedTime]+
+            [test.elapsedTime for test in self.smokeTests.values()]+
+            [test.elapsedTime for test in self.baselineTests.values()]+
+            [test.elapsedTime for test in self.regressionTests.values()])
+
+    @property
+    def totalUnfinishedDuration(self):
+        return sum([self.unfinishedDuration]+
+            [test.unfinishedDuration for test in self.smokeTests.values()]+
+            [test.unfinishedDuration for test in self.baselineTests.values()]+
+            [test.unfinishedDuration for test in self.regressionTests.values()])
+    
+    @property
+    def unfinishedDuration(self):
+        if self.duration > 0 or self.timeStamp == 0:
+            return 0
+        
+        return time.time() - self.timeStamp
+                             
     @property
     def isSmokeStatusSame(self):
         firstTest = self.smokeTests.values()[0]
@@ -300,7 +329,7 @@ def getTestData(jsonData,runNumber):
 
     return tests
 
-
+    
 class PagePerformance(object):
     def __init__(self, index, name, url, pageJsonData):
         self.index = index

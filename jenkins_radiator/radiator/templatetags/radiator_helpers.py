@@ -147,3 +147,12 @@ def wordbreak (string, arg):
     saferesult = conditional_escape(re.sub( search, '\\1' + wbr, string ))
     result = saferesult.replace(wbr,'&shy;')
     return mark_safe(result)
+    
+@register.filter
+def format_seconds_to_mmss(seconds):
+    if seconds == '':
+            seconds = 0
+            
+    minutes = seconds // 60
+    seconds %= 60
+    return "%02i:%02i" % (minutes, seconds)

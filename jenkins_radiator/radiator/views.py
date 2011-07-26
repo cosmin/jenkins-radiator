@@ -24,10 +24,10 @@ def get_builds(request, build_type):
     builds = models.get_recent_builds( build_type + settings.HUDSON_BUILD_NAME_PATTERN, count )
     buildDict = lookupTests(build_type, count, builds)
 
-    avgTime = avg([build.duration for build in builds])
-    if builds[0].status == 'BUILDING':
-        progBarDone = (builds[0].runningTime / avgTime) * 100
-        progBarLeft = 100 - progBarDone
+    avgTime = avg([build.totalElapsedTime for build in builds])
+    for build in builds:
+        if build.totalUnfinishedDuration > 0:
+            build.estimatedRemaining = avgTime - build.totalUnfinishedDuration
     
     return render('radiator/builds_table.html', locals())
 
