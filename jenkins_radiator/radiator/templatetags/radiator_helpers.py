@@ -42,7 +42,7 @@ def transformTestStatus(value):
         return "Passed"
 
     if value == 'BUILDING':
-        return "Running ..."
+        return "Running"
 
     if value == 'UNKNOWN':
         return "Not run (yet)"

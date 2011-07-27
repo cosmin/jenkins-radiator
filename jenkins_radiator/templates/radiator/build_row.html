@@ -3,13 +3,18 @@
 <div class="buildbox {{build.name|slugify}}">
   <div class="boxtop {{build.overall_status}}"
     {% if build.status == "BUILDING" %}
-      title="Hudson Build {{build.number}} is currently running... "
+      title="Jenkins Build {{build.number}} is currently running. Elapsed time: {{build.elapsedTime|format_seconds_to_mmss}}"
     {% else %}
-        title="Hudson Build {{build.number}} completed with status of: {{build.status}}"
+        title="Jenkins Build {{build.number}} completed with status of: {{build.status}}, Elapsed time: {{build.elapsedTime|format_seconds_to_mmss}}"
     {% endif %}>
     <div class="buildNumber">{% include "radiator/build_spinner.html" %}<a href="{{build.url}}">#{{ build.number}}</a>&nbsp;
 </div>
-    <div class="buildTime" title="{{build.dateTimeStamp}}">{{ build.dateTimeStamp}} | Elapsed: {{build.totalElapsedTime|format_seconds_to_mmss}} | Estimated Remaining:{{ build.estimatedRemaining|format_seconds_to_mmss }}</div>
+    <div class="buildTime" title="{{build.dateTimeStamp}}">
+        {{ build.dateTimeStamp}}&nbsp;|&nbsp;Elapsed: {{build.totalElapsedTime|format_seconds_to_mmss}}
+        {% if build.estimatedRemaining > 0 %}
+            &nbsp;|&nbsp;Estimated Remaining: {{ build.estimatedRemaining|format_seconds_to_mmss }}
+        {% endif %}
+    </div>
     <div class="clear-both"></div>
     <div class="scm">{% spaceless %}
       {% for commit in build.items %}
@@ -32,19 +37,19 @@
 
     {% if build.status == "SUCCESS" %}
       {% for test in build.smokeTests.values|sortedByName %}
-        <div class="shadow box {{test.status}} tertiary" title="{{test.name}}: {{test.status|transformTestStatus}}">{% spaceless %}
+        <div class="shadow box {{test.status}} tertiary" title="{{test.name}}: {{test.status|transformTestStatus}}, Elapsed time: {{test.elapsedTime|format_seconds_to_mmss}}">{% spaceless %}
           {% include "radiator/test_spinner.html" %}
           &nbsp;<a href="{{test.jenkinsUrl}}">S</a>&nbsp;{% endspaceless %}
         </div>
       {% endfor %}
       {% for test in build.baselineTests.values|sortedByName %}
-        <div class="shadow box {{test.status}} tertiary" title="{{test.name}}: {{test.status|transformTestStatus}}">{% spaceless %}
+        <div class="shadow box {{test.status}} tertiary" title="{{test.name}}: {{test.status|transformTestStatus}}, Elapsed time: {{test.elapsedTime|format_seconds_to_mmss}}">{% spaceless %}
           {% include "radiator/test_spinner.html" %}
           &nbsp;<a href="{{test.jenkinsUrl}}">B</a>&nbsp;{% endspaceless %}
         </div>
       {% endfor %}
       {% for test in build.regressionTests.values|sortedByName %}
-        <div class="shadow box {{test.status}} tertiary" title="{{test.name}}: {{test.status|transformTestStatus}}">{% spaceless %}
+        <div class="shadow box {{test.status}} tertiary" title="{{test.name}}: {{test.status|transformTestStatus}}, Elapsed time: {{test.elapsedTime|format_seconds_to_mmss}}">{% spaceless %}
           {% include "radiator/test_spinner.html" %}
           &nbsp;<a href="{{test.jenkinsUrl}}">R</a>&nbsp;{% endspaceless %}
         </div>

@@ -48,7 +48,7 @@ class Build(object):
             self.url = settings.HUDSON_URL+'/job/'+projectName+'/'+self.number+'/'
             self.duration = buildjson['duration'] / 1000
             self.timeStamp = buildjson['timestamp'] / 1000
-            self.estimateCompletion = 0
+            self.estimatedRemaining = 0
             self.description = buildjson['description']
             self.dateTimeStamp = datetime.datetime.fromtimestamp(self.timeStamp)
             self.smokeTests = {}
@@ -136,22 +136,22 @@ class Build(object):
     @property
     def totalElapsedTime(self):
         return sum([self.elapsedTime]+
-            [test.elapsedTime for test in self.smokeTests.values()]+
-            [test.elapsedTime for test in self.baselineTests.values()]+
-            [test.elapsedTime for test in self.regressionTests.values()])
+            [max([test.elapsedTime for test in self.smokeTests.values()]+
+            [test.elapsedTime for test in self.baselineTests.values()])]+
+            [max([test.elapsedTime for test in self.regressionTests.values()])])
 
     @property
     def totalUnfinishedDuration(self):
         return sum([self.unfinishedDuration]+
-            [test.unfinishedDuration for test in self.smokeTests.values()]+
-            [test.unfinishedDuration for test in self.baselineTests.values()]+
-            [test.unfinishedDuration for test in self.regressionTests.values()])
+            [max([test.unfinishedDuration for test in self.smokeTests.values()]+
+            [test.unfinishedDuration for test in self.baselineTests.values()])]+
+            [max([test.unfinishedDuration for test in self.regressionTests.values()])])
     
     @property
     def unfinishedDuration(self):
         if self.duration > 0 or self.timeStamp == 0:
             return 0
-        
+
         return time.time() - self.timeStamp
                              
     @property

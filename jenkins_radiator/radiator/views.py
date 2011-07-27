@@ -24,11 +24,12 @@ def get_builds(request, build_type):
     builds = models.get_recent_builds( build_type + settings.HUDSON_BUILD_NAME_PATTERN, count )
     buildDict = lookupTests(build_type, count, builds)
 
-    avgTime = avg([build.totalElapsedTime for build in builds])
-    for build in builds:
-        if build.totalUnfinishedDuration > 0:
-            build.estimatedRemaining = avgTime - build.totalUnfinishedDuration
-    
+    if len(builds) > 1:
+        avgTime = avg([build.totalElapsedTime for build in builds if build.overall_status != 'BUILDING'])
+        for build in builds:
+            if build.totalUnfinishedDuration > 0:
+                build.estimatedRemaining = avgTime - build.totalUnfinishedDuration
+                
     return render('radiator/builds_table.html', locals())
 
 def get_build_info(request, build_type, build_number):
