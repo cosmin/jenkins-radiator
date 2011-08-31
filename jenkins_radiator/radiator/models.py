@@ -55,6 +55,7 @@ class Build(object):
             self.baselineTests = {}
             self.regressionTests = {}
             self.perfTests = {}
+            self.codeWatchTests = {}
             self.parent = None
             self.projectName = projectName
             self.builtOn= buildjson['builtOn']
@@ -177,6 +178,11 @@ class Build(object):
         return [test for test in self.smokeTests.values() if test.result in ['FAILURE','UNSTABLE']]
 
     @property
+    def failedCodeWatchTests(self):
+        return [test for test in self.codeWatchTests.values() if test.result in ['FAILURE','UNSTABLE']]
+
+
+    @property
     def failedBaselineTests(self):
         return [test for test in self.baselineTests.values() if test.result in ['FAILURE','UNSTABLE']]
 
@@ -283,6 +289,11 @@ def get_performance_projects(data, build_type):
     perfList = [job['name'] for job in jobs if job['name'].upper().startswith(build_type.upper() + '_PERFORMANCE_')]
     return perfList
 
+def get_code_watch_projects(data, build_type):
+    jobs = data['jobs']
+    watchList = [job['name'] for job in jobs if job['name'].upper().startswith(build_type.upper() + '_CODE_WATCH_')]
+    return watchList
+
 def flatten(x):
     cases = []
     cases.extend(x)
@@ -301,6 +312,22 @@ def create_pagePerfs(buildUrl):
             performancePages[fileName] = newPage
             counter += 1
         return performancePages
+    except urllib2.HTTPError:
+        return None
+
+def get_codeWatchStatus(buildUrl, buildStatus):
+    try:
+        artifactsJson = json.loads(urllib2.urlopen(buildUrl + "api/json").read())["artifacts"]
+        codeWatch_status = "ABORTED"
+        if buildStatus == "SUCCESS" :
+            codeWatch_status = "WARNING"
+            for artifactJson in artifactsJson:
+                pageDataUrl = buildUrl + "artifact/" + artifactJson["relativePath"]
+                codeWatchJasonData = json.loads(urllib2.urlopen(pageDataUrl).read())
+                build_info = codeWatchJasonData["build_info"]
+                if build_info["status"] == "pass" :
+                    codeWatch_status = "SUCCESS"
+        return codeWatch_status
     except urllib2.HTTPError:
         return None
 

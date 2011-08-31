@@ -41,6 +41,9 @@ def transformTestStatus(value):
     if value == 'SUCCESS':
         return "Passed"
 
+    if value == 'WARNING':
+        return "Risky check in, please code review."
+
     if value == 'BUILDING':
         return "Running"
 

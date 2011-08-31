@@ -117,6 +117,8 @@ a{ color: #ffffff; text-decoration: none;; }
 .tertiary.UNSTABLE a,
 .secondary.UNSTABLE{ background-color: #770000; border-color: #770000; }
 
+.WARNING{background-color: #ea5d01; border-color: #ea5d01}
+
 .FAILURE{ background-color: #aa0000; border-color: #aa0000; }
 .boxright.FAILURE,
 .secondary.FAILURE a,
