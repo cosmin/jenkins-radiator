@@ -54,6 +54,12 @@
           &nbsp;<a href="{{test.jenkinsUrl}}">R</a>&nbsp;{% endspaceless %}
         </div>
       {% endfor %}
+      {% for test in build.codeWatchTests.values|sortedByName %}
+        <div class="shadow box {{ test.codeWatchStatus}} tertiary" title="{{test.name}}: {{test.codeWatchStatus|transformTestStatus}}, Elapsed time: {{test.elapsedTime|format_seconds_to_mmss}}">{% spaceless %}
+          {% include "radiator/test_spinner.html" %}
+          &nbsp;<a href="{{test.jenkinsUrl}}">Q</a>&nbsp;{% endspaceless %}
+        </div>
+      {% endfor %}
       {% if build.failedSmokeTests %}
         <div class="gap"/>
         <table class="tests">
@@ -84,7 +90,6 @@
           </tr>
         </table>
       {% endif %}
-
       {% if build.failedRegressionTests %}
       <div class="gap"/>
       <table class="tests">
