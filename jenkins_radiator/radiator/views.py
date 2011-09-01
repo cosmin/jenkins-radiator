@@ -139,7 +139,7 @@ def lookupTests(build_type, count, builds):
         for perfProject in project.perfProjects:
             lastSuccessfulBuild = None
             for build in reversed(builds):
-                if build.perfTests[perfProject].result == "SUCCESS":
+                if build.perfTests.__contains__(perfProject) and build.perfTests[perfProject].result == "SUCCESS":
                     build.perfTests[perfProject].prior = lastSuccessfulBuild
                     lastSuccessfulBuild = build.perfTests[perfProject]
 
