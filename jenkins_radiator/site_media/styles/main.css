@@ -119,6 +119,7 @@ a{ color: #ffffff; text-decoration: none;; }
 
 .WARNING{background-color: #ea5d01; border-color: #ea5d01}
 .boxright.WARNING,
+.secondary.WARNING, 
 .secondary.WARNING a,
 .tertiary.WARNING,
 .tertiary.WARNING a,
