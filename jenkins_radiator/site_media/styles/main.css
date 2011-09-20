@@ -117,12 +117,13 @@ a{ color: #ffffff; text-decoration: none;; }
 .tertiary.UNSTABLE a,
 .secondary.UNSTABLE{ background-color: #770000; border-color: #770000; }
 
-.WARNING{background-color: #ea5d01; border-color: #ea5d01}
+.WARNING{background-color: #fef905; border-color: #fef905}
 .boxright.WARNING,
+.secondary.WARNING, 
 .secondary.WARNING a,
 .tertiary.WARNING,
 .tertiary.WARNING a,
-.secondary.WARNING{ background-color: #ea5d01; border-color: #ea5d01; color: #FFFFFF; }
+.secondary.WARNING{ background-color: #fef905; border-color: #fef905; color: #444444; }
 
 .FAILURE{ background-color: #aa0000; border-color: #aa0000; }
 .boxright.FAILURE,
