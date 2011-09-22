@@ -179,7 +179,7 @@ class Build(object):
 
     @property
     def failedCodeWatchTests(self):
-        return [test for test in self.codeWatchTests.values() if test.result in ['FAILURE','UNSTABLE']]
+        return [test for test in self.codeWatchTests.values() if test.result in ['WARNING','UNSTABLE']]
 
 
     @property
