@@ -117,14 +117,6 @@ a{ color: #ffffff; text-decoration: none;; }
 .tertiary.UNSTABLE a,
 .secondary.UNSTABLE{ background-color: #770000; border-color: #770000; }
 
-.WARNING{background-color: #fef905; border-color: #fef905}
-.boxright.WARNING,
-.secondary.WARNING, 
-.secondary.WARNING a,
-.tertiary.WARNING,
-.tertiary.WARNING a,
-.secondary.WARNING{ background-color: #fef905; border-color: #fef905; color: #444444; }
-
 .FAILURE{ background-color: #aa0000; border-color: #aa0000; }
 .boxright.FAILURE,
 .secondary.FAILURE a,
@@ -135,6 +127,14 @@ a{ color: #ffffff; text-decoration: none;; }
 .tertiary.SUCCESS a,
 .tertiary.SUCCESS{ background-color: #0a0; border-color: #0a0; color: white;}
 .SUCCESS.box{ font-weight: bold; text-align: center; }
+
+.WARNING{background-color: #fef905; border-color: #fef905}
+.boxright.WARNING,
+.secondary.WARNING, 
+.secondary.WARNING a,
+.tertiary.WARNING,
+.tertiary.WARNING a,
+.secondary.WARNING{ background-color: #fef905; border-color: #fef905; color: #444444; }
 
 .BUILDING{ background-color: #44b; border-color: #44b; }
 .BUILDING.secondary{ background-color: #007; border-color: #007; }
