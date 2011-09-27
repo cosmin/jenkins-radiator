@@ -138,15 +138,15 @@ class Build(object):
     def totalElapsedTime(self):
         return sum([self.elapsedTime]+
             [max([test.elapsedTime for test in self.smokeTests.values()]+
-            [test.elapsedTime for test in self.baselineTests.values()]+[0])]+
-            [max([test.elapsedTime for test in self.regressionTests.values()]+[0])])
+            [test.elapsedTime for test in self.baselineTests.values()]+[0]+
+            [test.elapsedTime for test in self.regressionTests.values()]+[0])])
 
     @property
     def totalUnfinishedDuration(self):
         return sum([self.unfinishedDuration]+
             [max([test.unfinishedDuration for test in self.smokeTests.values()]+
-            [test.unfinishedDuration for test in self.baselineTests.values()]+[0])]+
-            [max([test.unfinishedDuration for test in self.regressionTests.values()]+[0])])
+            [test.unfinishedDuration for test in self.baselineTests.values()]+[0]+
+            [test.unfinishedDuration for test in self.regressionTests.values()]+[0])])
     
     @property
     def unfinishedDuration(self):
