@@ -159,3 +159,20 @@ def format_seconds_to_mmss(seconds):
     minutes = seconds // 60
     seconds %= 60
     return "%02i:%02i" % (minutes, seconds)
+
+@register.filter
+def avg(builds):
+	times = [build.duration for build in builds]
+	return sum(times)/len(times)
+	
+@register.filter
+def longest(builds):
+	return max([build.duration for build in builds])
+
+@register.filter
+def shortest(builds):
+	return max([build.duration for build in builds])
+
+@register.filter
+def allTests(builds):
+	return [build.all_tests for build in builds]

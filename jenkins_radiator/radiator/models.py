@@ -82,6 +82,9 @@ class Build(object):
 
             self.trigger = actions.get('causes')[0].get('shortDescription')
 
+    @property
+    def all_tests(self):
+        return self.smokeTests.values() + self.baselineTests.values() + self.regressionTests.values()
 
     @property
     def smoke_status(self):

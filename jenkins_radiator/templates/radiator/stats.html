@@ -1,0 +1,12 @@
+{% load radiator_helpers %}
+
+<div class="build-stats">
+    <p>For the last {{ builds|length }} builds:
+    Average time: {{ builds|avg|format_seconds_to_mmss}}
+    Longest time: {{ builds|longest|format_seconds_to_mmss}}
+    Shortest time: {{ builds|shortest|format_seconds_to_mmss}}</p>
+    <p>Average test suite time: {{ builds|allTests|avg|format_seconds_to_mmss }}
+    Longest time: {{ builds|allTests|longest|format_seconds_to_mmss }}
+    Shortest: {{ builds|allTests|shortest|format_seconds_to_mmss }}
+    Average total time: {{ avgTime|format_seconds_to_mmss }}</p>
+</div>

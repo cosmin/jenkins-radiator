@@ -1,5 +1,6 @@
 {% load radiator_helpers %}
 
+{% include "radiator/stats.html" %}
 {% for build in builds %}
    {% include "radiator/build_row.html" %}
 {% endfor %}
