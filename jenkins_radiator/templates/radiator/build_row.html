@@ -68,7 +68,28 @@
             <td class="shadow boxright FAILURE">
               {% for test in build.failedSmokeTests %}
                 <div class="boxright {{test.status}} tertiary">
-                  <a href="{{ test.jenkinsUrl }}">{{ test.name }}</a>: {% if test.failCount > 0 %}{{test.failCount}} of {{test.totalCount}} {% endif %}{{ test.status|transformTestStatus }}<br/>
+
+                    <table>
+                        <tr>
+                            <td class="rerunBox">
+                                <form method="post" action="{{test.reRunUrl}}" target="_new">
+                                    <input type="hidden" name="name" value="BUILDURL"/>
+                                    <input type="hidden" name="runId" value="{{build_type}}_Build#{{build.number}}"/>
+                                    <input type="hidden" name="name" value="APP_CONTEXT"/>
+                                    <input type="hidden" name="value" value="loyalty"/>
+                                    <input type="hidden" name="name" value="PARENT_SVN_REVISION"/>
+                                    <input type="hidden" name="value" value="{{build.latestRevision}}"/>
+                                    <input type="hidden" name="Submit" value="Build"/>
+                                    <input type="submit" value="ReRun"/>
+
+                                    <input type="hidden" name="json" value="{'parameter': [{'name': 'BUILDURL', 'runId': '{{build_type}}_Build#{{build.number}}'}, {'name': 'APP_CONTEXT', 'value': 'loyalty'}, {'name': 'PARENT_SVN_REVISION', 'value': '{{build.latestRevision}}'}]}"/>
+                                </form>
+                            </td>
+                            <td>
+                                <a href="{{ test.jenkinsUrl }}">{{ test.name }}</a>: {% if test.failCount > 0 %}{{test.failCount}} of {{test.totalCount}} {% endif %}{{ test.status|transformTestStatus }}
+                            </td>
+                        </tr>
+                    </table>
                 </div>
               {% endfor %}
             </td>
@@ -83,7 +104,28 @@
             <td class="shadow boxright FAILURE">
               {% for test in build.failedBaselineTests %}
                 <div class="boxright {{test.status}} tertiary">
-                  <a href="{{ test.jenkinsUrl }}">{{ test.name }}</a>: {% if test.failCount > 0 %}{{test.failCount}} of {{test.totalCount}} {% endif %}{{ test.status|transformTestStatus }}<br/>
+
+                    <table>
+                        <tr>
+                            <td class="rerunBox">
+                                <form method="post" action="{{test.reRunUrl}}" target="_new">
+                                    <input type="hidden" name="name" value="BUILDURL"/>
+                                    <input type="hidden" name="runId" value="{{build_type}}_Build#{{build.number}}"/>
+                                    <input type="hidden" name="name" value="APP_CONTEXT"/>
+                                    <input type="hidden" name="value" value="loyalty"/>
+                                    <input type="hidden" name="name" value="PARENT_SVN_REVISION"/>
+                                    <input type="hidden" name="value" value="{{build.latestRevision}}"/>
+                                    <input type="hidden" name="Submit" value="Build"/>
+                                    <input type="submit" value="ReRun"/>
+
+                                    <input type="hidden" name="json" value="{'parameter': [{'name': 'BUILDURL', 'runId': '{{build_type}}_Build#{{build.number}}'}, {'name': 'APP_CONTEXT', 'value': 'loyalty'}, {'name': 'PARENT_SVN_REVISION', 'value': '{{build.latestRevision}}'}]}"/>
+                                </form>
+                            </td>
+                            <td>
+                                <a href="{{ test.jenkinsUrl }}">{{ test.name }}</a>: {% if test.failCount > 0  %} {{ test.failCount}} of {{test.totalCount}} {% endif %} {{ test.status|transformTestStatus }}
+                            </td>
+                        </tr>
+                    </table>
                 </div>
               {% endfor %}
             </td>
@@ -98,7 +140,28 @@
           <td class="boxright FAILURE">
             {% for test in build.failedRegressionTests %}
               <div class="boxright {{test.status}} tertiary">
-                <a href="{{ test.jenkinsUrl }}">{{ test.name }}</a>: {% if test.failCount > 0 %}{{test.failCount}} of {{test.totalCount}} {% endif %}{{ test.status|transformTestStatus }}<br/>
+
+                    <table>
+                        <tr>
+                            <td class="rerunBox">
+                                <form method="post" action="{{test.reRunUrl}}" target="_new">
+                                    <input type="hidden" name="name" value="BUILDURL"/>
+                                    <input type="hidden" name="runId" value="{{build_type}}_Build#{{build.number}}"/>
+                                    <input type="hidden" name="name" value="APP_CONTEXT"/>
+                                    <input type="hidden" name="value" value="loyalty"/>
+                                    <input type="hidden" name="name" value="PARENT_SVN_REVISION"/>
+                                    <input type="hidden" name="value" value="{{build.latestRevision}}"/>
+                                    <input type="hidden" name="Submit" value="Build"/>
+                                    <input type="submit" value="ReRun"/>
+
+                                    <input type="hidden" name="json" value="{'parameter': [{'name': 'BUILDURL', 'runId': '{{build_type}}_Build#{{build.number}}'}, {'name': 'APP_CONTEXT', 'value': 'loyalty'}, {'name': 'PARENT_SVN_REVISION', 'value': '{{build.latestRevision}}'}]}"/>
+                                </form>
+                            </td>
+                            <td>
+                               <a href="{{ test.jenkinsUrl }}">{{ test.name }}</a>: {% if test.failCount > 0 %}{{test.failCount}} of {{test.totalCount}} {% endif %}{{ test.status|transformTestStatus }}
+                            </td>
+                        </tr>
+                    </table>
               </div>
             {% endfor %}
           </td>

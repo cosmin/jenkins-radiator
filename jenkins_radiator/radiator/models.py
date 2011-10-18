@@ -61,6 +61,11 @@ class Build(object):
             self.builtOn= buildjson['builtOn']
             self.prior=None
 
+            self.latestRevision = 0
+            for index, item in enumerate(self.items):
+                if index == 0:
+                    self.latestRevision = item.get("revision")
+
             actions = {}
             for action in buildjson['actions']:
                 actions.update(action)
@@ -211,6 +216,12 @@ class Build(object):
         else:
             return self.url
 
+    @property
+    def reRunUrl(self):
+        splitUrl = self.url.split("/")
+        splitUrl.pop(-2)
+        return "/".join(splitUrl) + "build?delay=0sec&token=radiatorRerun"
+
 status_order = ['FAILURE', 'UNSTABLE', 'BUILDING', 'ABORTED', 'SUCCESS', 'UNKNOWN', None ]
 
 def compare_by_status(r1, r2):
@@ -268,7 +279,7 @@ def get_build(projectName, number, suffix=""):
            os.remove(filename)
     try:
         build = get_data(url+'/api/json')
-    
+
     except urllib2.HTTPError:
         return None
 
