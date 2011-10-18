@@ -2,7 +2,7 @@ from django.shortcuts import render_to_response as render
 from django.conf import settings
 import models
 import re
-
+import socket
 markup_constants = {"up_arrow": u"\u25B2",
                     "down_arrow": u"\u25BC"}
 
@@ -15,6 +15,7 @@ def get_radiator(request, build_list):
     const = markup_constants
     buildCount = request.GET.get('builds', settings.HUDSON_BUILD_COUNT)
     build_types = [build_row.split(',') for build_row in build_list.split('|')]
+    build_topic = swa_devchat_topic()
     columnSize = 100 / len(build_types[0])
     return render('radiator/builds.html', locals())
 
@@ -216,3 +217,20 @@ def summarize_test_cases(caseDict):
 
     return sorted(summary, key=lambda c: c[1], reverse=True)
 
+def swa_devchat_topic():
+    buf=""
+    s=socket.socket( )
+    s.connect((settings.SWA_IRC_HOST, settings.SWA_IRC_PORT))
+    s.send("NICK %s\r\n" % settings.SWA_IRC_NICK)
+    buf=buf+s.recv(2048)
+    s.send("USER %s %s blah :  %s\r\n" % (settings.SWA_IRC_IDENT, settings.SWA_IRC_HOST, settings.SWA_IRC_REALNAME))
+    buf=buf+s.recv(2048)
+    s.send("JOIN %s \r\n" % settings.SWA_IRC_CHAN)
+    buf=buf+s.recv(2048)
+    s.send("TOPIC  %s\r\n" % settings.SWA_IRC_CHAN)
+    buf=s.recv(1024)
+    topic=re.findall(settings.SWA_IRC_RGX,buf)
+    ircTopic=topic[0].rstrip('\r').rstrip(']')
+    s.send("QUIT\r\n")
+    s.close()
+    return ircTopic
