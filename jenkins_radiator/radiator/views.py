@@ -15,7 +15,9 @@ def get_radiator(request, build_list):
     const = markup_constants
     buildCount = request.GET.get('builds', settings.HUDSON_BUILD_COUNT)
     build_types = [build_row.split(',') for build_row in build_list.split('|')]
-    build_topic = irc_channel_topic()
+    if hasattr(settings,'IRC_HOST'):
+        build_topic = irc_channel_topic()
+
     columnSize = 100 / len(build_types[0])
     return render('radiator/builds.html', locals())
 
