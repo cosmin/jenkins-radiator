@@ -15,7 +15,7 @@ def get_radiator(request, build_list):
     const = markup_constants
     buildCount = request.GET.get('builds', settings.HUDSON_BUILD_COUNT)
     build_types = [build_row.split(',') for build_row in build_list.split('|')]
-    build_topic = swa_devchat_topic()
+    build_topic = irc_channel_topic()
     columnSize = 100 / len(build_types[0])
     return render('radiator/builds.html', locals())
 
@@ -217,7 +217,7 @@ def summarize_test_cases(caseDict):
 
     return sorted(summary, key=lambda c: c[1], reverse=True)
 
-def swa_devchat_topic():
+def irc_channel_topic():
     buf=""
     s=socket.socket( )
     s.connect((settings.SWA_IRC_HOST, settings.SWA_IRC_PORT))
