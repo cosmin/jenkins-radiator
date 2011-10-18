@@ -3,6 +3,7 @@ from django.conf import settings
 import models
 import re
 import socket
+import time
 markup_constants = {"up_arrow": u"\u25B2",
                     "down_arrow": u"\u25BC"}
 
@@ -229,9 +230,11 @@ def irc_channel_topic():
     s.send("JOIN %s \r\n" % settings.IRC_CHAN)
     buf=buf+s.recv(2048)
     s.send("TOPIC  %s\r\n" % settings.IRC_CHAN)
+    time.sleep(1);
     buf=s.recv(1024)
     topic=re.findall(settings.IRC_RGX,buf)
-    ircTopic=topic[0].rstrip('\r').rstrip(']')
+    if len(topic) > 0:
+       ircTopic=topic[0].rstrip('\r').rstrip(']')
     s.send("QUIT\r\n")
     s.close()
     return ircTopic
