@@ -4,7 +4,7 @@
     <table>
         <tr>
             <td class="rerunBox">
-                <form method="post" action="{{test.reRunUrl}}" target="_new">
+                <form method="post" action="{{test.reRunUrl}}" target="_new" class="rerunForm">
                     <input type="hidden" name="name" value="BUILDURL"/>
                     <input type="hidden" name="runId" value="{{build_type}}_Build#{{build.number}}"/>
                     <input type="hidden" name="name" value="APP_CONTEXT"/>
@@ -12,6 +12,7 @@
                     <input type="hidden" name="name" value="PARENT_SVN_REVISION"/>
                     <input type="hidden" name="value" value="{{build.latestRevision}}"/>
                     <input type="hidden" name="Submit" value="Build"/>
+                    <input type="hidden" name="suiteInfoUrl" value="{{test.suiteInfoUrl}}"/>
                     <input type="submit" value="ReRun"/>
 
                     <input type="hidden" name="json" value="{'parameter': [{'name': 'BUILDURL', 'runId': '{{build_type}}_Build#{{build.number}}'}, {'name': 'APP_CONTEXT', 'value': 'loyalty'}, {'name': 'PARENT_SVN_REVISION', 'value': '{{build.latestRevision}}'}]}"/>

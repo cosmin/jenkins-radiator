@@ -222,6 +222,12 @@ class Build(object):
         splitUrl.pop(-2)
         return "/".join(splitUrl) + "build?delay=0sec&token=radiatorRerun"
 
+    @property
+    def suiteInfoUrl(self):
+        splitUrl = self.url.split("/")
+        splitUrl.pop(-2)
+        return "/".join(splitUrl) + "api/json"
+
 status_order = ['FAILURE', 'UNSTABLE', 'BUILDING', 'ABORTED', 'SUCCESS', 'UNKNOWN', None ]
 
 def compare_by_status(r1, r2):
