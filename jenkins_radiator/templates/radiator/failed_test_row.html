@@ -22,5 +22,8 @@
                 <a href="{{ test.jenkinsUrl }}">{{ test.name }}</a>: {% if test.failCount > 0  %} {{ test.failCount}} of {{test.totalCount}} {% endif %} {{ test.status|transformTestStatus }}
             </td>
         </tr>
+        <tr>
+            <td>{{ test.causes|safe }}</td>
+        </tr>        
     </table>
 </div>

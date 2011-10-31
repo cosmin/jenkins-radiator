@@ -228,6 +228,17 @@ class Build(object):
         splitUrl.pop(-2)
         return "/".join(splitUrl) + "api/json"
 
+    @property
+    def causes(self):
+        fName = settings.HUDSON_CAUSES_DIR + '/job/' + self.projectName + '/' + self.number + "/causes.html"
+        try:
+            f = open(fName, 'r')
+            contents = f.read()
+            f.close()
+            return contents          
+        except IOError:
+	    return ""
+
 status_order = ['FAILURE', 'UNSTABLE', 'BUILDING', 'ABORTED', 'SUCCESS', 'UNKNOWN', None ]
 
 def compare_by_status(r1, r2):
