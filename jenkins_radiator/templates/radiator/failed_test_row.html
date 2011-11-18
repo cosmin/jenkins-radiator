@@ -3,6 +3,7 @@
 <div class="boxright {{test.status}} tertiary">
     <table>
         <tr>
+<!--
             <td class="rerunBox">
                 <form method="post" action="{{test.reRunUrl}}" target="_new" class="rerunForm">
                     <input type="hidden" name="name" value="BUILDURL"/>
@@ -18,6 +19,7 @@
                     <input type="hidden" name="json" value="{'parameter': [{'name': 'BUILDURL', 'runId': '{{build_type}}_Build#{{build.number}}'}, {'name': 'APP_CONTEXT', 'value': 'loyalty'}, {'name': 'PARENT_SVN_REVISION', 'value': '{{build.latestRevision}}'}]}"/>
                 </form>
             </td>
+-->
             <td>
                 <a href="{{ test.jenkinsUrl }}">{{ test.name }}</a>: {% if test.failCount > 0  %} {{ test.failCount}} of {{test.totalCount}} {% endif %} {{ test.status|transformTestStatus }}
             </td>
