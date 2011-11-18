@@ -32,7 +32,6 @@ def get_stats(request, build_type):
     if len(builds) > 1:
         buildTimes = [build.totalElapsedTime for build in builds if build.result != 'BUILDING']
 	buildNums = len(buildTimes)
-	#Remove min/max from buildTimes
 	buildTimes.remove(min(buildTimes))
 	buildTimes.remove(max(buildTimes))
         minTime = min(buildTimes)
@@ -53,7 +52,6 @@ def get_stats(request, build_type):
 	tests = models.get_recent_builds(testName, buildCount)
         testTimes = [test.totalElapsedTime for test in tests if test.result != 'BUILDING']
 	testNums = len(testTimes)
-	#Remove min/max from testTimes
 	testTimes.remove(min(testTimes))
 	testTimes.remove(max(testTimes))
         testSuccesses = len([test.result for test in tests if test.result == 'SUCCESS'])
