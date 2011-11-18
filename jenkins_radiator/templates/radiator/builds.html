@@ -31,7 +31,7 @@
          {% for build_type in row %}
          <td width="{{ columnSize }}%" >
             <p style='font-size:16px;margin:0 0 -32 0;padding:0;'>{{ build_topic }}</p>
-            <h3>{{ build_type|title }} Build Matrix Status</h3>
+            <a href="/radiator/stats/{{build_type}}?returnURL={{request.get_full_path}}" title="View Stats Page for {{build_type}}" class="viewStatsLink"><h3>{{ build_type|title }} Build Matrix Status</h3></a>
             <div id="build_{{build_type|slugify}}">
             </div>
          </td>
