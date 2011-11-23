@@ -22,6 +22,52 @@ def get_radiator(request, build_list):
     columnSize = 100 / len(build_types[0])
     return render('radiator/builds.html', locals())
 
+def get_stats(request, build_type):
+    buildCount = int(request.GET.get('builds', settings.HUDSON_BUILD_COUNT))
+    returnURL = request.GET.get('returnURL')
+    if returnURL and returnURL.find("?builds=") != -1:
+	buildCount = int(returnURL[returnURL.index("?builds=") + 8:len(returnURL)])
+
+    builds = models.get_recent_builds(build_type + settings.HUDSON_BUILD_NAME_PATTERN, buildCount)
+    if len(builds) > 1:
+        buildTimes = [build.totalElapsedTime for build in builds if build.result != 'BUILDING']
+	buildNums = len(buildTimes)
+	buildTimes.remove(min(buildTimes))
+	buildTimes.remove(max(buildTimes))
+        minTime = min(buildTimes)
+	avgTime = avg(buildTimes)
+	maxTime = max(buildTimes)
+	buildSuccesses = len([build.result for build in builds if build.result == 'SUCCESS'])
+	buildFailures = buildNums - buildSuccesses
+	if buildNums > 0:	
+		buildSuccessPercent = round((float(buildSuccesses) / float(buildNums)) * 100, 2)
+		buildFailurePercent = 100 - buildSuccessPercent
+    
+    testProjects = models.get_test_projects(models.get_data(settings.HUDSON_URL + '/api/json?tree=jobs[name]'), build_type)
+    testProjects = [proj for proj in testProjects if not settings.HUDSON_TEST_IGNORE_REGEX.findall(proj)]
+    
+    testBuilds = {}
+
+    for testName in testProjects:
+	tests = models.get_recent_builds(testName, buildCount)
+        testTimes = [test.totalElapsedTime for test in tests if test.result != 'BUILDING']
+	testNums = len(testTimes)
+	testTimes.remove(min(testTimes))
+	testTimes.remove(max(testTimes))
+        testSuccesses = len([test.result for test in tests if test.result == 'SUCCESS'])
+	testFailures = testNums - testSuccesses
+	if testNums > 0:
+	    testSuccessPercent = round((float(testSuccesses) / float(testNums)) * 100, 2)
+	    testFailurePercent = 100 - testSuccessPercent
+        
+	if testNums > 1:
+	    testNameStripped = testName
+	    if testName.find("Test_") != -1:
+	        testNameStripped = testName[testName.index("Test_") + 5:len(testName)]
+
+            testBuilds[testNameStripped]=[min(testTimes), avg(testTimes), max(testTimes), testSuccesses, testSuccessPercent, testFailures, testFailurePercent, testNums, tests[-1].totalCount]
+
+    return render('radiator/stats_page.html', locals())
 
 def get_builds(request, build_type):
     const = markup_constants

@@ -1,0 +1,83 @@
+{% load radiator_helpers %}
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="/radiator/site_media/styles/statspage.css"/>
+		<link rel="stylesheet" type="text/css" href="/radiator/site_media/styles/tableSorter.css"/>
+		<script src="/radiator/site_media/scripts/jquery-1.6.4.min.js"></script>
+		<script src="/radiator/site_media/scripts/jquery.multibarplugin.js"></script>
+		<script src="/radiator/site_media/scripts/jquery.tablesorter.js"></script>
+		<title>Radiator Stats Page</title>
+	</head>
+	<body>
+		<div id="statsWrapper">
+			<h1 id="mainHeading">Dashboard Statistics</h1>
+			{% if returnURL == NONE %}
+				<a href="/radiator/{{build_type}}" id="goBackLink">< Go Back</a>
+			{% else %}
+				<a href="{{returnURL}}" id="goBackLink">< Go Back</a>
+			{% endif %}
+			<div id="buildSection" class="section statsBox">
+				<h2 class="sectionHeading">{{build_type|capfirst}} - Last {{buildCount}} Builds</h2>
+				<hr class="innerSectionDivider" />
+				<div id="buildStatsWrapper">
+					<div class="timeBox statsBox shadow">
+						<div>Minimum Time</div>
+						<div class="bigTime">{{minTime|format_seconds_to_mmss}}</div>
+					</div>
+					<div class="timeBox statsBox shadow" style="font-weight:bold">
+						<div>Average Time</div>
+						<div class="bigTime">{{avgTime|format_seconds_to_mmss}}</div>
+					</div>
+					<div class="timeBox statsBox shadow">
+						<div>Maximum Time</div>
+						<div class="bigTime">{{maxTime|format_seconds_to_mmss}}</div>
+					</div>
+					<div class="barGraph bigGraph shadow">
+						<div title="{{buildSuccessPercent}}%({{buildSuccesses}} of {{buildNums}})">{{buildSuccessPercent}}</div>
+						<div title="{{buildFailurePercent}}%({{buildFailures}} of {{buildNums}})">{{buildFailurePercent}}</div>
+					</div>
+				</div>
+			</div>
+			<div  id="testSection" class="section statsBox">
+				<h2 class="sectionHeading">Individual Tests</h2>
+				<hr class="innerSectionDivider" />
+				<table id="testsTable" class="tablesorter statsbox shadow">
+					<thead>
+						<tr>
+							<th class="testNameCol" style="padding-left:5px;">Test</th>
+							<th id="successRateCol">Success Rate</th>
+							<th class="timeCol">Min Time</th>
+							<th class="timeCol">Avg Time</th>
+							<th class="timeCol">Max Time</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for testName, testStats in testBuilds.items %}
+						<tr>
+							<td class="testNameCol tableBorder"  style="padding-left:5px;">{{testName}} <span class="numTestsInSuiteMsg">({{testStats.8}} tests)</span></td>
+							<td class="tableBorder">
+								<div class="barGraph smallGraph shadow">
+									<div title="{{testStats.4}}%({{testStats.3}} of {{testStats.7}})">{{testStats.4}}</div>
+									<div title="{{testStats.6}}%({{testStats.5}} of {{testStats.7}})">{{testStats.6}}</div>
+								</div>
+							</td>
+							<td class="tableBorder">{{testStats.0|format_seconds_to_mmss}}</td>
+							<td class="tableBorder" style="font-weight:bold;">{{testStats.1|format_seconds_to_mmss}}</td>
+							<td class="tableBorder">{{testStats.2|format_seconds_to_mmss}}</td>
+						</tr>
+						{% endfor %}
+					</tbody>				
+				</table>
+			</div>		
+		</div>
+	</body>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$(".bargraph").multibarplugin({colors: ["successStatus", "failureStatus"], roundRect: ["barGraphLeft", "barGraphRight"], textClass: ["barGraphText"]});
+			//$("#testsTable").tablesorter();
+			$("#testsTable").tablesorter({ 
+				sortList: [[0,0]] 
+		    	}); 
+		});
+	</script>
+</html>

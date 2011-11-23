@@ -1,0 +1,162 @@
+body{
+	margin:0;
+	padding:0;
+	font-family:Verdana,Helvetica,'sans serif';
+	background-color:#000000;
+}
+#statsWrapper{
+	width:850px;
+	margin:auto;
+	position:relative;
+}
+#goBackLink{
+ 	position:absolute;
+    	right:5px;
+    	top:20px;
+	color:#FFFFFF;
+	font-family:arial;
+	text-decoration:none;
+}
+#goBackLink:hover{
+	text-decoration:underline;
+}
+.statsBox {
+    	border-radius: .5em;
+    	-moz-border-radius: .5em;
+}
+#buildStatsWrapper{
+	width:95%; 
+	margin:auto;
+}
+.barGraphWrapper{
+	border-radius: .20em;
+	-moz-border-radius: .20em;
+}
+.barGraphLeft{
+	border-top-left-radius: .20em;
+	border-bottom-left-radius: .20em;
+	-moz-border-radius-topleft: .20em;
+	-moz-border-radius-bottomleft: .20em;
+}
+.barGraphRight{
+	border-top-right-radius: .20em;
+	border-bottom-right-radius: .20em;
+	-moz-border-radius-topright: .20em;
+	-moz-border-radius-bottomright: .20em;
+}
+#mainHeading{
+	margin-bottom:5px;
+	color:#FFFFFF;
+}
+.sectionHeading{
+	margin:0px;
+	color:#FFFFFF;
+}
+.section{
+	border:1px solid black;
+	margin-bottom:10px;
+	background-color:#FFFFFF;
+}
+.innerSectionDivider{
+	margin-top:0;
+}
+#buildSection{	
+	padding:10px;	
+	background-color:#444444;
+}
+.timeBox{
+	float:left;
+	width:230px;
+	margin-left:48px;
+	margin-top:10px;
+	text-align:center;
+	padding-top:10px;
+	margin-bottom:15px;
+	background-color:#FFFFFF;
+}
+.timeBox:first-child{
+	margin-left:0;
+}
+.bigTime{
+	font-size:48px;
+	font-weight:bold;
+}
+.barGraph{
+	clear:left;	
+	margin:auto;
+	cursor:default;
+}
+.barGraph div{
+	float:left;
+	text-align:right;
+	color:#FFFFFF;
+}
+.bigGraph{
+	width:100%;
+	height:20px;
+	margin-bottom:15px;
+}
+.bigGraph .barGraphText{
+	padding-right:5px;
+}
+.smallGraph{
+	width:100%;
+	font-size:12px;
+	height:16px;
+	margin-bottom:2px;
+}
+.smallGraph .barGraphLeft,
+.smallGraph .barGraphRight{
+	height:16px;
+}
+.smallGraph .barGraphText{
+	padding-right:5px;
+}
+.successStatus{
+	background-color: #00AA00;
+}
+.failureStatus{
+	background-color: #AA0000;
+}
+#testSection{
+	padding:10px 5px 10px 5px;
+	background-color:#444444;
+}
+#testsTable{
+	width:95%;
+	margin:15px auto;
+	text-align:center;
+	border-collapse:collapse;
+	font-size:13px;
+	background-color:#FFFFFF;
+}
+.testNameCol{
+	text-align:left;
+	padding-left:5px;
+}
+.numTestsInSuiteMsg{
+	font-weight:normal;
+	color:#444444;
+}
+#successRateCol{
+	width:200px;
+}
+.timeCol{
+	width:100px;
+}
+#testsTable th, #testsTable td{
+	padding:5px 2px;
+}
+#testsTable th{
+	font-size:14px;
+}
+.tableBorder{
+	border-top:1px solid #000000;
+}
+.shadow {
+    -webkit-box-shadow: black 1px 2px 3px;
+    -moz-box-shadow: black 1px 2px 3px;
+    box-shadow: black 1px 2px 3px;
+}
+
+
