@@ -32,6 +32,7 @@ td.st1hlxsw29 {background: #FF9;}
 
 <table>
   <th>Run #</th>
+  <th>Time</th>
   <th>Server</th>
   {% for i in summary %}
     <th style="width: 25px">{{forloop.counter}}</th>
@@ -41,6 +42,7 @@ td.st1hlxsw29 {background: #FF9;}
     {% if run.status != "BUILDING" %}
     <tr>
       <td class='{{run.builtOn}}'><a href="{{run.url}}">{{ run.number }}</a></td>
+      <td class='{{run.dateTimeStamp}}'>{{ run.dateTimeStamp }}</td>
       <td class='{{run.builtOn}}'>{{ run.builtOn }}</td>
       {% for key in summary %}
         <td title='{{key.0}}-{{caseDict|cases:key.0|testCaseState:run.number}}' class='{{caseDict|cases:key.0|testCaseState:run.number}}'>
