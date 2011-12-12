@@ -37,25 +37,28 @@
 
     {% if build.status == "SUCCESS" %}
       {% for test in build.smokeTests.values|sortedByName %}
-        <div class="shadow box {{test.status}} tertiary" title="{{test.name}}: {{test.status|transformTestStatus}}, Elapsed time: {{test.elapsedTime|format_seconds_to_mmss}}">{% spaceless %}
+        <div class="shadow box {{test.status}} tertiary" title="{{test.name}}: {{test.status|transformTestStatus}}, Elapsed&nbsp;time:&nbsp;{{test.elapsedTime|format_seconds_to_mmss}}, ReRun&nbsp;Count:&nbsp;{{test.reRunCount}}">{% spaceless %}
           {% include "radiator/test_spinner.html" %}
           &nbsp;<a href="{{test.jenkinsUrl}}">S</a>&nbsp;{% endspaceless %}
+          {% include "radiator/test_rerun_badge.html" %}
         </div>
       {% endfor %}
       {% for test in build.baselineTests.values|sortedByName %}
-        <div class="shadow box {{test.status}} tertiary" title="{{test.name}}: {{test.status|transformTestStatus}}, Elapsed time: {{test.elapsedTime|format_seconds_to_mmss}}">{% spaceless %}
+        <div class="shadow box {{test.status}} tertiary" title="{{test.name}}: {{test.status|transformTestStatus}}, Elapsed&nbsp;time:&nbsp;{{test.elapsedTime|format_seconds_to_mmss}}, ReRun&nbsp;Count:&nbsp;{{test.reRunCount}}">{% spaceless %}
           {% include "radiator/test_spinner.html" %}
           &nbsp;<a href="{{test.jenkinsUrl}}">B</a>&nbsp;{% endspaceless %}
+          {% include "radiator/test_rerun_badge.html" %}
         </div>
       {% endfor %}
       {% for test in build.regressionTests.values|sortedByName %}
-        <div class="shadow box {{test.status}} tertiary" title="{{test.name}}: {{test.status|transformTestStatus}}, Elapsed time: {{test.elapsedTime|format_seconds_to_mmss}}">{% spaceless %}
+        <div class="shadow box {{test.status}} tertiary" title="{{test.name}}: {{test.status|transformTestStatus}}, Elapsed&nbsp;time:&nbsp;{{test.elapsedTime|format_seconds_to_mmss}}, ReRun&nbsp;Count:&nbsp;{{test.reRunCount}}">{% spaceless %}
           {% include "radiator/test_spinner.html" %}
           &nbsp;<a href="{{test.jenkinsUrl}}">R</a>&nbsp;{% endspaceless %}
+          {% include "radiator/test_rerun_badge.html" %}
         </div>
       {% endfor %}
       {% for test in build.codeWatchTests.values|sortedByName %}
-        <div class="shadow box {{ test.codeWatchStatus}} tertiary" title="{{test.name}}: {{test.codeWatchStatus|transformTestStatus}}, Elapsed time: {{test.elapsedTime|format_seconds_to_mmss}}">{% spaceless %}
+        <div class="shadow box {{ test.codeWatchStatus}} tertiary" title="{{test.name}}: {{test.codeWatchStatus|transformTestStatus}}, Elapsed&nbsp;time:&nbsp;{{test.elapsedTime|format_seconds_to_mmss}}, ReRun&nbsp;Count:&nbsp;{{test.reRunCount}}">{% spaceless %}
           {% include "radiator/test_spinner.html" %}
           &nbsp;<a href="{{test.jenkinsUrl}}">Q</a>&nbsp;{% endspaceless %}
         </div>

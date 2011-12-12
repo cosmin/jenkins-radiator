@@ -243,3 +243,38 @@ div.spinner div.bar12 {-webkit-transform:rotate(330deg) translate(0, -142%); -we
 .viewStatsLink:hover{
     text-decoration:underline;
 }
+
+.badge {
+  background-color: #FFFF00;
+  border-color: #FFFF00;
+  color: black;
+  border-bottom-left-radius: 40px 40px;
+  border-bottom-right-radius: 40px 40px;
+  border-top-left-radius: 40px 40px;
+  border-top-right-radius: 40px 40px;
+
+  -moz-border-radius-bottomleft: 40px 40px;
+  -moz-border-radius-bottomright: 40px 40px;
+  -moz-border-radius-topleft: 40px 40px;
+  -moz-border-radius-topright: 40px 40px;
+
+  position: absolute;
+  float: right;
+  font-size: 12px;
+  font-weight: bold;
+  height: 14px;
+  text-align: center;
+  vertical-align: middle;
+  width: 14px;
+
+  top: 14px;
+  left: 14px;
+}
+
+.REBUILDING{ background-color: #CD6600; border-color: #CD6600; }
+.REBUILDING.secondary{ background-color: #8B4500; border-color: #8B4500; }
+
+.REBUILDING.tertiary,
+.REBUILDING.tertiary a{ background-color: i#CD6600; border-color: #CD6600; color: #FFFFFF;}
+
+

@@ -60,6 +60,7 @@ class Build(object):
             self.projectName = projectName
             self.builtOn= buildjson['builtOn']
             self.prior=None
+            self.reRunCount=0
 
             self.latestRevision = 0
             for index, item in enumerate(self.items):
@@ -102,6 +103,9 @@ class Build(object):
 
     @property
     def status(self):
+        if self.building and self.reRunCount > 0:
+            return 'REBUILDING'
+
         return self.building and 'BUILDING' or self.result
 
     @property
@@ -239,7 +243,7 @@ class Build(object):
         except IOError:
 	    return ""
 
-status_order = ['FAILURE', 'UNSTABLE', 'BUILDING', 'ABORTED', 'SUCCESS', 'UNKNOWN', None ]
+status_order = ['FAILURE', 'UNSTABLE', 'REBUILDING', 'BUILDING', 'ABORTED', 'SUCCESS', 'UNKNOWN', None ]
 
 def compare_by_status(r1, r2):
     return status_order.index(r1) - status_order.index(r2)
@@ -253,7 +257,7 @@ def test_status(tests):
     if tests:
         tests_copy = list(tests)
         tests_copy.sort(cmp=compare_by_result)
-        return tests_copy[0].result
+        return tests_copy[0].status
 
 def get_project_data(projectName):
     return get_data(settings.HUDSON_URL + '/job/' + projectName + '/api/json')

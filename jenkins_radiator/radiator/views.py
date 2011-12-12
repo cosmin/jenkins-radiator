@@ -140,16 +140,20 @@ def lookupTests(build_type, count, builds):
     for test in baselineBuilds:
         parent = buildDict.get(test.parent)
         if parent is not None:
-            if test.project not in parent.baselineTests or int(test.number) > int(
-                parent.baselineTests[test.project].number):
+            if test.project not in parent.baselineTests or int(test.number) > int(parent.baselineTests[test.project].number):
                 parent.baselineTests[test.project] = test
 
     for test in regressionBuilds:
         parent = buildDict.get(test.parent)
         if parent is not None:
-            if test.project not in parent.regressionTests or int(test.number) > int(
-                parent.regressionTests[test.project].number):
+            if test.project not in parent.regressionTests:
                 parent.regressionTests[test.project] = test
+            else:
+                if int(test.number) > int(parent.regressionTests[test.project].number):
+                    test.reRunCount += parent.regressionTests[test.project].reRunCount
+                    parent.regressionTests[test.project] = test
+                else:
+                    parent.regressionTests[test.project].reRunCount += 1
 
     for test in perfBuilds:
         parent = buildDict.get(test.parent)
@@ -160,8 +164,7 @@ def lookupTests(build_type, count, builds):
     for test in codeWatchBuilds:
         parent = buildDict.get(test.parent)
         if parent is not None:
-            if test.project not in parent.codeWatchTests or int(test.number) > int(
-                parent.codeWatchTests[test.project].number):
+            if test.project not in parent.codeWatchTests or int(test.number) > int( parent.codeWatchTests[test.project].number):
                 parent.codeWatchTests[test.project] = test
 
     for build in builds:
