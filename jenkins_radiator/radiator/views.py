@@ -134,14 +134,26 @@ def lookupTests(build_type, count, builds):
     for test in smokeBuilds:
         parent = buildDict.get(test.parent)
         if parent is not None:
-            if test.project not in parent.smokeTests or int(test.number) > int(parent.smokeTests[test.project].number):
+            if test.project not in parent.smokeTests:
                 parent.smokeTests[test.project] = test
+            else:
+                if int(test.number) > int(parent.smokeTests[test.project].number):
+                    test.reRunCount += parent.smokeTests[test.project].reRunCount
+                    parent.smokeTests[test.project] = test
+                else:
+                    parent.smokeTests[test.project].reRunCount += 1
 
     for test in baselineBuilds:
         parent = buildDict.get(test.parent)
         if parent is not None:
-            if test.project not in parent.baselineTests or int(test.number) > int(parent.baselineTests[test.project].number):
+            if test.project not in parent.baselineTests:
                 parent.baselineTests[test.project] = test
+            else:
+                if int(test.number) > int(parent.baselineTests[test.project].number):
+                    test.reRunCount += parent.baselineTests[test.project].reRunCount
+                    parent.baselineTests[test.project] = test
+                else:
+                    parent.baselineTests[test.project].reRunCount += 1
 
     for test in regressionBuilds:
         parent = buildDict.get(test.parent)
