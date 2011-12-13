@@ -272,7 +272,7 @@ div.spinner div.bar12 {-webkit-transform:rotate(330deg) translate(0, -142%); -we
 }
 
 .REBUILDING{ background-color: #FF5800; border-color: #FF5800; }
-.REBUILDING.secondary{ background-color: #CC2500; border-color: #CC2500; }
+.REBUILDING.secondary{ background-color: #BB1400; border-color: #BB1400; }
 
 .REBUILDING.tertiary,
 .REBUILDING.tertiary a{ background-color: #FF5800; border-color: #FF5800; color: #FFFFFF;}
