@@ -4,8 +4,13 @@ import models
 import re
 import socket
 import time
+import threading
+import sys, traceback
 markup_constants = {"up_arrow": u"\u25B2",
                     "down_arrow": u"\u25BC"}
+
+topicThread=None
+ircTopic = "unKnown"
 
 # Create your views here.
 def avg(lst):
@@ -294,22 +299,115 @@ def summarize_test_cases(caseDict):
 
     return sorted(summary, key=lambda c: c[1], reverse=True)
 
-def irc_channel_topic():
-    buf=""
-    s=socket.socket( )
-    s.connect((settings.IRC_HOST, settings.IRC_PORT))
-    s.send("NICK %s\r\n" % settings.IRC_NICK)
-    buf=buf+s.recv(2048)
-    s.send("USER %s %s blah :  %s\r\n" % (settings.IRC_IDENT, settings.IRC_HOST, settings.IRC_REALNAME))
-    buf=buf+s.recv(2048)
-    s.send("JOIN %s \r\n" % settings.IRC_CHAN)
-    buf=buf+s.recv(2048)
-    s.send("TOPIC  %s\r\n" % settings.IRC_CHAN)
-    time.sleep(1);
-    buf=s.recv(1024)
-    topic=re.findall(settings.IRC_RGX,buf)
-    if len(topic) > 0:
-       ircTopic=topic[0].rstrip('\r').rstrip(']')
-    s.send("QUIT\r\n")
-    s.close()
-    return ircTopic
+def irc_channel_topic(): 
+  global topicThread
+  global ircTopic
+  if topicThread == None :
+     topicThread = IRCTopicThread()
+     topicThread.start()
+     time.sleep(3)
+  if topicThread.isRunning :
+     return ircTopic
+
+class IRCTopicThread(threading.Thread) :
+   global settings
+   isRunning=False
+   __ircSocket= None
+   __eol      = '\n'
+   __status   = 0
+   __buf      = ""
+   __rcvSize  = 2048
+   __nickCmd  = "NICK %s\r\n" % settings.IRC_NICK
+   __userCmd  = "USER %s %s greetings earthlings! :  %s\r\n" % (settings.IRC_IDENT, settings.IRC_HOST, settings.IRC_REALNAME)
+   __joinCmd  = "JOIN %s \r\n" % settings.IRC_CHAN
+   __topicCmd = "TOPIC  %s\r\n" % settings.IRC_CHAN
+   __quitCmd  = "QUIT\r\n"
+   __pauseAmt = settings.IRC_TOPIC_POLL_INTERVAL_SECONDS
+   __topicBoundary = settings.IRC_CHAN
+
+   def __init__(self) :
+     threading.Thread.__init__(self)
+     try:    
+        self.__ircSocket=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.__ircSocket.connect((settings.IRC_HOST, settings.IRC_PORT))
+     
+        if self.__send_irc_cmd(self.__nickCmd) :
+           self.__recv_irc_resp(None,None)
+        else :
+           self.__ircSocket.close
+           self.__ircSocket = None
+           return
+
+        if self.__send_irc_cmd(self.__userCmd) :
+           self.__recv_irc_resp(re.compile(settings.IRC_RSP_USER),None)
+        else :
+           self.__ircSocket.close
+           self.__ircSocket = None
+           return
+
+        if self.__send_irc_cmd(self.__joinCmd) : 
+           self.__recv_irc_resp(re.compile(settings.IRC_RSP_JOIN),None)
+        else :
+           __ircSocket.close
+           __ircSocket = None
+           return
+
+     except Exception as e :
+        print "Exception : {0}\r\n".format(e)
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        traceback.print_tb(exc_traceback, limit=1, file=sys.stdout)
+  
+   def run(self) :
+     global ircTopic
+     try:    
+        self.isRunning=True
+        while self.isRunning :
+           ircTopic=self.__irc_channel_topic()
+           time.sleep(self.__pauseAmt)
+     except Exception as e :
+        print "Exception : {0}\r\n".format(e)
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        traceback.print_tb(exc_traceback, limit=1, file=sys.stdout)
+     finally :
+        isRunning=False
+        self.__ircSocket.send(self.__quitCmd)
+        self.__ircSocket.close()
+          
+   def __send_irc_cmd(self, cmd) :
+      byteCt = len(cmd)
+      sentCt = self.__ircSocket.send(cmd)
+      if sentCt == byteCt:
+         return True
+      return False
+
+   def __recv_irc_resp(self, respPattern, respHandler) :
+     buf      = ""
+     recvdResp=False
+     while not recvdResp :
+           buf=self.__ircSocket.recv(self.__rcvSize)
+           if respPattern == None :
+              return 
+           if len(buf) > 0 :
+              lines=buf.split(self.__eol)
+              for line in lines:
+                  if respPattern.search(line) != None :
+                     result = None
+                     if respHandler != None :
+                        result = respHandler(line)
+                     return result
+           else :
+               return 
+     
+   def __irc_channel_topic(self):
+     global ircTopic
+     try:    
+        if self.__send_irc_cmd(self.__topicCmd) :
+           ircTopic = self.__recv_irc_resp(re.compile(settings.IRC_RSP_TOPIC),lambda l : l.split(self.__topicBoundary)[1])
+        else :
+           ircTopic = "*unKnown"
+     except Exception as e :
+        print "Exception : {0}\r\n".format(e)
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        traceback.print_tb(exc_traceback, limit=1, file=sys.stdout)
+     finally :
+        return ircTopic
