@@ -69,6 +69,19 @@ def get_stats(request, build_type):
 
     return render('radiator/stats_page.html', locals())
 
+def get_state(request, build_type):
+    const = markup_constants
+    count = int(request.GET.get('builds', settings.HUDSON_BUILD_COUNT))
+    builds = models.get_recent_builds(build_type + settings.HUDSON_BUILD_NAME_PATTERN, count)
+    buildDict = lookupTests(build_type, count, builds)
+    state = "UNKNOWN"
+    for build in builds:
+        state = build.overall_status
+        if state != "BUILDING" and state != "ABORTED":
+            break
+
+    return render('radiator/state.html', locals())
+
 def get_builds(request, build_type):
     const = markup_constants
     count = int(request.GET.get('builds', settings.HUDSON_BUILD_COUNT))
