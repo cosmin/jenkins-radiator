@@ -8,9 +8,8 @@ import threading
 import sys, traceback
 markup_constants = {"up_arrow": u"\u25B2",
                     "down_arrow": u"\u25BC"}
-
 topicThread=None
-ircTopic = "unKnown"
+ircTopic = ""
 
 # Create your views here.
 def avg(lst):
@@ -302,28 +301,43 @@ def summarize_test_cases(caseDict):
 def irc_channel_topic(): 
   global topicThread
   global ircTopic
+
   if topicThread == None :
-     topicThread = IRCTopicThread()
-     topicThread.start()
-     time.sleep(3)
-  if topicThread.isRunning :
-     return ircTopic
+     ircTopicThreadCreate()
+  elif not topicThread.isRunning :
+     ircTopicThreadCreate()
+
+  return ircTopic
+
+def ircTopicThreadCreate():
+    global settings
+    global topicThread
+    topicThread = IRCTopicThread()
+    topicThread.start()
+    time.sleep(3)
 
 class IRCTopicThread(threading.Thread) :
    global settings
    isRunning=False
-   __ircSocket= None
-   __eol      = '\n'
-   __status   = 0
-   __buf      = ""
-   __rcvSize  = 2048
-   __nickCmd  = "NICK %s\r\n" % settings.IRC_NICK
-   __userCmd  = "USER %s %s greetings earthlings! :  %s\r\n" % (settings.IRC_IDENT, settings.IRC_HOST, settings.IRC_REALNAME)
-   __joinCmd  = "JOIN %s \r\n" % settings.IRC_CHAN
-   __topicCmd = "TOPIC  %s\r\n" % settings.IRC_CHAN
-   __quitCmd  = "QUIT\r\n"
-   __pauseAmt = settings.IRC_TOPIC_POLL_INTERVAL_SECONDS
-   __topicBoundary = settings.IRC_CHAN
+   try:
+     __ircSocket   = None
+     __ircErrorMsg = settings.IRC_TOPIC_ERROR_MSG
+     __eol      = '\n'
+     __status   = 0
+     __buf      = ""
+     __rcvSize  = 2048
+     __nickCmd  = "NICK %s\r\n" % settings.IRC_NICK
+     __userCmd  = "USER %s %s greetings earthlings! :  %s\r\n" % (settings.IRC_IDENT, settings.IRC_HOST, settings.IRC_REALNAME)
+     __joinCmd  = "JOIN %s \r\n" % settings.IRC_CHAN
+     __topicCmd = "TOPIC  %s\r\n" % settings.IRC_CHAN
+     __quitCmd  = "QUIT\r\n"
+     __pauseAmt = settings.IRC_TOPIC_POLL_INTERVAL_SECONDS
+     __topicBoundary = settings.IRC_CHAN
+   except Exception as e :
+     print 'Missing settings for IRC topic support... carry on!'
+     print "Exception : {0}\r\n".format(e)
+     exc_type, exc_value, exc_traceback = sys.exc_info()
+     traceback.print_tb(exc_traceback, limit=1, file=sys.stdout)
 
    def __init__(self) :
      threading.Thread.__init__(self)
@@ -360,6 +374,8 @@ class IRCTopicThread(threading.Thread) :
    def run(self) :
      global ircTopic
      try:    
+        if self.__ircSocket == None :
+           return
         self.isRunning=True
         while self.isRunning :
            ircTopic=self.__irc_channel_topic()
@@ -404,7 +420,7 @@ class IRCTopicThread(threading.Thread) :
         if self.__send_irc_cmd(self.__topicCmd) :
            ircTopic = self.__recv_irc_resp(re.compile(settings.IRC_RSP_TOPIC),lambda l : l.split(self.__topicBoundary)[1])
         else :
-           ircTopic = "*unKnown"
+           ircTopic = self.__ircErrorMsg
      except Exception as e :
         print "Exception : {0}\r\n".format(e)
         exc_type, exc_value, exc_traceback = sys.exc_info()
