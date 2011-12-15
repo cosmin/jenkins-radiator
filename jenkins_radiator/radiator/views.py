@@ -17,6 +17,7 @@ def avg(lst):
 
 
 def get_radiator(request, build_list):
+    ircTopicBuild = settings.IRC_TOPIC_BUILD_NAME
     const = markup_constants
     buildCount = request.GET.get('builds', settings.HUDSON_BUILD_COUNT)
     build_types = [build_row.split(',') for build_row in build_list.split('|')]
