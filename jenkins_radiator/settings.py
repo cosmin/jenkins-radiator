@@ -106,6 +106,22 @@ HUDSON_SMOKE_NAME_REGEX = re.compile('Smoke', re.I)
 HUDSON_BASELINE_NAME_REGEX = re.compile('Baseline', re.I)
 HUDSON_BUILD_COUNT = 10
 
+# Default number of build to show in the radiator
+#SWA IRC Topic config
+IRC_NICK=''
+#IRC_PORT=6667
+#IRC_HOST=''
+IRC_REALNAME=''
+IRC_CHAN=''
+IRC_RSP_USER=''
+IRC_RSP_JOIN=''
+IRC_RSP_TOPIC=''
+IRC_RSP_MSG=''
+IRC_TOPIC_POLL_INTERVAL_SECONDS_FLOAT=4.0
+IRC_TOPIC_BUILD_NAME=''
+IRC_TOPIC_ERROR_MSG=''
+IRC_IDENT=''
+
 try:
   from settings_local import *
 except ImportError:
