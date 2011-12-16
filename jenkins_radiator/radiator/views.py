@@ -6,10 +6,12 @@ import socket
 import time
 import threading
 import sys, traceback
+import atexit
 markup_constants = {"up_arrow": u"\u25B2",
                     "down_arrow": u"\u25BC"}
 topicThread=None
 ircTopic = ""
+ircMsg = ""
 
 # Create your views here.
 def avg(lst):
@@ -23,6 +25,7 @@ def get_radiator(request, build_list):
     build_types = [build_row.split(',') for build_row in build_list.split('|')]
     if hasattr(settings,'IRC_HOST'):
         build_topic = irc_channel_topic()
+        build_msg = irc_channel_msg()
 
     columnSize = 100 / len(build_types[0])
     return render('radiator/builds.html', locals())
@@ -299,23 +302,42 @@ def summarize_test_cases(caseDict):
 
     return sorted(summary, key=lambda c: c[1], reverse=True)
 
+def irc_channel_msg():
+  global topicThread
+  global ircMsg
+
+  ensureTopicThreadExists()
+
+  if ircMsg == "" :
+     topicThread.refreshMsg()
+
+  return ircMsg
+
 def irc_channel_topic(): 
   global topicThread
   global ircTopic
 
+  ensureTopicThreadExists()
+
+  if ircTopic == "" :
+     topicThread.refreshTopic()
+
+  return ircTopic
+
+def ensureTopicThreadExists():
+  global topicThread
   if topicThread == None :
      ircTopicThreadCreate()
   elif not topicThread.isRunning :
      ircTopicThreadCreate()
 
-  return ircTopic
 
 def ircTopicThreadCreate():
     global settings
     global topicThread
     topicThread = IRCTopicThread()
     topicThread.start()
-    time.sleep(3)
+    time.sleep(settings.IRC_TOPIC_POLL_INTERVAL_SECONDS_FLOAT)
 
 class IRCTopicThread(threading.Thread) :
    global settings
@@ -332,8 +354,9 @@ class IRCTopicThread(threading.Thread) :
      __joinCmd  = "JOIN %s \r\n" % settings.IRC_CHAN
      __topicCmd = "TOPIC  %s\r\n" % settings.IRC_CHAN
      __quitCmd  = "QUIT\r\n"
-     __pauseAmt = settings.IRC_TOPIC_POLL_INTERVAL_SECONDS
+     __pauseAmt = settings.IRC_TOPIC_POLL_INTERVAL_SECONDS_FLOAT
      __topicBoundary = settings.IRC_CHAN
+     __msgBoundary   = settings.IRC_NICK
    except Exception as e :
      print 'Missing settings for IRC topic support... carry on!'
      print "Exception : {0}\r\n".format(e)
@@ -345,6 +368,7 @@ class IRCTopicThread(threading.Thread) :
      try:    
         self.__ircSocket=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.__ircSocket.connect((settings.IRC_HOST, settings.IRC_PORT))
+        self.__ircSocket.settimeout(self.__pauseAmt)
      
         if self.__send_irc_cmd(self.__nickCmd) :
            self.__recv_irc_resp(None,None)
@@ -366,21 +390,35 @@ class IRCTopicThread(threading.Thread) :
            __ircSocket.close
            __ircSocket = None
            return
-
+        atexit.register(sys.exitfunc)
+        atexit.register(self.__ircTopicThreadExitHandler)
      except Exception as e :
         print "Exception : {0}\r\n".format(e)
         exc_type, exc_value, exc_traceback = sys.exc_info()
         traceback.print_tb(exc_traceback, limit=1, file=sys.stdout)
-  
+
+   def refreshTopic(self) :
+       ircTopic=self.__irc_channel_topic()  
+
+   def refreshMsg(self) :
+       ircMsg=self.__irc_channel_msg_recv()
+
    def run(self) :
      global ircTopic
+     global ircMsg
      try:    
         if self.__ircSocket == None :
            return
         self.isRunning=True
         while self.isRunning :
-           ircTopic=self.__irc_channel_topic()
-           time.sleep(self.__pauseAmt)
+           self.refreshMsg()
+           self.refreshTopic()
+           #ircTopic=self.__irc_channel_topic()
+           #time.sleep(self.__pauseAmt)
+     except socket.error :
+        isRunning=False
+        self.__ircSocket.close()
+        self.__ircSocket = None
      except Exception as e :
         print "Exception : {0}\r\n".format(e)
         exc_type, exc_value, exc_traceback = sys.exc_info()
@@ -401,11 +439,15 @@ class IRCTopicThread(threading.Thread) :
      buf      = ""
      recvdResp=False
      while not recvdResp :
-           buf=self.__ircSocket.recv(self.__rcvSize)
+           try :
+             buf=self.__ircSocket.recv(self.__rcvSize)
+           except socket.timeout :
+             pass
            if respPattern == None :
               return 
            if len(buf) > 0 :
               lines=buf.split(self.__eol)
+              buf=""
               for line in lines:
                   if respPattern.search(line) != None :
                      result = None
@@ -419,12 +461,31 @@ class IRCTopicThread(threading.Thread) :
      global ircTopic
      try:    
         if self.__send_irc_cmd(self.__topicCmd) :
-           ircTopic = self.__recv_irc_resp(re.compile(settings.IRC_RSP_TOPIC),lambda l : l.split(self.__topicBoundary)[1])
+           topic = self.__recv_irc_resp(re.compile(settings.IRC_RSP_TOPIC),lambda l : l.split(self.__topicBoundary)[1])
         else :
-           ircTopic = self.__ircErrorMsg
+           topic = self.__ircErrorMsg
      except Exception as e :
         print "Exception : {0}\r\n".format(e)
         exc_type, exc_value, exc_traceback = sys.exc_info()
         traceback.print_tb(exc_traceback, limit=1, file=sys.stdout)
      finally :
+        if topic != None :
+           ircTopic = topic
         return ircTopic
+
+   def __irc_channel_msg_recv(self):
+       global ircMsg
+       try:
+         msg = self.__recv_irc_resp(re.compile(settings.IRC_RSP_MSG),lambda l : l.split(self.__msgBoundary)[1])
+       except Exception as e :
+         print "Exception : {0}\r\n".format(e)
+         exc_type, exc_value, exc_traceback = sys.exc_info()
+         traceback.print_tb(exc_traceback, limit=1, file=sys.stdout)
+       finally :
+         if msg != None :
+            ircMsg=msg
+
+         return ircMsg
+
+   def __ircTopicThreadExitHandler(self):
+       print "TopicThread Exiting...."
