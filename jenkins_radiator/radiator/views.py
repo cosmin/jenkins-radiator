@@ -207,7 +207,7 @@ def lookupTests(build_type, count, builds):
 
         for baseline in project.baselineProjects:
             if baseline not in build.baselineTests:
-                build.baselineTests[smoke] = models.Build(projectName=baseline)
+                build.baselineTests[baseline] = models.Build(projectName=baseline)
 
         for perf in project.perfProjects:
             if perf not in build.perfTests:
