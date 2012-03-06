@@ -80,11 +80,15 @@ class Build(object):
                 for p in actions['parameters']:
                    params[p['name']] = p
 
-                buildurl = params['BUILDURL']
-                if 'number' in buildurl:
-                   self.parent = str(buildurl['number'])
+                if params.has_key('BUILDURL'):
+                    buildurl = params['BUILDURL']
+                    if 'number' in buildurl:
+                        self.parent = str(buildurl['number'])
+                    else:
+                        self.parent = str(buildurl['value'].split('/')[-2])
                 else:
-                   self.parent = str(buildurl['value'].split('/')[-2])
+                    self.parent = params['BUILD_NBR']
+
 
             self.trigger = actions.get('causes')[0].get('shortDescription')
 
