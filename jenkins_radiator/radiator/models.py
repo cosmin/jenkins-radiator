@@ -87,7 +87,7 @@ class Build(object):
                     else:
                         self.parent = str(buildurl['value'].split('/')[-2])
                 else:
-                    self.parent = params['BUILD_NBR']
+                    self.parent = params['BUILD_NBR']['value']
 
 
             self.trigger = actions.get('causes')[0].get('shortDescription')

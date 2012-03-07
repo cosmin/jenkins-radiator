@@ -153,6 +153,7 @@ def lookupTests(build_type, count, builds):
         codeWatchBuilds.extend(models.get_recent_builds(testName, count))
 
     for test in smokeBuilds:
+        myParent = test.parent
         parent = buildDict.get(test.parent)
         if parent is not None:
             if test.project not in parent.smokeTests:
