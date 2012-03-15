@@ -259,6 +259,7 @@ def get_project_report(request, build_type):
         tests.append(build)
         compile_project_test_cases(build, caseDict)
 
+    tests.sort(key=lambda build: build.number, reverse=True)
     summary = summarize_test_cases(caseDict)
     return render('radiator/test_report.html', locals())
 
