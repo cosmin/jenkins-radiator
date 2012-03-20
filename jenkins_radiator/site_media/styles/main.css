@@ -236,10 +236,6 @@ div.spinner div.bar12 {-webkit-transform:rotate(330deg) translate(0, -142%); -we
     box-shadow: black 1px 2px 3px;
 }
 
-.rerunBox {
-    padding-right: 5px;
-}
-
 .viewStatsLink:hover{
     text-decoration:underline;
 }

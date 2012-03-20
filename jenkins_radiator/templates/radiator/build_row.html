@@ -18,9 +18,14 @@
     <div class="clear-both"></div>
     <div class="scm">{% spaceless %}
       {% for commit in build.items %}
-        <a href="{{build.url}}/changes">
-        <span class="revision">rev {{commit.revision}}</span></a>,
-        <span class="user"> by {{commit.user|firstWord}}</span>:
+      <a href="{{build.url}}/changes">
+        {% if build.scmKind == 'svn' %}
+          <span class="revision">rev {{commit.revision}}</span></a>,
+          <span class="user"> by {{commit.user|firstWord}}</span>:
+        {% else %}
+          <span class="revision">{{commit.id|shorten:8}}</span></a>,
+          <span class="user"> by {{commit.author.fullName|firstWord}}</span>:
+        {% endif %}
         <span class="msg">{{commit.msg|truncatewords:50|wordbreak:"20"}}</span><br>
       {% endfor %}{% endspaceless %}
     </div>
