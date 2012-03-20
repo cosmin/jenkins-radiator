@@ -66,7 +66,7 @@ def progress_bar(runningTime, avgTime):
 @register.filter
 @stringfilter
 def firstWord(value):
-  return re.split('\||\/|-',value)[0]
+  return re.split(' |\||\/|-',value)[0]
 
 @register.filter
 def plural(a):

@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from collections import defaultdict
 
 # Create your models here.
 
@@ -88,6 +89,19 @@ class Build(object):
 
             self.trigger = actions.get('causes')[0].get('shortDescription')
 
+    @property
+    def authors(self):
+        authors = defaultdict(list)
+        if self.scmKind == "svn":
+	    author_revision = lambda commit: ( commit["user"], commit["revision"] )
+        else:
+	    author_revision = lambda commit: ( commit["author"]["fullName"], commit["id"])
+
+        for commit in self.items:
+            author, revision = author_revision(commit)
+            authors[author].append(revision)
+
+        return dict(authors)
 
     @property
     def smoke_status(self):

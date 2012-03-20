@@ -1,17 +1,32 @@
 {% load radiator_helpers %}
-<div id="dialog" title="Dialog Title" style="display:none"> Some text</div>
-<div class="buildbox {{build.name|slugify}}">
-    <span class="boxleft {{build.status}}">
-        <a href="{{build.url}}">#{{ build.number}}</a>
-        <span class="scm">
-           {{ build.items|length }}
-           {% if build.items|length > 1 %}
-              <span class="usr">{{commit.user|firstWord}}</>
-           {% endif %}
-        </span>
-    </span>
-    <span class="boxright {{build.overall_status}}">12
-    </span>
-</div>
-<div class="gap"/>
-<div class="clear-both"/>
+        <table class="scm boxleft {{build.status}}">
+            <tr>
+                <td valign="center">
+                    <a href="{{build.url}}">#{{ build.number}}</a>
+                </td>
+                <td>
+                {% for author, revisions in build.authors.items %}
+                <table class="{{build.status}}">
+                    <tr>
+                    <td>
+                        <img src="/radiator/site_media/images/avatar.jpg" height="42" width="42"/>
+                    </td>
+                    <td>
+                        {% for rev in revisions %}
+                            <span class="revision">{{rev|shorten:8}}</span>
+                        {% endfor %}
+                    </td>
+                    </tr>
+                    <tr>
+                    <td class="user">
+                        {{ author|firstWord }}
+                    </td>
+                    </tr>
+                </table>
+                {% endfor %}
+                </td>
+                <td>
+                tests go here
+                </td>
+            </tr>
+        </table>
