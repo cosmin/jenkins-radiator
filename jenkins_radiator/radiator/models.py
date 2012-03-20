@@ -45,6 +45,7 @@ class Build(object):
                 self.result = 'BUILDING'
             self.number = str(buildjson['number'])
             self.items = buildjson['changeSet']['items']
+            self.scmKind = buildjson['changeSet']['kind']
             self.url = settings.HUDSON_URL+'/job/'+projectName+'/'+self.number+'/'
             self.duration = buildjson['duration'] / 1000
             self.timeStamp = buildjson['timestamp'] / 1000
@@ -61,11 +62,6 @@ class Build(object):
             self.builtOn= buildjson['builtOn']
             self.prior=None
             self.reRunCount=0
-
-            self.latestRevision = 0
-            for index, item in enumerate(self.items):
-                if index == 0:
-                    self.latestRevision = item.get("revision")
 
             actions = {}
             for action in buildjson['actions']:
@@ -86,7 +82,7 @@ class Build(object):
                         self.parent = str(buildurl['number'])
                     else:
                         self.parent = str(buildurl['value'].split('/')[-2])
-                else:
+                elif params.has_key('BUILD_NBR'):
                     self.parent = params['BUILD_NBR']['value']
 
 
@@ -115,10 +111,6 @@ class Build(object):
     @property
     def overall_status(self):
         return sorted([self.status, self.smoke_status, self.baseline_status, self.regression_status], cmp=compare_by_status)[0]
-
-    @property
-    def revisions(self):
-        return [item['revision'] for item in self.items]
 
     @property
     def users(self):
@@ -223,12 +215,6 @@ class Build(object):
             return self.description.split('"')[1]
         else:
             return self.url
-
-    @property
-    def reRunUrl(self):
-        splitUrl = self.url.split("/")
-        splitUrl.pop(-2)
-        return "/".join(splitUrl) + "build?delay=0sec&token=radiatorRerun"
 
     @property
     def suiteInfoUrl(self):
