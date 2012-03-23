@@ -83,8 +83,16 @@ def get_state(request, build_type):
     builds = models.get_recent_builds(build_type + settings.HUDSON_BUILD_NAME_PATTERN, count)
     buildDict = lookupTests(build_type, count, builds)
     state = "UNKNOWN"
+    buildingCount = 0
     for build in builds:
         state = build.overall_status
+ 
+        if state == "BUILDING":
+            buildingCount += 1
+            if buildingCount > settings.HUDSON_MAXIMUM_CONCURRENT_BUILDS:
+                state = "BUSY"
+                break
+
         if state != "BUILDING" and state != "ABORTED":
             break
 
