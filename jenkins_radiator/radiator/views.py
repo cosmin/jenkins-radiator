@@ -89,7 +89,7 @@ def get_state(request, build_type):
  
         if state == "BUILDING":
             buildingCount += 1
-            if buildingCount > settings.HUDSON_MAXIMUM_CONCURRENT_BUILDS:
+            if buildingCount >= settings.HUDSON_MAXIMUM_CONCURRENT_BUILDS:
                 state = "BUSY"
                 break
 
