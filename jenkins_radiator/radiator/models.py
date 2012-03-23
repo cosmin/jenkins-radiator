@@ -64,6 +64,9 @@ class Build(object):
             self.prior=None
             self.reRunCount=0
 
+            self.avitar = buildjson['culprits']
+            print self.avitar
+
             actions = {}
             for action in buildjson['actions']:
                 actions.update(action)
@@ -128,7 +131,7 @@ class Build(object):
 
     @property
     def users(self):
-        return [item['user'] for item in self.items]
+        return [item['user']+item['author'] for item in self.items]
 
     @property
     def msgs(self):
