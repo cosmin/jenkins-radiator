@@ -1,14 +1,3 @@
 {% load radiator_helpers %}
 
-<div class="boxright {{test.status}} tertiary">
-    <table>
-        <tr>
-            <td>
-                <a href="{{ test.jenkinsUrl }}">{{ test.name }}</a>: {% if test.failCount > 0  %} {{ test.failCount}} of {{test.totalCount}} {% endif %} {{ test.status|transformTestStatus }}
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2">{{ test.causes|safe }}</td>
-        </tr>        
-    </table>
-</div>
+<a href="{{ test.jenkinsUrl }}">{{ test.name|wordbreak:"20" }}</a>: {% if test.failCount > 0  %} {{ test.failCount}} of {{test.totalCount}} {% endif %} {{ test.status|transformTestStatus }}</br>

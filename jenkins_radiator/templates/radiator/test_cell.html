@@ -1,0 +1,34 @@
+{% load radiator_helpers %}
+<td class="tests {{build.overall_status}}">
+    {% if build.status != "BUILDING" %}
+
+      {% for test in build.smokeTests.values|sortedByName %}
+        <a href="{{test.jenkinsUrl}}">
+            <div class="shadow box {{test.status}} tertiary" title="{{test.name}}: {{test.status|transformTestStatus}}, Elapsed&nbsp;time:&nbsp;{{test.elapsedTime|format_seconds_to_mmss}}, ReRun&nbsp;Count:&nbsp;{{test.reRunCount}}">{% spaceless %}
+                {% include "radiator/test_spinner.html" %}S{% endspaceless %}{% include "radiator/test_rerun_badge.html" %}
+            </div>
+        </a>
+      {% endfor %}
+      {% for test in build.baselineTests.values|sortedByName %}
+        <a href="{{test.jenkinsUrl}}">
+            <div class="shadow box {{test.status}} tertiary" title="{{test.name}}: {{test.status|transformTestStatus}}, Elapsed&nbsp;time:&nbsp;{{test.elapsedTime|format_seconds_to_mmss}}, ReRun&nbsp;Count:&nbsp;{{test.reRunCount}}">{% spaceless %}
+                {% include "radiator/test_spinner.html" %}B{% endspaceless %}{% include "radiator/test_rerun_badge.html" %}
+            </div>
+        </a>
+      {% endfor %}
+      {% for test in build.regressionTests.values|sortedByName %}
+        <a href="{{test.jenkinsUrl}}">
+            <div class="shadow box {{test.status}} tertiary" title="{{test.name}}: {{test.status|transformTestStatus}}, Elapsed&nbsp;time:&nbsp;{{test.elapsedTime|format_seconds_to_mmss}}, ReRun&nbsp;Count:&nbsp;{{test.reRunCount}}">{% spaceless %}
+                {% include "radiator/test_spinner.html" %}R{% endspaceless %}{% include "radiator/test_rerun_badge.html" %}
+            </div>
+        </a>
+      {% endfor %}
+      {% for test in build.codeWatchTests.values|sortedByName %}
+        <a href="{{test.jenkinsUrl}}">
+            <div class="shadow box {{test.status}} tertiary" title="{{test.name}}: {{test.status|transformTestStatus}}, Elapsed&nbsp;time:&nbsp;{{test.elapsedTime|format_seconds_to_mmss}}, ReRun&nbsp;Count:&nbsp;{{test.reRunCount}}">{% spaceless %}
+                {% include "radiator/test_spinner.html" %}Q{% endspaceless %}{% include "radiator/test_rerun_badge.html" %}
+            </div>
+        </a>
+      {% endfor %}
+    {% endif %}
+</td>

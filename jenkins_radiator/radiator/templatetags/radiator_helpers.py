@@ -159,3 +159,7 @@ def format_seconds_to_mmss(seconds):
     minutes = seconds // 60
     seconds %= 60
     return "%02i:%02i" % (minutes, seconds)
+
+@register.filter
+def str(string):
+    return str(string)

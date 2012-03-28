@@ -1,32 +1,30 @@
 {% load radiator_helpers %}
-        <table class="scm boxleft {{build.status}}">
+    <div class="buildbox" id="{{build.name|slugify}}">
+        <table class="box builds {{build.overall_status}}">
             <tr>
-                <td valign="center">
+                <td class="buildNumber">
                     <a href="{{build.url}}">#{{ build.number}}</a>
                 </td>
-                <td>
+                <td class="scm">
                 {% for author, revisions in build.authors.items %}
-                <table class="{{build.status}}">
-                    <tr>
-                    <td>
-                        <img src="{{build.avitar}}" height="42" width="42"/>
-                    </td>
-                    <td>
-                        {% for rev in revisions %}
-                            <span class="revision">{{rev|shorten:8}}</span>
-                        {% endfor %}
-                    </td>
-                    </tr>
-                    <tr>
-                    <td class="user">
-                        {{ author|firstWord }}
-                    </td>
+                <table>
+                    <tr title="{{build.msgs|truncatewords:50|wordbreak:"20"}}">
+                        <td class="avatar">
+                            <img src="{{build.avitar}}" height="42" width="42"/>
+                        </td>
+                        <td>
+                            <span class="user">{{ author|firstWord }}</span></br>
+                            {% for rev in revisions %}
+                                <span class="revision">{{rev|shorten:8}}</span><br/>
+                            {% endfor %}
+                        </td>
                     </tr>
                 </table>
                 {% endfor %}
                 </td>
-                <td>
-                tests go here
-                </td>
+                {% include "radiator/test_cell.html" %}
+                {% include "radiator/details.html" %}
             </tr>
         </table>
+    </div>
+

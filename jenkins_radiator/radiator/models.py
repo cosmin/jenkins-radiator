@@ -64,8 +64,8 @@ class Build(object):
             self.prior=None
             self.reRunCount=0
 
-            self.avitar = buildjson['culprits']
-            print self.avitar
+            if len(buildjson['culprits']) > 0:
+                self.avitar = buildjson['culprits'][0]['absoluteUrl']+'/avatar/image'
 
             actions = {}
             for action in buildjson['actions']:
@@ -194,23 +194,26 @@ class Build(object):
         firstTest = self.regressionTests.values()[0]
         result = all( (item.status == firstTest.status) for item in self.regressionTests.values())
         return result
-        
+       
+    @property
+    def failedTests(self):
+        return self.failedSmokeTests + self.failedBaselineTests + self.failedRegressionTests
+
     @property
     def failedSmokeTests(self):
-        return [test for test in self.smokeTests.values() if test.result in ['FAILURE','UNSTABLE']]
+        return [test for test in self.smokeTests.values() if test.status in ['FAILURE','UNSTABLE','REBUILDING']]
 
     @property
     def failedCodeWatchTests(self):
-        return [test for test in self.codeWatchTests.values() if test.result in ['WARNING','UNSTABLE']]
-
+        return [test for test in self.codeWatchTests.values() if test.status in ['WARNING','UNSTABLE','REBUILDING']]
 
     @property
     def failedBaselineTests(self):
-        return [test for test in self.baselineTests.values() if test.result in ['FAILURE','UNSTABLE']]
+        return [test for test in self.baselineTests.values() if test.status in ['FAILURE','UNSTABLE','REBUILDING']]
 
     @property
     def failedRegressionTests(self):
-        return [test for test in self.regressionTests.values() if test.result in ['FAILURE','UNSTABLE']]
+        return [test for test in self.regressionTests.values() if test.status in ['FAILURE','UNSTABLE','REBUILDING']]
 
     @property
     def testCases(self):

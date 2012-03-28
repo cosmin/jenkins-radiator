@@ -1,0 +1,24 @@
+{% load radiator_helpers %}
+<td class="details">
+    {% if build.overall_status == "BUILDING" %}
+        {% if build.status == "BUILDING" %}
+            Compiling & Running Unit Tests
+        {% else %}
+            Build complete, running functional tests
+        {% endif %}
+    {% endif %}
+
+    {% if build.overall_status == "SUCCESS" %}
+        All tests passed! 
+    {% endif %}
+
+    {% if build.overall_status == "ABORTED" %}
+        BUILD ABORTED!
+    {% endif %}
+
+    {% if build.overall_status in "FAILURE.REBUILDING.UNSTABLE" %}
+        {% for test in build.failedTests %}
+            <div class="fail">{% include "radiator/failed_test_row.html" %}</div>
+        {% endfor %}
+    {% endif %}
+</td>

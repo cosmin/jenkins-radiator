@@ -5,14 +5,35 @@ body{
   font-size: 1;
   }
 
-table {
+table .builds,
+table .scm{
   width: 100%;
   margin-left:auto;
   margin-right:auto;
-  margin-top:2px;
+  margin-top:1px;
   padding:2px;
   border-style: solid;
   }
+
+td .buildNumber{
+  vertical-align: center;
+  width: 75px;
+}
+
+td .scm{
+  width: 125px;
+}
+
+td .tests{
+  vertical-align: center;
+  text-align: left;
+  font-size: 12;
+  width: 33%;
+}
+
+td .details{
+  font-size: 12;
+}
 
 td{
   vertical-align: top;
@@ -21,13 +42,19 @@ td{
   border-width: 0 0 0 0;
   }
 
-td .boxleft{
-  border-width: 0 2px 0 0;
-  }
-
 td .boxright{
   border-width: 0 0 0 2px;
   }
+
+td .avatar{
+  text-align: center;
+}
+
+div .details{
+  padding: 0px;
+  text-align: left;
+  display: block;
+}
 
 a{ color: #ffffff; text-decoration: none;; }
 
@@ -66,12 +93,8 @@ a{ color: #ffffff; text-decoration: none;; }
 
 .scm .revision,
 .scm .user{
-  font-size: 14;
+  font-size: 12;
   font-weight: bold;
-}
-
-.scm .user{
-  font-size: 14;
 }
 
 .box{
@@ -79,7 +102,6 @@ a{ color: #ffffff; text-decoration: none;; }
     text-align: center; 
     position: relative;
     display: inline-block;
-    font-size: 18;
 }
 
 .buildNumber a{ color: white; }
@@ -274,15 +296,15 @@ div.spinner div.bar12 {-webkit-transform:rotate(330deg) translate(0, -142%); -we
 
   position: absolute;
   float: right;
-  font-size: 12px;
+  font-size: 10px;
   font-weight: bold;
-  height: 14px;
+  height: 9px;
   text-align: center;
   vertical-align: middle;
-  width: 14px;
+  width: 9px;
 
-  top: 14px;
-  left: 14px;
+  top: 10px;
+  left: 8px;
 }
 
 .REBUILDING{ background-color: #FF5800; border-color: #FF5800; }
