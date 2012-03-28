@@ -1,10 +1,18 @@
 {% load radiator_helpers %}
     <div class="buildbox" id="{{build.name|slugify}}">
         <table class="box builds {{build.overall_status}}">
-            <tr>
-                <td class="buildNumber">
-                    <a href="{{build.url}}">#{{ build.number}}</a>
-                </td>
+            </tr>
+                   <td class="buildNumber">
+                       <a href="{{build.url}}">#{{ build.number}}</a>
+                       <div class="buildTime">
+                           Started: {{build.dateTimeStamp}}<br/>
+                           Elapsed: {{build.totalElapsedTime|format_seconds_to_mmss}}</br>
+                           {% if build.estimatedRemaining > 0 %}
+                               ETA: {{ build.estimatedRemaining|format_seconds_to_mmss }}
+                           {% endif %}
+                       </div>
+
+                   </td>
                 <td class="scm">
                 {% for author, revisions in build.authors.items %}
                 <table>

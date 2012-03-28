@@ -18,7 +18,7 @@
   {% for row in build_types %}
      {% for build_type in row %}
         $(document).ready(function() {table_reader("{{build_type}}", "{{build_type|slugify}}")});
-        window.setInterval(function() {table_reader("{{build_type}}","{{build_type|slugify}}")}, 60000);
+        window.setInterval(function() {table_reader("{{build_type}}","{{build_type|slugify}}")}, 6000000);
      {% endfor %}
   {% endfor %}
   
