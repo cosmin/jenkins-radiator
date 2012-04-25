@@ -84,6 +84,13 @@ a{ color: #ffffff; text-decoration: none;; }
   color: #000;
 }
 
+.scm .messages{
+  font-size: 10;
+  font-weight: normal;
+  color: white;
+  text-align: left;
+}
+
 .building_msg{
     text-align: center;
 }

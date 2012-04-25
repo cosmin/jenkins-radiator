@@ -1,12 +1,21 @@
 {% load radiator_helpers %}
 <td class="details">
-    {% if build.overall_status == "BUILDING" %}
-        {% if build.status == "BUILDING" %}
-            Compiling & Running Unit Tests
+    {% if build.status == "BUILDING" %}
+        Compiling & Running Unit Tests
+    {% else %}
+        {% if build.status == "UNSTABLE" %}
+            JUnit Tests Failed!
         {% else %}
-            Build complete, running functional tests
+            {% if build.status == "FAILURE" %}
+                Build Failed!
+            {% else %}
+                {% if build.overall_status == "BUILDING" %}
+                    Build complete, running functional tests
+                {% endif %}
+           {% endif %}
         {% endif %}
     {% endif %}
+
 
     {% if build.overall_status == "SUCCESS" %}
         All tests passed! 
