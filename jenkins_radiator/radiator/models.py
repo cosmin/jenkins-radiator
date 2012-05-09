@@ -1,6 +1,5 @@
 from django.db import models
 from django.conf import settings
-from django.core.cache import cache
 
 # Create your models here.
 
@@ -258,21 +257,16 @@ def get_data(url):
 
 def get_build_info(projectName, build):
     if build is not None:
-        if not isinstance(build, Build):
-          build = Build(build, projectName)
-          
-        return cleanup_cache(build)
+        return cleanup_cache(Build(build, projectName))
 
 def cleanup_cache(build):
+    filename = get_cache_filename(build.url)
     if build.building:
-      if cache.has_key(build.projectName+"-"+str(build.number)):
-        # print "Removing from cache:", build.projectName+"-"+str(build.number), build
-        cache.delete(build.projectName+"-"+str(build.number))
-    else:
-       if not cache.has_key(build.projectName+"-"+str(build.number)):
-          # print "Storing in cache:", build.projectName+"-"+str(build.number), build
-          cache.set(build.projectName+"-"+str(build.number), build)
-        
+        try:
+            os.remove(filename)
+        except OSError:
+            pass
+
     return build
 
 def get_recent_builds(projectName, count):
@@ -283,25 +277,27 @@ def get_recent_builds(projectName, count):
 def get_specific_build(projectName, build_number):
     return get_build_info(projectName, get_build(projectName, build_number))
     
-def get_build(projectName, number, suffix=""):       
-    cachedBuild = cache.get(projectName+"-"+str(number))
-    if cachedBuild != None:
-       # print "Cache Hit for",projectName+"-"+str(number),"!  Returning", str(cachedBuild), "from cache"
-       return cachedBuild
-    
+def get_cache_filename(url):
+    return '/tmp/jenkins_radiator/' + str(url.split('job/')[1]).strip('/').replace('/','_')
+
+def get_build(projectName, number, suffix=""):
     url = settings.HUDSON_URL+'/job/'+projectName+'/'+str(number)+'/'+suffix
-    # print "Not in cache:",projectName+"-"+str(number)
-    
+    filename = get_cache_filename(url)
+    if os.path.exists(filename):
+        try:
+            return json.load(open(filename,'r'))
+        except ValueError:
+           os.remove(filename)
     try:
         build = get_data(url+'/api/json')
 
     except urllib2.HTTPError:
         return None
 
-    # if not os.path.exists('/tmp/jenkins_radiator'):
-    #     os.mkdir('/tmp/jenkins_radiator')
-    # 
-    # json.dump(build, open(filename,'w'))
+    if not os.path.exists('/tmp/jenkins_radiator'):
+        os.mkdir('/tmp/jenkins_radiator')
+
+    json.dump(build, open(filename,'w'))
     return build
 
 
