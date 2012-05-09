@@ -15,7 +15,7 @@ ircMsg = ""
 
 # Create your views here.
 def avg(lst):
-    return sum(lst) / (1.0 * len(lst))
+    return sum(lst) / max(1.0,(1.0 * len(lst)))
 
 
 def get_radiator(request, build_list):
