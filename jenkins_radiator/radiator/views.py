@@ -126,9 +126,14 @@ def lookupTests(build_type, count, builds):
     testProjects = models.get_test_projects(models.get_data(settings.HUDSON_URL + '/api/json?tree=jobs[name]'),
                                             build_type)
     testProjects = [proj for proj in testProjects if not settings.HUDSON_TEST_IGNORE_REGEX.findall(proj)]
+    
     project.smokeProjects = [proj for proj in testProjects if settings.HUDSON_SMOKE_NAME_REGEX.findall(proj)]
+    
     project.baselineProjects = [proj for proj in testProjects if settings.HUDSON_BASELINE_NAME_REGEX.findall(proj)]
+    project.baselineProjects = [proj for proj in project.baselineProjects if not settings.HUDSON_PROJECT_NAME_REGEX.findall(proj)]
+    
     project.projectSuiteProjects = [proj for proj in testProjects if settings.HUDSON_PROJECT_NAME_REGEX.findall(proj)]
+    
     project.otherProjects = [proj for proj in testProjects if not settings.HUDSON_SMOKE_NAME_REGEX.findall(proj)]
     project.otherProjects = [proj for proj in project.otherProjects if
                              not settings.HUDSON_PROJECT_NAME_REGEX.findall(proj)]
@@ -223,7 +228,7 @@ def lookupTests(build_type, count, builds):
                 build.baselineTests[baseline] = models.Build(projectName=baseline)
        
         for xproject in project.projectSuiteProjects:
-            if project not in build.projectTests:
+            if xproject not in build.projectTests:
                 build.projectTests[project] = models.Build(projectName=project)
 
         for watch in project.codeWatchProjects:
