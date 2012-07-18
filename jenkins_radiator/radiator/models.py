@@ -54,6 +54,7 @@ class Build(object):
             self.dateTimeStamp = datetime.datetime.fromtimestamp(self.timeStamp)
             self.smokeTests = {}
             self.baselineTests = {}
+            self.projectTests = {}
             self.regressionTests = {}
             self.perfTests = {}
             self.codeWatchTests = {}
@@ -98,6 +99,10 @@ class Build(object):
         return test_status(self.baselineTests.values())
 
     @property
+    def project_status(self):
+        return test_status(self.projectTests.values())
+
+    @property
     def regression_status(self):
         return test_status(self.regressionTests.values())
 
@@ -110,7 +115,7 @@ class Build(object):
 
     @property
     def overall_status(self):
-        return sorted([self.status, self.smoke_status, self.baseline_status, self.regression_status], cmp=compare_by_status)[0]
+        return sorted([self.status, self.smoke_status, self.baseline_status, self.regression_status, self.project_status], cmp=compare_by_status)[0]
 
     @property
     def users(self):
@@ -144,6 +149,7 @@ class Build(object):
         return sum([self.elapsedTime]+
             [max([test.elapsedTime for test in self.smokeTests.values()]+
             [test.elapsedTime for test in self.baselineTests.values()]+[0]+
+            [test.elapsedTime for test in self.projectTests.values()]+[0]+
             [test.elapsedTime for test in self.regressionTests.values()]+[0])])
 
     @property
@@ -151,6 +157,7 @@ class Build(object):
         return sum([self.unfinishedDuration]+
             [max([test.unfinishedDuration for test in self.smokeTests.values()]+
             [test.unfinishedDuration for test in self.baselineTests.values()]+[0]+
+            [test.unfinishedDuration for test in self.projectTests.values()]+[0]+
             [test.unfinishedDuration for test in self.regressionTests.values()]+[0])])
     
     @property
@@ -173,6 +180,12 @@ class Build(object):
         return result
 
     @property
+    def isProjectStatusSame(self):
+        firstTest = self.projectTests.values()[0]
+        result = all( (item.status == firstTest.status) for item in self.projectTests.values())
+        return result
+
+    @property
     def isRegressionStatusSame(self):
         firstTest = self.regressionTests.values()[0]
         result = all( (item.status == firstTest.status) for item in self.regressionTests.values())
@@ -190,6 +203,10 @@ class Build(object):
     @property
     def failedBaselineTests(self):
         return [test for test in self.baselineTests.values() if test.result in ['FAILURE','UNSTABLE']]
+
+    @property
+    def failedProjectTests(self):
+        return [test for test in self.projectTests.values() if test.result in ['FAILURE','UNSTABLE']]
 
     @property
     def failedRegressionTests(self):

@@ -16,7 +16,7 @@ register = template.Library()
 @stringfilter
 def colorize_status(value):
     if value == 'FAILURE':
-        ret = "<font color='red'>" + value + "</font>"
+        ret = "<font color='999999'>" + value + "</font>"
     elif value == 'SUCCESS':
         ret = "<font color='00FF00'>" + value + "</font>"
     elif value == 'UNSTABLE':
