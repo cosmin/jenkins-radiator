@@ -80,10 +80,6 @@ def sortedByName(lst):
     return sorted(lst, key=lambda Build: Build.name)
 
 @register.filter
-def sortedByIndex(lst):
-    return sorted(lst, key=lambda PagePerformanceDelta: PagePerformanceDelta.index)
-
-@register.filter
 def sortedByStatus(lst):
     lst.sort( cmp=compare_by_result,reverse=True)
     return lst
@@ -117,30 +113,6 @@ def shorten(value, length=1):
 @stringfilter
 def dot2slash(value):
     return value.replace('.','/')
-
-@register.filter
-def formatForLabel(pagePerf):
-    scoreIndicator = ""
-    if pagePerf.scoreDelta > 0:
-        scoreIndicator = up_arrow
-    if pagePerf.scoreDelta < 0:
-        scoreIndicator = down_arrow
-
-    totalRequestsIndicator = ""
-    if pagePerf.totalRequestsDelta > 0:
-        totalRequestsIndicator = up_arrow
-    if pagePerf.totalRequestsDelta < 0:
-        totalRequestsIndicator = down_arrow
-
-    totalKilobytesIndicator = ""
-    if pagePerf.totalKilobytesDelta > 0:
-        totalKilobytesIndicator = up_arrow
-    if pagePerf.totalKilobytesDelta < 0:
-        totalKilobytesIndicator = down_arrow
-
-    return u"{0} \nTotal Requests: {1} {2} \nPage Weight: {3}KB {4}"\
-        .format(pagePerf.name, pagePerf.totalRequests, totalRequestsIndicator,  pagePerf.totalKilobytes, totalKilobytesIndicator)
-    
 
 @register.filter
 def wordbreak (string, arg):

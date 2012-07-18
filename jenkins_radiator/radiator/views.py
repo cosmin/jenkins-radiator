@@ -131,10 +131,7 @@ def lookupTests(build_type, count, builds):
     project.projectSuiteProjects = [proj for proj in testProjects if settings.HUDSON_PROJECT_NAME_REGEX.findall(proj)]
     project.otherProjects = [proj for proj in testProjects if not settings.HUDSON_SMOKE_NAME_REGEX.findall(proj)]
     project.otherProjects = [proj for proj in project.otherProjects if
-                             not settings.HUDSON_BASELINE_NAME_REGEX.findall(proj)]
-
-    project.perfProjects = models.get_performance_projects(
-        models.get_data(settings.HUDSON_URL + '/api/json?tree=jobs[name]'), build_type)
+                             not settings.HUDSON_PROJECT_NAME_REGEX.findall(proj)]
 
     project.codeWatchProjects = models.get_code_watch_projects(
         models.get_data(settings.HUDSON_URL + '/api/json?tree=jobs[name]'), build_type)
@@ -156,10 +153,6 @@ def lookupTests(build_type, count, builds):
     regressionBuilds = []
     for testName in project.otherProjects:
         regressionBuilds.extend(models.get_recent_builds(testName, count))
-
-    perfBuilds = []
-    for testName in project.perfProjects:
-        perfBuilds.extend(models.get_recent_builds(testName, count))
 
     codeWatchBuilds = []
     for testName in project.codeWatchProjects:
@@ -214,12 +207,6 @@ def lookupTests(build_type, count, builds):
                 else:
                     parent.regressionTests[test.project].reRunCount += 1
 
-    for test in perfBuilds:
-        parent = buildDict.get(test.parent)
-        if parent is not None:
-            if test.project not in parent.perfTests or int(test.number) > int(parent.perfTests[test.project].number):
-                parent.perfTests[test.project] = test
-
     for test in codeWatchBuilds:
         parent = buildDict.get(test.parent)
         if parent is not None:
@@ -239,10 +226,6 @@ def lookupTests(build_type, count, builds):
             if project not in build.projectTests:
                 build.projectTests[project] = models.Build(projectName=project)
 
-        for perf in project.perfProjects:
-            if perf not in build.perfTests:
-                build.perfTests[perf] = models.Build(projectName=perf)
-
         for watch in project.codeWatchProjects:
             if watch not in build.codeWatchTests:
                 build.codeWatchTests[watch] = models.Build(projectName=watch)
@@ -251,30 +234,8 @@ def lookupTests(build_type, count, builds):
                 if other not in build.regressionTests:
                     build.regressionTests[other] = models.Build(projectName=other)
 
-        # Find prior build with perf data
-
-        for perfProject in project.perfProjects:
-            lastSuccessfulBuild = None
-            for build in reversed(builds):
-                if build.perfTests.__contains__(perfProject) and build.perfTests[perfProject].result == "SUCCESS":
-                    build.perfTests[perfProject].prior = lastSuccessfulBuild
-                    lastSuccessfulBuild = build.perfTests[perfProject]
-
-        for perfBuild in perfBuilds:
-            perfBuild.pagePerfs = models.create_pagePerfs(perfBuild.url)
-
         for codeWatchBuild in codeWatchBuilds:
             codeWatchBuild.codeWatchStatus = models.get_codeWatchStatus(codeWatchBuild.url, codeWatchBuild.status)
-
-        for perfBuild in perfBuilds:
-            perfBuild.pagePerfDeltas = []
-            for pageName, pagePerf in perfBuild.pagePerfs.iteritems():
-                if perfBuild.prior:
-                    if perfBuild.prior.pagePerfs.has_key(pageName):
-                        priorPagePerf = perfBuild.prior.pagePerfs[pageName]
-                        perfBuild.pagePerfDeltas.append(models.PagePerformanceDelta(pagePerf, priorPagePerf))
-                else:
-                    perfBuild.pagePerfDeltas.append(models.PagePerformanceDelta(pagePerf))
 
         return buildDict
 

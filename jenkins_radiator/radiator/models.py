@@ -56,7 +56,6 @@ class Build(object):
             self.baselineTests = {}
             self.projectTests = {}
             self.regressionTests = {}
-            self.perfTests = {}
             self.codeWatchTests = {}
             self.parent = None
             self.projectName = projectName
@@ -323,11 +322,6 @@ def get_test_projects(data, build_type):
     testList = [job['name'] for job in jobs if job['name'].upper().startswith(build_type.upper() + '_TEST_')]
     return testList
 
-def get_performance_projects(data, build_type):
-    jobs = data['jobs']
-    perfList = [job['name'] for job in jobs if job['name'].upper().startswith(build_type.upper() + '_PERFORMANCE_')]
-    return perfList
-
 def get_code_watch_projects(data, build_type):
     jobs = data['jobs']
     watchList = [job['name'] for job in jobs if job['name'].upper().startswith(build_type.upper() + '_CODE_WATCH_')]
@@ -337,22 +331,6 @@ def flatten(x):
     cases = []
     cases.extend(x)
     return cases
-
-def create_pagePerfs(buildUrl):
-    try:
-        artifactsJson = json.loads(urllib2.urlopen(buildUrl + "api/json").read())["artifacts"]
-        performancePages = {}
-        counter = 0
-        for artifactJson in artifactsJson:
-            pageDataUrl = buildUrl + "artifact/" + artifactJson["relativePath"]
-            fileName = artifactJson["fileName"]
-            pageName = re.search("^\d+-(.*)\.json", fileName).group(1)
-            newPage = PagePerformance(counter, pageName, buildUrl, json.loads(urllib2.urlopen(pageDataUrl).read()))
-            performancePages[fileName] = newPage
-            counter += 1
-        return performancePages
-    except urllib2.HTTPError:
-        return None
 
 def get_codeWatchStatus(buildUrl, buildStatus):
     try:
@@ -394,32 +372,3 @@ def getTestData(jsonData,runNumber):
                 tests.extend([TestData(case,runNumber)])
 
     return tests
-
-    
-class PagePerformance(object):
-    def __init__(self, index, name, url, pageJsonData):
-        self.index = index
-        self.name = name
-        self.url = url
-        self.score = pageJsonData["o"]
-        self.totalRequests = pageJsonData["r"]
-        self.totalKilobytes = pageJsonData["w"] / 1000
-
-class PagePerformanceDelta(object):
-    def __init__(self, current, prior=None):
-        self.index = current.index
-        self.name = current.name
-        self.url = current.url
-        self.score = current.score
-        self.totalRequests = current.totalRequests 
-        self.totalKilobytes = current.totalKilobytes
-        self.prior = prior
-        self.scoreDelta = 0
-        self.totalRequestsDelta = 0
-        self.totalKilobytesDelta = 0
-        if prior:
-            self.scoreDelta = current.score - prior.score
-            self.totalRequestsDelta = current.totalRequests - prior.totalRequests
-            self.totalKilobytesDelta = current.totalKilobytes - prior.totalKilobytes
-
-
