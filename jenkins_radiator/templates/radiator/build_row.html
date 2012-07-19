@@ -62,6 +62,13 @@
           {% include "radiator/test_rerun_badge.html" %}
         </div>
       {% endfor %}
+      {% for test in build.projectTests.values|sortedByName %}
+        <div class="shadow box {{test.status}} tertiary" title="{{test.name}}: {{test.status|transformTestStatus}}, Elapsed&nbsp;time:&nbsp;{{test.elapsedTime|format_seconds_to_mmss}}, ReRun&nbsp;Count:&nbsp;{{test.reRunCount}}">{% spaceless %}
+          {% include "radiator/test_spinner.html" %}
+          &nbsp;<a href="{{test.jenkinsUrl}}">P</a>&nbsp;{% endspaceless %}
+          {% include "radiator/test_rerun_badge.html" %}
+        </div>
+      {% endfor %}
       {% for test in build.codeWatchTests.values|sortedByName %}
         <div class="shadow box {{ test.codeWatchStatus}} tertiary" title="{{test.name}}: {{test.codeWatchStatus|transformTestStatus}}, Elapsed&nbsp;time:&nbsp;{{test.elapsedTime|format_seconds_to_mmss}}, ReRun&nbsp;Count:&nbsp;{{test.reRunCount}}">{% spaceless %}
           {% include "radiator/test_spinner.html" %}
@@ -107,37 +114,19 @@
         </tr>
       </table>
       {% endif %}
-    {% for perfTestBuild in build.perfTests.values|sortedByName %}
-            {% if perfTestBuild.status == "SUCCESS" %}
-                {% for pagePerf in perfTestBuild.pagePerfDeltas|sortedByIndex%}
-                    <a
-                        title="{{ pagePerf|formatForLabel }}"
-                        href="{{pagePerf.url}}">
-                        <div class="shadow box {{build.overall_status}} tertiary" title="{{pagePerf.pageName}}">
-                            &nbsp;
-                            {{ spaceless }}
-                                <span>{{ pagePerf.totalRequests }}</span>
-                                {% if pagePerf.prior %}
-                                    {% if pagePerf.totalRequestsDelta > 0 %}
-                                        <!-- up arrow --> <b>{{ const.up_arrow }}</b>
-                                    {% endif %}
-                                    {% if pagePerf.totalRequestsDelta < 0 %}
-                                        <!-- down arrow --> <b>{{ const.down_arrow }}</b>
-                                    {% endif %}
-                                {% endif %}
-                            {{ endspaceless }}
-                            &nbsp;
-                        </div>
-                    </a>
-                {% endfor %}
-            {% else %}
-                <div class="shadow box {{test.status}} tertiary" title="{{test.name}}: {{test.status|transformTestStatus}}">{% spaceless %}
-                  {% include "radiator/test_spinner.html" %}
-                  &nbsp;<a href="{{perfTestBuild.url}}">P</a>&nbsp;{% endspaceless %}
-                </div>
-            {% endif %}
-        {% endfor %}
-    {% else %}
+      {% if build.failedProjectTests %}
+      <div class="gap"/>
+      <table class="tests">
+        <tr>
+          <td class="boxleft functional FAILURE"><div class="title">P<span class="subTitle"><br/>Project Test Suite Failures</span></div></td>
+          <td class="boxright FAILURE">
+            {% for test in build.failedProjectTests %}
+                {% include "radiator/failed_test_row.html" %}
+            {% endfor %}
+          </td>
+        </tr>
+      </table>
+      {% endif %}
       {% if build.status == "UNSTABLE" %}
         <div class="broken {{build.status}} secondary">JUNIT TESTS BREAKING!</div>
       {% endif %}

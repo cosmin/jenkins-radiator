@@ -54,8 +54,8 @@ class Build(object):
             self.dateTimeStamp = datetime.datetime.fromtimestamp(self.timeStamp)
             self.smokeTests = {}
             self.baselineTests = {}
+            self.projectTests = {}
             self.regressionTests = {}
-            self.perfTests = {}
             self.codeWatchTests = {}
             self.parent = None
             self.projectName = projectName
@@ -98,6 +98,10 @@ class Build(object):
         return test_status(self.baselineTests.values())
 
     @property
+    def project_status(self):
+        return test_status(self.projectTests.values())
+
+    @property
     def regression_status(self):
         return test_status(self.regressionTests.values())
 
@@ -110,7 +114,7 @@ class Build(object):
 
     @property
     def overall_status(self):
-        return sorted([self.status, self.smoke_status, self.baseline_status, self.regression_status], cmp=compare_by_status)[0]
+        return sorted([self.status, self.smoke_status, self.baseline_status, self.regression_status, self.project_status], cmp=compare_by_status)[0]
 
     @property
     def users(self):
@@ -144,6 +148,7 @@ class Build(object):
         return sum([self.elapsedTime]+
             [max([test.elapsedTime for test in self.smokeTests.values()]+
             [test.elapsedTime for test in self.baselineTests.values()]+[0]+
+            [test.elapsedTime for test in self.projectTests.values()]+[0]+
             [test.elapsedTime for test in self.regressionTests.values()]+[0])])
 
     @property
@@ -151,6 +156,7 @@ class Build(object):
         return sum([self.unfinishedDuration]+
             [max([test.unfinishedDuration for test in self.smokeTests.values()]+
             [test.unfinishedDuration for test in self.baselineTests.values()]+[0]+
+            [test.unfinishedDuration for test in self.projectTests.values()]+[0]+
             [test.unfinishedDuration for test in self.regressionTests.values()]+[0])])
     
     @property
@@ -173,6 +179,12 @@ class Build(object):
         return result
 
     @property
+    def isProjectStatusSame(self):
+        firstTest = self.projectTests.values()[0]
+        result = all( (item.status == firstTest.status) for item in self.projectTests.values())
+        return result
+
+    @property
     def isRegressionStatusSame(self):
         firstTest = self.regressionTests.values()[0]
         result = all( (item.status == firstTest.status) for item in self.regressionTests.values())
@@ -190,6 +202,10 @@ class Build(object):
     @property
     def failedBaselineTests(self):
         return [test for test in self.baselineTests.values() if test.result in ['FAILURE','UNSTABLE']]
+
+    @property
+    def failedProjectTests(self):
+        return [test for test in self.projectTests.values() if test.result in ['FAILURE','UNSTABLE']]
 
     @property
     def failedRegressionTests(self):
@@ -306,11 +322,6 @@ def get_test_projects(data, build_type):
     testList = [job['name'] for job in jobs if job['name'].upper().startswith(build_type.upper() + '_TEST_')]
     return testList
 
-def get_performance_projects(data, build_type):
-    jobs = data['jobs']
-    perfList = [job['name'] for job in jobs if job['name'].upper().startswith(build_type.upper() + '_PERFORMANCE_')]
-    return perfList
-
 def get_code_watch_projects(data, build_type):
     jobs = data['jobs']
     watchList = [job['name'] for job in jobs if job['name'].upper().startswith(build_type.upper() + '_CODE_WATCH_')]
@@ -320,22 +331,6 @@ def flatten(x):
     cases = []
     cases.extend(x)
     return cases
-
-def create_pagePerfs(buildUrl):
-    try:
-        artifactsJson = json.loads(urllib2.urlopen(buildUrl + "api/json").read())["artifacts"]
-        performancePages = {}
-        counter = 0
-        for artifactJson in artifactsJson:
-            pageDataUrl = buildUrl + "artifact/" + artifactJson["relativePath"]
-            fileName = artifactJson["fileName"]
-            pageName = re.search("^\d+-(.*)\.json", fileName).group(1)
-            newPage = PagePerformance(counter, pageName, buildUrl, json.loads(urllib2.urlopen(pageDataUrl).read()))
-            performancePages[fileName] = newPage
-            counter += 1
-        return performancePages
-    except urllib2.HTTPError:
-        return None
 
 def get_codeWatchStatus(buildUrl, buildStatus):
     try:
@@ -377,32 +372,3 @@ def getTestData(jsonData,runNumber):
                 tests.extend([TestData(case,runNumber)])
 
     return tests
-
-    
-class PagePerformance(object):
-    def __init__(self, index, name, url, pageJsonData):
-        self.index = index
-        self.name = name
-        self.url = url
-        self.score = pageJsonData["o"]
-        self.totalRequests = pageJsonData["r"]
-        self.totalKilobytes = pageJsonData["w"] / 1000
-
-class PagePerformanceDelta(object):
-    def __init__(self, current, prior=None):
-        self.index = current.index
-        self.name = current.name
-        self.url = current.url
-        self.score = current.score
-        self.totalRequests = current.totalRequests 
-        self.totalKilobytes = current.totalKilobytes
-        self.prior = prior
-        self.scoreDelta = 0
-        self.totalRequestsDelta = 0
-        self.totalKilobytesDelta = 0
-        if prior:
-            self.scoreDelta = current.score - prior.score
-            self.totalRequestsDelta = current.totalRequests - prior.totalRequests
-            self.totalKilobytesDelta = current.totalKilobytes - prior.totalKilobytes
-
-
