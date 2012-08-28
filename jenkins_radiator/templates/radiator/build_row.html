@@ -127,6 +127,7 @@
         </tr>
       </table>
       {% endif %}
+   {% else %}
       {% if build.status == "UNSTABLE" %}
         <div class="broken {{build.status}} secondary">JUNIT TESTS BREAKING!</div>
       {% endif %}
