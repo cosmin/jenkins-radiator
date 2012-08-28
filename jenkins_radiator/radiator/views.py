@@ -164,7 +164,6 @@ def lookupTests(build_type, count, builds):
         codeWatchBuilds.extend(models.get_recent_builds(testName, count))
 
     for test in smokeBuilds:
-        myParent = test.parent
         parent = buildDict.get(test.parent)
         if parent is not None:
             if test.project not in parent.smokeTests:
@@ -203,6 +202,7 @@ def lookupTests(build_type, count, builds):
     for test in regressionBuilds:
         parent = buildDict.get(test.parent)
         if parent is not None:
+            test.letter = get_regression_test_letter(project.name, test.name)
             if test.project not in parent.regressionTests:
                 parent.regressionTests[test.project] = test
             else:
@@ -244,6 +244,16 @@ def lookupTests(build_type, count, builds):
 
         return buildDict
 
+def get_regression_test_letter(projectName, testName):
+    testNameUpper = testName.upper()    
+    testNameUpper = testNameUpper.replace(projectName.upper(), '')
+    testNameUpper = testNameUpper.replace(settings.HUDSON_TEST_NAME_PATTERN.upper(), '')
+    wordsList = testNameUpper.split('_')
+    letters = wordsList[0][0]
+    if len(wordsList) > 1:
+        letters += wordsList[1][0]
+    return letters
+    
 def get_project_report(request, build_type):
     count = int(request.GET.get('builds', settings.HUDSON_BUILD_COUNT))
     builds = models.get_recent_builds(build_type + settings.HUDSON_BUILD_NAME_PATTERN, count)

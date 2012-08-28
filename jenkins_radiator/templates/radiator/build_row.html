@@ -58,7 +58,7 @@
       {% for test in build.regressionTests.values|sortedByName %}
         <div class="shadow box {{test.status}} tertiary" title="{{test.name}}: {{test.status|transformTestStatus}}, Elapsed&nbsp;time:&nbsp;{{test.elapsedTime|format_seconds_to_mmss}}, ReRun&nbsp;Count:&nbsp;{{test.reRunCount}}">{% spaceless %}
           {% include "radiator/test_spinner.html" %}
-          &nbsp;<a href="{{test.jenkinsUrl}}">R</a>&nbsp;{% endspaceless %}
+          &nbsp;<a href="{{test.jenkinsUrl}}">{{test.letter}}</a>&nbsp;{% endspaceless %}
           {% include "radiator/test_rerun_badge.html" %}
         </div>
       {% endfor %}
