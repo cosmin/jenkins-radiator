@@ -247,7 +247,7 @@ def lookupTests(build_type, count, builds):
 def get_regression_test_letter(projectName, testName):
     testNameUpper = testName.upper()    
     testNameUpper = testNameUpper.replace(projectName.upper(), '')
-    testNameUpper = testNameUpper.replace(settings.HUDSON_TEST_NAME_PATTERN, '')
+    testNameUpper = testNameUpper.replace(settings.HUDSON_TEST_NAME_PATTERN.upper(), '')
     wordsList = testNameUpper.split('_')
     letters = wordsList[0][0]
     if len(wordsList) > 1:
