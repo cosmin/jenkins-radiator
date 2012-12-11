@@ -219,6 +219,7 @@ def lookupTests(build_type, count, builds):
                 parent.codeWatchTests[test.project] = test
 
     for build in builds:
+	print "DEBUG: ", build
         for smoke in project.smokeProjects:
             if smoke not in build.smokeTests:
                 build.smokeTests[smoke] = models.Build(projectName=smoke)
@@ -229,7 +230,8 @@ def lookupTests(build_type, count, builds):
        
         for xproject in project.projectSuiteProjects:
             if xproject not in build.projectTests:
-                build.projectTests[project] = models.Build(projectName=project)
+                print "DEBUG: ", xproject
+                build.projectTests[xproject] = models.Build(projectName=xproject)
 
         for watch in project.codeWatchProjects:
             if watch not in build.codeWatchTests:
@@ -242,7 +244,8 @@ def lookupTests(build_type, count, builds):
         for codeWatchBuild in codeWatchBuilds:
             codeWatchBuild.codeWatchStatus = models.get_codeWatchStatus(codeWatchBuild.url, codeWatchBuild.status)
 
-        return buildDict
+    return buildDict
+
 
 def get_regression_test_letter(projectName, testName):
     testNameUpper = testName.upper()    
