@@ -249,7 +249,7 @@ class Build(object):
         except IOError:
 	    return ""
 
-status_order = ['FAILURE', 'UNSTABLE', 'REBUILDING', 'BUILDING', 'ABORTED', 'SUCCESS', 'UNKNOWN', None ]
+status_order = ['FAILURE', 'UNSTABLE', 'REBUILDING', 'BUILDING', 'ABORTED', 'UNKNOWN', 'SUCCESS', None ]
 
 def compare_by_status(r1, r2):
     return status_order.index(r1) - status_order.index(r2)
