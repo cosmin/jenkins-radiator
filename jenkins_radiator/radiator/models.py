@@ -65,7 +65,8 @@ class Build(object):
 
             actions = {}
             for action in buildjson['actions']:
-                actions.update(action)
+                if action:
+                    actions.update(action)
                 
             self.failCount = actions.get('failCount', 0)
             self.totalCount = actions.get('totalCount', 0)
