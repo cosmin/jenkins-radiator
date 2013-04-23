@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.core.cache import cache
 
 # Create your models here.
 
@@ -267,8 +268,15 @@ def test_status(tests):
         return tests_copy[0].status
 
 def get_project_data(projectName):
-    return get_data(settings.HUDSON_URL + '/job/' + projectName + '/api/json')
+    url = settings.HUDSON_URL + '/job/' + projectName + '/api/json'
+    data = cache.get(url)
+    if data == None:
+        print 'Cache miss ' + url
+        data = get_data(url)
+        cache.set(url, data, 30)
+    return data
 
+# @print_timing
 def get_data(url):
     return json.loads(urllib2.urlopen(url).read())
 
