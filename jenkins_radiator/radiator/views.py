@@ -1,5 +1,7 @@
 from django.shortcuts import render_to_response as render
 from django.conf import settings
+from django.http import HttpResponse
+import json
 import models
 import re
 import socket
@@ -29,6 +31,13 @@ def get_radiator(request, build_list):
 
     columnSize = 100 / len(build_types[0])
     return render('radiator/builds.html', locals())
+
+def successful_builds(request, job_name):
+    count = int(request.GET.get('builds', settings.HUDSON_BUILD_COUNT))
+    builds = models.get_recent_builds(job_name, count)
+    buildDict = lookupTests(job_name.replace(settings.HUDSON_BUILD_NAME_PATTERN, ""), count, builds)
+    data = [build.number for build in builds if build.overall_status == "SUCCESS"]
+    return HttpResponse(json.dumps(data), content_type="application/json")
 
 def get_stats(request, build_type):
     buildCount = int(request.GET.get('builds', settings.HUDSON_BUILD_COUNT))

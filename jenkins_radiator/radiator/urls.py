@@ -27,6 +27,6 @@ urlpatterns += patterns('',
     (r'^data/(.*)/$', 'jenkins_radiator.radiator.views.get_builds'),
     (r'^stats/(.*)/$', 'jenkins_radiator.radiator.views.get_stats'),
     (r'^state/(.*)/$', 'jenkins_radiator.radiator.views.get_state'),
+    (r'^api/(.*)/successful-builds.json$', 'jenkins_radiator.radiator.views.successful_builds'),
     (r'^(.*)/$', 'jenkins_radiator.radiator.views.get_radiator'),
 )
-
