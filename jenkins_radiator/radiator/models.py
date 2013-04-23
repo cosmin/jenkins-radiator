@@ -341,22 +341,6 @@ def flatten(x):
     cases.extend(x)
     return cases
 
-def get_codeWatchStatus(buildUrl, buildStatus):
-    try:
-        artifactsJson = json.loads(urllib2.urlopen(buildUrl + "api/json").read())["artifacts"]
-        codeWatch_status = "ABORTED"
-        if buildStatus == "SUCCESS" :
-            codeWatch_status = "WARNING"
-            for artifactJson in artifactsJson:
-                pageDataUrl = buildUrl + "artifact/" + artifactJson["relativePath"]
-                codeWatchJasonData = json.loads(urllib2.urlopen(pageDataUrl).read())
-                build_info = codeWatchJasonData["build_info"]
-                if build_info["status"] == "pass" :
-                    codeWatch_status = "SUCCESS"
-        return codeWatch_status
-    except urllib2.HTTPError:
-        return None
-
 
 class TestData(object):
     def __init__(self, case, runNumber):
