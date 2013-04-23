@@ -4,7 +4,7 @@ from django.core.cache import cache
 
 # Create your models here.
 
-import json
+import ujson as json
 import urllib2
 import time
 import os
@@ -269,16 +269,17 @@ def test_status(tests):
 
 def get_project_data(projectName):
     url = settings.HUDSON_URL + '/job/' + projectName + '/api/json'
-    data = cache.get(url)
-    if data == None:
-        print 'Cache miss ' + url
-        data = get_data(url)
-        cache.set(url, data, 30)
-    return data
+    return get_data(url)
 
 # @print_timing
 def get_data(url):
-    return json.loads(urllib2.urlopen(url).read())
+    # print "Getting " + url
+    data = cache.get(url)
+    if data == None:
+        # print 'Cache miss ' + url
+        data = json.loads(urllib2.urlopen(url).read())
+        cache.set(url, data, 30)
+    return data
 
 def get_build_info(projectName, build):
     if build is not None:
@@ -305,8 +306,8 @@ def get_specific_build(projectName, build_number):
 def get_cache_filename(url):
     return '/tmp/jenkins_radiator/' + str(url.split('job/')[1]).strip('/').replace('/','_')
 
-def get_build(projectName, number, suffix=""):
-    url = settings.HUDSON_URL+'/job/'+projectName+'/'+str(number)+'/'+suffix
+def get_build(projectName, number):
+    url = settings.HUDSON_URL+'/job/'+projectName+'/'+str(number)
     filename = get_cache_filename(url)
     if os.path.exists(filename):
         try:
