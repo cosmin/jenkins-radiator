@@ -95,7 +95,7 @@ def get_state(request, build_type):
     buildingCount = 0
     for build in builds:
         state = build.overall_status
- 
+
         if state == "BUILDING":
             buildingCount += 1
             if buildingCount >= settings.HUDSON_MAXIMUM_CONCURRENT_BUILDS:
@@ -135,14 +135,14 @@ def lookupTests(build_type, count, builds):
     testProjects = models.get_test_projects(models.get_data(settings.HUDSON_URL + '/api/json?tree=jobs[name]'),
                                             build_type)
     testProjects = [proj for proj in testProjects if not settings.HUDSON_TEST_IGNORE_REGEX.findall(proj)]
-    
+
     project.smokeProjects = [proj for proj in testProjects if settings.HUDSON_SMOKE_NAME_REGEX.findall(proj)]
-    
+
     project.baselineProjects = [proj for proj in testProjects if settings.HUDSON_BASELINE_NAME_REGEX.findall(proj)]
     project.baselineProjects = [proj for proj in project.baselineProjects if not settings.HUDSON_PROJECT_NAME_REGEX.findall(proj)]
-    
+
     project.projectSuiteProjects = [proj for proj in testProjects if settings.HUDSON_PROJECT_NAME_REGEX.findall(proj)]
-    
+
     project.otherProjects = [proj for proj in testProjects if not settings.HUDSON_SMOKE_NAME_REGEX.findall(proj)]
     project.otherProjects = [proj for proj in project.otherProjects if
                              not settings.HUDSON_PROJECT_NAME_REGEX.findall(proj)]
@@ -159,11 +159,11 @@ def lookupTests(build_type, count, builds):
     baselineBuilds = []
     for testName in project.baselineProjects:
         baselineBuilds.extend(models.get_recent_builds(testName, count))
-   
+
     projectBuilds = []
     for testName in project.projectSuiteProjects:
         projectBuilds.extend(models.get_recent_builds(testName, count))
- 
+
     regressionBuilds = []
     for testName in project.otherProjects:
         regressionBuilds.extend(models.get_recent_builds(testName, count))
@@ -236,7 +236,7 @@ def lookupTests(build_type, count, builds):
         for baseline in project.baselineProjects:
             if baseline not in build.baselineTests:
                 build.baselineTests[baseline] = models.Build(projectName=baseline)
-       
+
         for xproject in project.projectSuiteProjects:
             if xproject not in build.projectTests:
                 print "DEBUG: ", xproject
@@ -257,7 +257,7 @@ def lookupTests(build_type, count, builds):
 
 
 def get_regression_test_letter(projectName, testName):
-    testNameUpper = testName.upper()    
+    testNameUpper = testName.upper()
     testNameUpper = testNameUpper.replace(projectName.upper(), '')
     testNameUpper = testNameUpper.replace(settings.HUDSON_TEST_NAME_PATTERN.upper(), '')
     wordsList = testNameUpper.split('_')
@@ -265,7 +265,7 @@ def get_regression_test_letter(projectName, testName):
     if len(wordsList) > 1:
         letters += wordsList[1][0]
     return letters
-    
+
 def get_project_report(request, build_type):
     count = int(request.GET.get('builds', settings.HUDSON_BUILD_COUNT))
     builds = models.get_recent_builds(build_type + settings.HUDSON_BUILD_NAME_PATTERN, count)
@@ -332,7 +332,7 @@ def irc_channel_msg():
 
   return ircMsg
 
-def irc_channel_topic(): 
+def irc_channel_topic():
   global topicThread
   global ircTopic
 
@@ -384,11 +384,11 @@ class IRCTopicThread(threading.Thread) :
 
    def __init__(self) :
      threading.Thread.__init__(self)
-     try:    
+     try:
         self.__ircSocket=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.__ircSocket.connect((settings.IRC_HOST, settings.IRC_PORT))
         self.__ircSocket.settimeout(self.__pauseAmt)
-     
+
         if self.__send_irc_cmd(self.__nickCmd) :
            self.__recv_irc_resp(None,None)
         else :
@@ -403,7 +403,7 @@ class IRCTopicThread(threading.Thread) :
            self.__ircSocket = None
            return
 
-        if self.__send_irc_cmd(self.__joinCmd) : 
+        if self.__send_irc_cmd(self.__joinCmd) :
            self.__recv_irc_resp(re.compile(settings.IRC_RSP_JOIN),None)
         else :
            __ircSocket.close
@@ -417,7 +417,7 @@ class IRCTopicThread(threading.Thread) :
         traceback.print_tb(exc_traceback, limit=1, file=sys.stdout)
 
    def refreshTopic(self) :
-       ircTopic=self.__irc_channel_topic()  
+       ircTopic=self.__irc_channel_topic()
 
    def refreshMsg(self) :
        ircMsg=self.__irc_channel_msg_recv()
@@ -425,7 +425,7 @@ class IRCTopicThread(threading.Thread) :
    def run(self) :
      global ircTopic
      global ircMsg
-     try:    
+     try:
         if self.__ircSocket == None :
            return
         self.isRunning=True
@@ -446,7 +446,7 @@ class IRCTopicThread(threading.Thread) :
         isRunning=False
         self.__ircSocket.send(self.__quitCmd)
         self.__ircSocket.close()
-          
+
    def __send_irc_cmd(self, cmd) :
       byteCt = len(cmd)
       sentCt = self.__ircSocket.send(cmd)
@@ -463,7 +463,7 @@ class IRCTopicThread(threading.Thread) :
            except socket.timeout :
              pass
            if respPattern == None :
-              return 
+              return
            if len(buf) > 0 :
               lines=buf.split(self.__eol)
               buf=""
@@ -474,11 +474,11 @@ class IRCTopicThread(threading.Thread) :
                         result = respHandler(line)
                      return result
            else :
-               return 
-     
+               return
+
    def __irc_channel_topic(self):
      global ircTopic
-     try:    
+     try:
         if self.__send_irc_cmd(self.__topicCmd) :
            topic = self.__recv_irc_resp(re.compile(settings.IRC_RSP_TOPIC),lambda l : l.split(self.__topicBoundary)[1])
         else :
