@@ -62,7 +62,6 @@ def get_stats(request, build_type):
 
     testProjects = models.get_test_projects(models.get_data(settings.HUDSON_URL + '/api/json?tree=jobs[name]'), build_type)
     testProjects = [proj for proj in testProjects if not settings.HUDSON_TEST_IGNORE_REGEX.findall(proj)]
-
     testBuilds = {}
 
     for testName in testProjects:

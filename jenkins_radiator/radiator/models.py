@@ -11,6 +11,8 @@ import os
 import re
 import datetime
 import time
+import base64
+
 
 def print_timing(func):
     def wrapper(*args, **kw):
@@ -77,6 +79,8 @@ class Build(object):
 
                 for p in actions['parameters']:
                    params[p['name']] = p
+
+                print params
 
                 if params.has_key('BUILDURL'):
                     buildurl = params['BUILDURL']
@@ -277,7 +281,14 @@ def get_data(url):
     data = cache.get(url)
     if data == None:
         # print 'Cache miss ' + url
-        data = json.loads(urllib2.urlopen(url).read())
+        if settings.HUDSON_USER_NAME:
+          req = urllib2.Request(url)
+          base64string = base64.encodestring('%s:%s' % (settings.HUDSON_USER_NAME, settings.HUDSON_USER_TOKEN)).replace('\n','')
+          req.add_header("Authorization", "Basic %s" % base64string)
+          data = json.loads(urllib2.urlopen(req).read())
+        else:
+          data = json.loads(urllib2.urlopen(url).read())
+
         cache.set(url, data, 30)
     return data
 
