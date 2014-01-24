@@ -90,6 +90,11 @@ class Build(object):
                         self.parent = str(buildurl['value'].split('/')[-2])
                 elif params.has_key('BUILD_NBR'):
                     self.parent = params['BUILD_NBR']['value']
+                    
+                if params.has_key('MVN_RELEASE_VERSION'):
+                    self.isReleaseCandidate = True
+                    self.releaseVersion = params['MVN_RELEASE_VERSION']['value']
+                
 
 
             self.trigger = actions.get('causes')[0].get('shortDescription')

@@ -23,6 +23,14 @@ a{ color: #ffffff; text-decoration: none;; }
   float: left;
 }
 
+.rcVersion{
+    font-size: 24;
+    font-weight: bold;
+    font-style: italic;
+    text-align: center;
+    color: yellow;
+}
+
 .buildTime{
   float: right;
   font-size: 14;

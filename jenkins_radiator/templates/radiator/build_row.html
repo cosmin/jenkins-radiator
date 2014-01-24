@@ -7,8 +7,7 @@
     {% else %}
         title="Jenkins Build {{build.number}} completed with status of: {{build.status}}, Elapsed time: {{build.elapsedTime|format_seconds_to_mmss}}"
     {% endif %}>
-    <div class="buildNumber">{% include "radiator/build_spinner.html" %}<a href="{{build.url}}">#{{ build.number}}</a>&nbsp;
-</div>
+    <div class="buildNumber">{% include "radiator/build_spinner.html" %}<a href="{{build.url}}">#{{ build.number}}</a>&nbsp;</div>
     <div class="buildTime" title="{{build.dateTimeStamp}}">
         {{ build.dateTimeStamp}}&nbsp;|&nbsp;Elapsed: {{build.totalElapsedTime|format_seconds_to_mmss}}
         {% if build.estimatedRemaining > 0 %}
@@ -16,6 +15,10 @@
         {% endif %}
     </div>
     <div class="clear-both"></div>
+    {% if build.isReleaseCandidate %}
+        <div class="rcVersion">Release Candidate: {{ build.releaseVersion}}</div>
+    {% endif %}
+
     <div class="scm">{% spaceless %}
       {% for commit in build.items %}
       <a href="{{build.url}}/changes">
