@@ -50,7 +50,7 @@ class Build(object):
             self.items = buildjson['changeSet']['items']
             self.scmKind = buildjson['changeSet']['kind']
             self.url = settings.HUDSON_URL+'/job/'+projectName+'/'+self.number+'/'
-            self.duration = buildjson['duration'] / 1000
+            self.duration = 1 if buildjson['duration'] < 1000 else ( buildjson['duration'] / 1000 )
             self.timeStamp = buildjson['timestamp'] / 1000
             self.estimatedRemaining = 0
             self.description = buildjson['description']
