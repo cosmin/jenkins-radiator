@@ -227,7 +227,6 @@ def lookupTests(build_type, count, builds):
                 parent.codeWatchTests[test.project] = test
 
     for build in builds:
-	print "DEBUG: ", build
         for smoke in project.smokeProjects:
             if smoke not in build.smokeTests:
                 build.smokeTests[smoke] = models.Build(projectName=smoke)
@@ -245,9 +244,9 @@ def lookupTests(build_type, count, builds):
             if watch not in build.codeWatchTests:
                 build.codeWatchTests[watch] = models.Build(projectName=watch)
 
-            for other in project.otherProjects:
-                if other not in build.regressionTests:
-                    build.regressionTests[other] = models.Build(projectName=other)
+        for other in project.otherProjects:
+            if other not in build.regressionTests:
+                build.regressionTests[other] = models.Build(projectName=other)
 
         for codeWatchBuild in codeWatchBuilds:
             codeWatchBuild.codeWatchStatus = models.get_codeWatchStatus(codeWatchBuild.url, codeWatchBuild.status)
