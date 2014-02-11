@@ -54,6 +54,11 @@ a{ color: #ffffff; text-decoration: none;; }
     color: #DFF;
 }
 
+.description{
+    font-size: 18;
+    font-weight: bold;
+}
+
 .scm .revision,
 .scm .user{
   font-size: 14;

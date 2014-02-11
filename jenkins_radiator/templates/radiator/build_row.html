@@ -18,7 +18,10 @@
     {% if build.isReleaseCandidate %}
         <div class="rcVersion">Release Candidate: {{ build.releaseVersion}}</div>
     {% endif %}
-
+    <div class="clear-both"></div>
+    {%  if build.description %}
+        <div class="description">{{ build.description }}</div>
+    {%  endif %}
     <div class="scm">{% spaceless %}
       {% for commit in build.items %}
       <a href="{{build.url}}/changes">
