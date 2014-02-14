@@ -1,0 +1,35 @@
+#!/bin/bash
+CMD=""
+export RADIATOR_OWNER=hudson
+export RADIATOR_HOME=/opt/jenkins-radiator/jenkins_radiator
+
+if [ "$(id -u)" == "0" ]; then
+   CMD="su $RADIATOR_OWNER -c "
+
+elif [ "$(id -u)" != "$(id -u $RADIATOR_OWNER)" ]; then
+   echo "This script must be run as the user: $RADIATOR_OWNER (or root)" 1>&2
+   exit 1
+fi
+
+start() {
+        echo "Starting Jenkins-Radiator: "
+        $CMD $RADIATOR_HOME/bin/startup.sh
+}
+stop() {
+        echo "Stopping Jenkins-Radiator: "
+        $CMD $RADIATOR_HOME/bin/shutdown.sh
+}
+
+# See how we were called.
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+        stop
+        ;;
+  *)
+        echo $"Usage: jenkins-radiator {start|stop}"
+        exit
+esac
+
