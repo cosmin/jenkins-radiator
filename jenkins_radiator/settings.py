@@ -114,6 +114,7 @@ HUDSON_BASELINE_NAME_REGEX = re.compile('Baseline', re.I)
 HUDSON_PROJECT_NAME_REGEX = re.compile('Project', re.I)
 HUDSON_BUILD_COUNT = 10
 HUDSON_MAXIMUM_CONCURRENT_BUILDS = 4
+HUDSON_USER_NAME = ''
 
 # Default number of build to show in the radiator
 #SWA IRC Topic config

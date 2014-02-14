@@ -80,7 +80,7 @@ class Build(object):
                 for p in actions['parameters']:
                    params[p['name']] = p
 
-                print params
+                #print params
 
                 if params.has_key('BUILDURL'):
                     buildurl = params['BUILDURL']
