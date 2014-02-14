@@ -225,7 +225,7 @@ class Build(object):
 
         try:
             #tests = getTestData(get_data(self.url+"/testReport/api/json"),self.number)
-            tests = getTestData(get_build(self.projectName, self.number, 'testReport' ),self.number)
+            tests = getTestData(get_build(self.projectName, self.number, 'testReport'), self.number)
         except urllib2.HTTPError:
             pass
 
@@ -317,8 +317,8 @@ def get_specific_build(projectName, build_number):
 def get_cache_filename(url):
     return '/tmp/jenkins_radiator/' + str(url.split('job/')[1]).strip('/').replace('/','_')
 
-def get_build(projectName, number):
-    url = settings.HUDSON_URL+'/job/'+projectName+'/'+str(number)
+def get_build(projectName, number, suffix=""):
+    url = settings.HUDSON_URL+'/job/'+projectName+'/'+str(number)+'/'+suffix
     filename = get_cache_filename(url)
     if os.path.exists(filename):
         try:
